@@ -10,9 +10,6 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: false,
-  experimental: {
-    appDir: true,
-  },
   output: 'standalone',
 }
 
