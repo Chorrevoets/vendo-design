@@ -1,0 +1,607 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Activity, BarChart3, FileQuestion, Edit, MoreHorizontal, Bell } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import Image from "next/image"
+import { useRouter, usePathname } from "next/navigation"
+import { Header } from "@/components/header"
+
+const mainMenuItems = [
+  {
+    name: "Petzyo",
+    icon: null,
+    href: "/petzyo",
+    customIcon: "/petzyo-logo.png",
+    isAvatar: true,
+  },
+  {
+    name: "Reports",
+    icon: null,
+    href: "/reports",
+    customIcon: "/bookmark-icon.svg",
+    notificationColor: "green",
+    statusPill: { color: "green", text: "New" },
+  },
+  {
+    name: "Pulse",
+    icon: null,
+    href: "/pulse",
+    customIcon: "/Pulse.svg",
+    notificationColor: "orange",
+    statusPill: { color: "orange", text: "Changed" },
+  },
+  { name: "Key Results", icon: null, href: "/metrics", customIcon: "/Key-result.svg" },
+]
+
+const chats = [
+  { name: "Marketing Strategy", href: "/chats/marketing-strategy" },
+  { name: "Product Roadmap", href: "/chats/product-roadmap" },
+  { name: "Customer Feedback", href: "/chats/customer-feedback" },
+  { name: "Q4 Planning", href: "/chats/q4-planning" },
+  { name: "User Research", href: "/chats/user-research" },
+  { name: "Sales Analytics", href: "/chats/sales-analytics" },
+  { name: "Competitor Analysis", href: "/chats/competitor-analysis" },
+  { name: "Feature Requests", href: "/chats/feature-requests" },
+  { name: "Team Retrospective", href: "/chats/team-retrospective" },
+  { name: "Budget Planning", href: "/chats/budget-planning" },
+  { name: "Performance Review", href: "/chats/performance-review" },
+  { name: "Market Research", href: "/chats/market-research" },
+  { name: "Technical Debt", href: "/chats/technical-debt" },
+]
+
+function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isChatHistoryExpanded, setIsChatHistoryExpanded] = useState(true)
+  const [openChatMenu, setOpenChatMenu] = useState<string | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isInChatMode, setIsInChatMode] = useState(false)
+  const [selectedChat, setSelectedChat] = useState<string | null>(null)
+  const [activeItem, setActiveItem] = useState("Reports")
+
+  useEffect(() => {
+    // Load sidebar state from localStorage
+    const saved = localStorage.getItem("sidebarOpen")
+    if (saved) {
+      setIsSidebarOpen(JSON.parse(saved))
+    } else {
+      // On desktop, default to sidebar open
+      if (!isMobile) {
+        setIsSidebarOpen(true)
+      }
+    }
+
+    // Set active item based on current pathname
+    if (pathname === "/" || pathname === "/copilot" || pathname === "/reports") {
+      setActiveItem("Reports")
+    } else if (pathname === "/pulse") {
+      setActiveItem("Pulse")
+    } else if (pathname === "/metrics") {
+      setActiveItem("Key Results")
+    } else if (pathname === "/docs") {
+      setActiveItem("Docs")
+    } else if (pathname === "/support") {
+      setActiveItem("Support")
+    }
+  }, [pathname, isMobile])
+
+  // New effect to keep sidebar open on desktop when navigating
+  useEffect(() => {
+    if (!isMobile && pathname !== "/") {
+      // On desktop, ensure sidebar stays open when navigating to any page except home
+      setIsSidebarOpen(true)
+    }
+  }, [pathname, isMobile])
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 750
+      setIsMobile(mobile)
+
+      // If switching to desktop and no saved state, open sidebar
+      if (!mobile && !localStorage.getItem("sidebarOpen")) {
+        setIsSidebarOpen(true)
+      }
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
+
+  useEffect(() => {
+    const sidebarWidth = isMobile ? 0 : isSidebarOpen ? 340 : 0
+    const totalWidth = sidebarWidth
+    document.documentElement.style.setProperty("--sidebar-width", `${totalWidth}px`)
+    document.documentElement.style.setProperty("--chat-top-margin", isInChatMode ? "20px" : "0px")
+  }, [isSidebarOpen, isMobile, isInChatMode])
+
+  useEffect(() => {
+    const checkPromptBoxPosition = () => {
+      if (forceMinimalHeader) {
+        setIsInChatMode(true)
+        return
+      }
+
+      const isOnReportsPage = pathname === "/reports"
+      const isOnPulsePage = pathname === "/pulse"
+      const isOnMetricsPage = pathname === "/metrics"
+
+      const inputElements = document.querySelectorAll('input[type="text"], textarea, input[placeholder*="Ask"]')
+      let isPromptAtBottom = false
+      let foundInputs = 0
+
+      inputElements.forEach((input) => {
+        const rect = input.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        foundInputs++
+
+        // Check if input is in bottom 20% of screen (active chat state)
+        if (rect.top > windowHeight * 0.8) {
+          isPromptAtBottom = true
+        }
+      })
+
+      // Also check for chat message elements to confirm active chat
+      const chatMessages = document.querySelectorAll('[data-message], .message, .chat-message, [role="log"] > div')
+      const hasMessages = chatMessages.length > 0
+
+      const shouldBeInChatMode =
+        (isPromptAtBottom && hasMessages) || isOnReportsPage || isOnPulsePage || isOnMetricsPage
+      setIsInChatMode(shouldBeInChatMode)
+
+      console.log("[v0] Chat mode detection:", {
+        foundInputs,
+        isPromptAtBottom,
+        hasMessages,
+        shouldBeInChatMode,
+        isOnReportsPage,
+        isOnPulsePage,
+        isOnMetricsPage,
+        pathname: pathname,
+        forceMinimalHeader,
+      })
+    }
+
+    checkPromptBoxPosition()
+
+    const interval = setInterval(checkPromptBoxPosition, 500)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [forceMinimalHeader, pathname])
+
+  useEffect(() => {
+    const sidebarWidth = isMobile ? 0 : isSidebarOpen ? 340 : 0
+    const totalWidth = sidebarWidth
+    document.documentElement.style.setProperty("--sidebar-width", `${totalWidth}px`)
+    document.documentElement.style.setProperty("--chat-top-margin", isInChatMode ? "20px" : "0px")
+  }, [isSidebarOpen, isMobile, isInChatMode])
+
+  useEffect(() => {
+    localStorage.setItem("sidebarOpen", JSON.stringify(isSidebarOpen))
+  }, [isSidebarOpen])
+
+  const handleProfileClick = () => {
+    console.log("Navigate to profile edit")
+  }
+
+  const handleLogoClick = () => {
+    setIsInChatMode(false)
+    setActiveItem("Reports")
+    router.push("/")
+  }
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
+
+  const handleChatsClick = () => {
+    setIsChatHistoryExpanded(!isChatHistoryExpanded)
+  }
+
+  const handleChatShare = (chatName: string) => {
+    console.log("Share chat:", chatName)
+    setOpenChatMenu(null)
+  }
+
+  const handleChatRename = (chatName: string) => {
+    console.log("Rename chat:", chatName)
+    setOpenChatMenu(null)
+  }
+
+  const handleChatDelete = (chatName: string) => {
+    console.log("Delete chat:", chatName)
+    setOpenChatMenu(null)
+  }
+
+  const handleChatClick = (chat: { name: string; href: string }) => {
+    setSelectedChat(chat.name)
+    setIsInChatMode(true)
+    router.push(chat.href) // Navigate to specific chat route instead of /chat
+  }
+
+  return (
+    <div className="fixed top-0 left-0 h-screen z-[9999] flex">
+      {isSidebarOpen && isMobile && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9997]" onClick={toggleSidebar} />
+      )}
+
+      {pathname === "/" && (
+        <div className="fixed top-6 right-4 z-[10000] flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-white text-black border-gray-200 hover:bg-gray-50 h-9 px-3 gap-2 relative"
+          >
+            <Image
+              src="/Bell.svg"
+              alt="Notifications"
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-medium rounded-full h-4 w-4 flex items-center justify-center">
+              3
+            </div>
+          </Button>
+        </div>
+      )}
+
+      {pathname === "/chat" && (
+        <div className="fixed top-6 right-4 z-[10000] flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-white text-black border-gray-200 hover:bg-gray-50 h-9 px-3 gap-2"
+            onClick={() => router.push("/")}
+          >
+            <Image
+              src="/New-chat.svg"
+              alt="New Chat"
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            <span className="text-sm font-medium min-[750px]:block hidden">New Chat</span>
+          </Button>
+        </div>
+      )}
+
+      {pathname === "/reports" && (
+        <Header title="Reports" />
+      )}
+
+      {pathname === "/pulse" && (
+        <Header title="Pulse" />
+      )}
+
+      {pathname === "/metrics" && (
+        <Header title="Key Results" />
+      )}
+
+      {!isSidebarOpen && (
+        <>
+          <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleLogoClick}
+                className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <div className="h-8 w-8 min-[750px]:w-20 flex items-center justify-center">
+                  <Image
+                    src="/vendo-logo-mark.png"
+                    alt="Vendo"
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 block min-[750px]:hidden"
+                  />
+                  <Image
+                    src="/vendo-logo-wordmark.png"
+                    alt="Vendo"
+                    width={80}
+                    height={20}
+                    className="h-5 w-auto hidden min-[750px]:block"
+                  />
+                </div>
+              </button>
+
+              <div className="relative group">
+                <button
+                  onClick={toggleSidebar}
+                  className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-[20px] w-[20px] ml-1"
+                  >
+                    <path d="M20 7 4 7" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                    <path d="M15 12 4 12" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                    <path d="M9 17H4" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                  </svg>
+                </button>
+
+                <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  Open Sidebar
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {!isInChatMode && pathname !== "/reports" && (
+            <div className="fixed top-[70px] left-4 z-[10000] flex flex-col gap-3">
+              {mainMenuItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <div key={item.name} className="relative group">
+                    <div className="relative">
+                      <button
+                        onClick={() => {
+                          setActiveItem(item.name)
+                          if (item.href) {
+                            router.push(item.href)
+                          }
+                        }}
+                        className={`${item.isAvatar ? 'bg-transparent' : 'bg-white'} text-black hover:bg-gray-50 h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0`}
+                      >
+                        {item.customIcon ? (
+                          <Image
+                            src={item.customIcon || "/placeholder.svg"}
+                            alt={item.name}
+                            width={item.isAvatar ? 30 : 18}
+                            height={item.isAvatar ? 30 : 18}
+                            className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
+                          />
+                        ) : (
+                          Icon && <Icon className="h-[18px] w-[18px]" />
+                        )}
+                      </button>
+                      {item.notificationColor && (
+                        <div
+                          className={`absolute -top-1 -right-1 w-2 h-2 rounded-full z-50 ${item.notificationColor === "green"
+                            ? "bg-green-500"
+                            : item.notificationColor === "orange"
+                              ? "bg-orange-500"
+                              : item.notificationColor === "red"
+                                ? "bg-red-500"
+                                : ""
+                            }`}
+                        ></div>
+                      )}
+                    </div>
+                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      {item.name}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          <div
+            className={`fixed top-8 z-[10010] flex items-center gap-3`}
+            style={{
+              right: "1rem",
+            }}
+          ></div>
+        </>
+      )}
+
+      {isSidebarOpen && (
+        <div
+          className="w-[340px] h-screen flex flex-col transition-all duration-300"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            height: "100vh",
+            zIndex: 10001,
+            backgroundColor: "white",
+          }}
+        >
+          <div className="fixed top-4 left-[285px] z-[10002]">
+            <button
+              onClick={toggleSidebar}
+              className="p-1 hover:bg-gray-100 rounded flex items-center justify-center h-12 w-12"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-[20px] w-[20px] scale-x-[-1]"
+              >
+                <path d="M20 7 4 7" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                <path d="M15 12 4 12" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                <path d="M9 17H4" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div className="fixed top-6 left-4 z-[10002] flex items-center gap-3">
+            <button
+              onClick={handleLogoClick}
+              className="flex items-center gap-3 p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <div className="h-8 w-8 min-[750px]:w-20 flex items-center justify-center">
+                <Image
+                  src="/vendo-logo-mark.png"
+                  alt="Vendo"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 block min-[750px]:hidden cursor-pointer"
+                />
+                <Image
+                  src="/vendo-logo-wordmark-sidebar.png"
+                  alt="Vendo"
+                  width={80}
+                  height={20}
+                  className="h-5 w-auto hidden min-[750px]:block cursor-pointer"
+                />
+              </div>
+            </button>
+          </div>
+
+          <div className="fixed top-[70px] left-4 w-[310px] h-[calc(100vh-130px)] z-[10002] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="space-y-3">
+              {mainMenuItems.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      setActiveItem(item.name)
+                      if (item.href) {
+                        router.push(item.href)
+                      }
+                    }}
+                    className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-9 px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]"
+                  >
+                    <div className="relative">
+                      <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                        {item.customIcon ? (
+                          <Image
+                            src={item.customIcon || "/placeholder.svg"}
+                            alt={item.name}
+                            width={item.isAvatar ? 30 : 18}
+                            height={item.isAvatar ? 30 : 18}
+                            className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
+                          />
+                        ) : (
+                          Icon && <Icon className="h-[18px] w-[18px]" />
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
+                    {item.statusPill && (
+                      <div
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${item.statusPill.color === "green"
+                          ? "bg-green-100 text-green-800"
+                          : item.statusPill.color === "orange"
+                            ? "bg-orange-100 text-orange-800"
+                            : item.statusPill.color === "red"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                      >
+                        {item.statusPill.text}
+                      </div>
+                    )}
+                    {item.notificationColor && (
+                      <div
+                        className={`absolute -top-1 -right-1 w-2 h-2 rounded-full z-50 ${item.notificationColor === "green"
+                          ? "bg-green-500"
+                          : item.notificationColor === "orange"
+                            ? "bg-orange-500"
+                            : item.notificationColor === "red"
+                              ? "bg-red-500"
+                              : ""
+                          }`}
+                      ></div>
+                    )}
+                  </button>
+                )
+              })}
+
+              <button
+                onClick={() => {
+                  setActiveItem("Docs")
+                  router.push("/docs")
+                }}
+                className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-9 px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]"
+              >
+                <div className="relative">
+                  <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                    <Image
+                      src="/Question-Square.svg"
+                      alt="Docs"
+                      width={18}
+                      height={18}
+                      className="h-[18px] w-[18px]"
+                    />
+                  </div>
+                </div>
+                <span className="text-sm font-medium text-gray-900 ml-[3px]">Docs</span>
+              </button>
+
+              <div className="mt-[29px]">
+                <div>
+                  <span className="text-sm font-medium text-gray-900">Chat History</span>
+                </div>
+
+                <div className="mt-2 space-y-1">
+                  {chats.map((chat) => (
+                    <div key={chat.name} className="relative group">
+                      <div
+                        className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors cursor-pointer ${selectedChat === chat.name
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                          }`}
+                        onClick={() => handleChatClick(chat)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="truncate pr-2">{chat.name}</span>
+                          <DropdownMenu
+                            open={openChatMenu === chat.name}
+                            onOpenChange={(open) => setOpenChatMenu(open ? chat.name : null)}
+                          >
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setOpenChatMenu(openChatMenu === chat.name ? null : chat.name)
+                                }}
+                                className="p-1 hover:bg-gray-200 rounded opacity-100 transition-colors"
+                              >
+                                <MoreHorizontal className="h-3 w-3 text-gray-500" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-32">
+                              <DropdownMenuItem onClick={() => handleChatRename(chat.name)}>Rename</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleChatShare(chat.name)}>Share</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleChatDelete(chat.name)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <nav className="flex-1 px-4 pb-32 flex flex-col">
+            {/* Empty navigation area - ready for new menu structure */}
+          </nav>
+
+          <div className="fixed bottom-0 left-0 w-[340px] z-[10002]">
+            <button
+              onClick={() => {
+                // Handle profile click - you can add navigation or modal here
+                console.log("Profile clicked")
+              }}
+              className="w-full flex items-center bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              <Avatar className="h-[30px] w-[30px] ml-4 my-3">
+                <AvatarFallback className="bg-gray-900 text-white font-medium">YK</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0 my-3 mr-4 ml-3 text-left">
+                <div className="text-sm font-medium text-gray-900">Yannick Kiekens</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export { SideMenu }
+export default SideMenu
