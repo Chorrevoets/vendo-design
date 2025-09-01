@@ -1,27 +1,34 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Activity, BarChart3, FileQuestion, Edit, MoreHorizontal, Bell } from "lucide-react"
+import { Activity, BarChart3, FileQuestion, Edit, MoreHorizontal, Bell, ChevronDown, Settings, Building2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Image from "next/image"
 import { useRouter, usePathname } from "next/navigation"
 import { Header } from "@/components/header"
+import { SearchChatsModal } from "@/components/search-chats-modal"
 
 const mainMenuItems = [
   {
     name: "Petzyo",
     icon: null,
-    href: "/petzyo",
+    href: "/account_settings",
     customIcon: "/petzyo-logo.png",
     isAvatar: true,
+  },
+  {
+    name: "New Chat",
+    icon: null,
+    href: "/",
+    customIcon: "/New-chat.svg",
   },
   {
     name: "Reports",
     icon: null,
     href: "/reports",
-    customIcon: "/bookmark-icon.svg",
+    customIcon: "/Key-result.svg",
     notificationColor: "green",
     statusPill: { color: "green", text: "New" },
   },
@@ -33,7 +40,12 @@ const mainMenuItems = [
     notificationColor: "orange",
     statusPill: { color: "orange", text: "Changed" },
   },
-  { name: "Key Results", icon: null, href: "/metrics", customIcon: "/Key-result.svg" },
+  {
+    name: "Search Chats",
+    icon: null,
+    href: "/search-chats",
+    customIcon: "/Magnifer.svg",
+  },
 ]
 
 const chats = [
@@ -62,6 +74,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
   const [isInChatMode, setIsInChatMode] = useState(false)
   const [selectedChat, setSelectedChat] = useState<string | null>(null)
   const [activeItem, setActiveItem] = useState("Reports")
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   useEffect(() => {
     // Load sidebar state from localStorage
@@ -226,6 +239,21 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
     router.push(chat.href) // Navigate to specific chat route instead of /chat
   }
 
+  const handleSearchChatsClick = () => {
+    setIsSearchModalOpen(true)
+  }
+
+  const handleOrganizationSwitch = (orgName: string) => {
+    console.log(`Switching to organization: ${orgName}`)
+    // Here you would typically:
+    // 1. Update the current organization in your app state
+    // 2. Refresh authentication tokens for the new organization
+    // 3. Reload the app with the new organization context
+
+    // For now, we'll simulate a reload
+    window.location.reload()
+  }
+
   return (
     <div className="fixed top-0 left-0 h-screen z-[9999] flex">
       {isSidebarOpen && isMobile && (
@@ -233,7 +261,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
       )}
 
       {pathname === "/" && (
-        <div className="fixed top-6 right-4 z-[10000] flex items-center gap-3">
+        <div className="fixed top-6 right-4 z-[9996] flex items-center gap-3">
           <Button
             variant="outline"
             size="sm"
@@ -253,8 +281,8 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         </div>
       )}
 
-      {pathname === "/chat" && (
-        <div className="fixed top-6 right-4 z-[10000] flex items-center gap-3">
+      {(pathname === "/chat" || pathname.startsWith("/chats/")) && (
+        <div className="fixed top-6 right-4 z-[9996] flex items-center gap-3">
           <Button
             variant="outline"
             size="sm"
@@ -285,7 +313,59 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         <Header title="Key Results" />
       )}
 
-      {!isSidebarOpen && (
+      {/* Always show Vendo logo and sidebar toggle on Account Settings page */}
+      {pathname === "/account_settings" && (
+        <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleLogoClick}
+              className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <div className="h-8 w-8 min-[750px]:w-20 flex items-center justify-center">
+                <Image
+                  src="/vendo-logo-mark.png"
+                  alt="Vendo"
+                  width={20}
+                  height={20}
+                  className="h-5 w-5 block min-[750px]:hidden"
+                />
+                <Image
+                  src="/vendo-logo-wordmark.png"
+                  alt="Vendo"
+                  width={80}
+                  height={20}
+                  className="h-5 w-auto hidden min-[750px]:block"
+                />
+              </div>
+            </button>
+
+            <div className="relative group">
+              <button
+                onClick={toggleSidebar}
+                className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-[20px] w-[20px] ml-1"
+                >
+                  <path d="M20 7 4 7" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                  <path d="M15 12 4 12" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                  <path d="M9 17H4" stroke="#000000" strokeLinecap="round" strokeWidth="2.5"></path>
+                </svg>
+              </button>
+
+              <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                Open Sidebar
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Show Vendo logo and sidebar toggle for other pages when sidebar is closed */}
+      {!isSidebarOpen && pathname !== "/account_settings" && (
         <>
           <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
             <div className="flex items-center gap-2">
@@ -335,53 +415,153 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
             </div>
           </div>
 
-          {!isInChatMode && pathname !== "/reports" && (
+          {!isInChatMode && (
             <div className="fixed top-[70px] left-4 z-[10000] flex flex-col gap-3">
-              {mainMenuItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <div key={item.name} className="relative group">
-                    <div className="relative">
-                      <button
-                        onClick={() => {
-                          setActiveItem(item.name)
-                          if (item.href) {
-                            router.push(item.href)
-                          }
-                        }}
-                        className={`${item.isAvatar ? 'bg-transparent' : 'bg-white'} text-black hover:bg-gray-50 h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0`}
-                      >
-                        {item.customIcon ? (
-                          <Image
-                            src={item.customIcon || "/placeholder.svg"}
-                            alt={item.name}
-                            width={item.isAvatar ? 30 : 18}
-                            height={item.isAvatar ? 30 : 18}
-                            className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
-                          />
+              {mainMenuItems
+                .filter(item => {
+                  // On Account Settings page, only show Petzyo logo, hide all other navigation shortcuts
+                  if (pathname === "/account_settings") {
+                    return item.name === "Petzyo"
+                  }
+                  // On homepage, hide New Chat button
+                  if (pathname === "/") {
+                    return item.name !== "New Chat"
+                  }
+                  return true
+                })
+                .map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <div key={item.name} className="relative group">
+                      <div className="relative">
+                        {item.name === "Petzyo" ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                className={`${item.isAvatar ? 'bg-transparent' : 'bg-white'} text-black hover:bg-gray-50 h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0`}
+                              >
+                                <Image
+                                  src={item.customIcon || "/placeholder.svg"}
+                                  alt={item.name}
+                                  width={30}
+                                  height={30}
+                                  className="h-[30px] w-[30px] rounded-full"
+                                />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-80">
+                              <div className="space-y-3">
+                                <DropdownMenuItem onClick={() => router.push("/account_settings")} className="p-0">
+                                  <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                    <div className="relative">
+                                      <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                        <Settings className="h-[18px] w-[18px]" />
+                                      </div>
+                                    </div>
+                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Account Settings</span>
+                                  </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push("/data_management")} className="p-0">
+                                  <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                    <div className="relative">
+                                      <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                        <BarChart3 className="h-[18px] w-[18px]" />
+                                      </div>
+                                    </div>
+                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Data Management</span>
+                                  </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="p-0">
+                                  <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                    <div className="relative">
+                                      <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                        <Plus className="h-[18px] w-[18px]" />
+                                      </div>
+                                    </div>
+                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Organization</span>
+                                  </div>
+                                </DropdownMenuItem>
+                              </div>
+                              <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
+                                <div className="w-full">
+                                  <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">
+                                    Switch Organization
+                                  </div>
+                                  <div className="px-2 py-1">
+                                    {/* TechCorp */}
+                                    <div
+                                      className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                                      onClick={() => handleOrganizationSwitch("TechCorp")}
+                                    >
+                                      <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                        <div className="text-white text-xs font-bold">TE</div>
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="text-sm font-medium text-gray-900">TechCorp</div>
+                                      </div>
+                                    </div>
+
+                                    {/* StartupXYZ */}
+                                    <div
+                                      className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                                      onClick={() => handleOrganizationSwitch("StartupXYZ")}
+                                    >
+                                      <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                        <div className="text-white text-xs font-bold">ST</div>
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="text-sm font-medium text-gray-900">StartupXYZ</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         ) : (
-                          Icon && <Icon className="h-[18px] w-[18px]" />
+                          <button
+                            onClick={() => {
+                              setActiveItem(item.name)
+                              if (item.name === "Search Chats") {
+                                handleSearchChatsClick()
+                              } else if (item.href) {
+                                router.push(item.href)
+                              }
+                            }}
+                            className={`${item.isAvatar ? 'bg-transparent' : 'bg-white'} text-black hover:bg-gray-50 h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0`}
+                          >
+                            {item.customIcon ? (
+                              <Image
+                                src={item.customIcon || "/placeholder.svg"}
+                                alt={item.name}
+                                width={item.isAvatar ? 30 : 18}
+                                height={item.isAvatar ? 30 : 18}
+                                className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
+                              />
+                            ) : (
+                              Icon && <Icon className="h-[18px] w-[18px]" />
+                            )}
+                          </button>
                         )}
-                      </button>
-                      {item.notificationColor && (
-                        <div
-                          className={`absolute -top-1 -right-1 w-2 h-2 rounded-full z-50 ${item.notificationColor === "green"
-                            ? "bg-green-500"
-                            : item.notificationColor === "orange"
-                              ? "bg-orange-500"
-                              : item.notificationColor === "red"
-                                ? "bg-red-500"
-                                : ""
-                            }`}
-                        ></div>
-                      )}
+                        {item.notificationColor && (
+                          <div
+                            className={`absolute -top-1 -right-1 w-2 h-2 rounded-full z-50 ${item.notificationColor === "green"
+                              ? "bg-green-500"
+                              : item.notificationColor === "orange"
+                                ? "bg-orange-500"
+                                : item.notificationColor === "red"
+                                  ? "bg-red-500"
+                                  : ""
+                              }`}
+                          ></div>
+                        )}
+                      </div>
+                      <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        {item.name}
+                      </div>
                     </div>
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                      {item.name}
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
             </div>
           )}
 
@@ -450,64 +630,162 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
 
           <div className="fixed top-[70px] left-4 w-[310px] h-[calc(100vh-130px)] z-[10002] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
             <div className="space-y-3">
-              {mainMenuItems.map((item, index) => {
-                const Icon = item.icon
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      setActiveItem(item.name)
-                      if (item.href) {
-                        router.push(item.href)
-                      }
-                    }}
-                    className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-9 px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]"
-                  >
-                    <div className="relative">
-                      <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
-                        {item.customIcon ? (
-                          <Image
-                            src={item.customIcon || "/placeholder.svg"}
-                            alt={item.name}
-                            width={item.isAvatar ? 30 : 18}
-                            height={item.isAvatar ? 30 : 18}
-                            className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
-                          />
-                        ) : (
-                          Icon && <Icon className="h-[18px] w-[18px]" />
-                        )}
+              {mainMenuItems
+                .filter(item => {
+                  // On Account Settings page, only show Petzyo logo, hide all other navigation shortcuts
+                  if (pathname === "/account_settings") {
+                    return item.name === "Petzyo"
+                  }
+                  // On homepage, hide New Chat button
+                  if (pathname === "/") {
+                    return item.name !== "New Chat"
+                  }
+                  return true
+                })
+                .map((item) => {
+                  const Icon = item.icon
+
+                  // Special handling for Petzyo organization item
+                  if (item.name === "Petzyo") {
+                    return (
+                      <DropdownMenu key={item.name}>
+                        <DropdownMenuTrigger asChild>
+                          <button className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-9 px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px] focus:outline-none focus:ring-0">
+                            <div className="relative">
+                              <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                <Image
+                                  src={item.customIcon || "/placeholder.svg"}
+                                  alt={item.name}
+                                  width={30}
+                                  height={30}
+                                  className="h-[30px] w-[30px] rounded-full"
+                                />
+                              </div>
+                            </div>
+                            <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
+                            <ChevronDown className="h-4 w-4 text-gray-500 ml-auto" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-80">
+                          <div className="space-y-3">
+                            <DropdownMenuItem onClick={() => router.push("/account_settings")} className="p-0">
+                              <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                <div className="relative">
+                                  <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                    <Settings className="h-[18px] w-[18px]" />
+                                  </div>
+                                </div>
+                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Account Settings</span>
+                              </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push("/data_management")} className="p-0">
+                              <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                <div className="relative">
+                                  <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                    <BarChart3 className="h-[18px] w-[18px]" />
+                                  </div>
+                                </div>
+                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Data Management</span>
+                              </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="p-0">
+                              <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                                <div className="relative">
+                                  <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                    <Plus className="h-[18px] w-[18px]" />
+                                  </div>
+                                </div>
+                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Organization</span>
+                              </div>
+                            </DropdownMenuItem>
+                          </div>
+                          <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
+                            <div className="w-full">
+                              <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">
+                                Switch Organization
+                              </div>
+                              <div className="px-2 py-1">
+                                {/* TechCorp */}
+                                <div
+                                  className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                                  onClick={() => handleOrganizationSwitch("TechCorp")}
+                                >
+                                  <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                    <div className="text-white text-xs font-bold">TE</div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-sm font-medium text-gray-900">TechCorp</div>
+                                  </div>
+                                </div>
+
+                                {/* StartupXYZ */}
+                                <div
+                                  className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                                  onClick={() => handleOrganizationSwitch("StartupXYZ")}
+                                >
+                                  <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                    <div className="text-white text-xs font-bold">ST</div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-sm font-medium text-gray-900">StartupXYZ</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
+                  }
+
+                  // Regular menu items
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => {
+                        setActiveItem(item.name)
+                        if (item.name === "Search Chats") {
+                          handleSearchChatsClick()
+                        } else if (item.href) {
+                          router.push(item.href)
+                        }
+                      }}
+                      className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-9 px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]"
+                    >
+                      <div className="relative">
+                        <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                          {item.customIcon ? (
+                            <Image
+                              src={item.customIcon || "/placeholder.svg"}
+                              alt={item.name}
+                              width={item.isAvatar ? 30 : 18}
+                              height={item.isAvatar ? 30 : 18}
+                              className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
+                            />
+                          ) : (
+                            Icon && <Icon className="h-[18px] w-[18px]" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
-                    {item.statusPill && (
-                      <div
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${item.statusPill.color === "green"
-                          ? "bg-green-100 text-green-800"
-                          : item.statusPill.color === "orange"
-                            ? "bg-orange-100 text-orange-800"
-                            : item.statusPill.color === "red"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                      >
-                        {item.statusPill.text}
-                      </div>
-                    )}
-                    {item.notificationColor && (
-                      <div
-                        className={`absolute -top-1 -right-1 w-2 h-2 rounded-full z-50 ${item.notificationColor === "green"
-                          ? "bg-green-500"
-                          : item.notificationColor === "orange"
-                            ? "bg-orange-500"
-                            : item.notificationColor === "red"
-                              ? "bg-red-500"
-                              : ""
-                          }`}
-                      ></div>
-                    )}
-                  </button>
-                )
-              })}
+                      <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
+                      {item.statusPill && (
+                        <div
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${item.statusPill.color === "green"
+                            ? "bg-green-100 text-green-800"
+                            : item.statusPill.color === "orange"
+                              ? "bg-orange-100 text-orange-800"
+                              : item.statusPill.color === "red"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                        >
+                          {item.statusPill.text}
+                        </div>
+                      )}
+                      {/* Status dots hidden when sidebar is open */}
+                    </button>
+                  )
+                })}
 
               <button
                 onClick={() => {
@@ -599,6 +877,12 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
           </div>
         </div>
       )}
+
+      {/* Search Chats Modal */}
+      <SearchChatsModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
     </div>
   )
 }
