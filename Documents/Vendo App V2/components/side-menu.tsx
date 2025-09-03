@@ -205,12 +205,14 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
   }
 
   const handleLogoClick = () => {
+    console.log("Vendo logo clicked!")
     setIsInChatMode(false)
     setActiveItem("Reports")
     router.push("/")
   }
 
   const toggleSidebar = () => {
+    console.log("Sidebar toggle clicked!")
     setIsSidebarOpen(!isSidebarOpen)
   }
 
@@ -313,6 +315,60 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         <Header title="Key Results" />
       )}
 
+      {pathname === "/data_management" && (
+        <Header title="Data Management" showIcons={false} />
+      )}
+
+      {pathname === "/data_management/sources" && (
+        <Header title="Sources" showIcons={false} className="pl-24">
+          <Button variant="default" size="sm" className="flex items-center gap-2 bg-black text-white hover:bg-gray-800">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Add Sources</span>
+          </Button>
+        </Header>
+      )}
+
+      {pathname === "/data_management/sources/settings" && (
+        <Header title="Settings" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/quality-control" && (
+        <Header title="Quality Control" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/funnel-analysis" && (
+        <Header title="Funnel Analysis" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/context" && (
+        <Header title="Context" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/channel-grouping" && (
+        <Header title="Channel Grouping" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/advertising" && (
+        <Header title="Advertising" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/customer" && (
+        <Header title="Customer" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/event" && (
+        <Header title="Event" showIcons={false} className="pl-24" />
+      )}
+
+      {pathname === "/data_management/destinations" && (
+        <Header title="Destinations" showIcons={false} className="pl-24">
+          <Button variant="default" size="sm" className="flex items-center gap-2 bg-black text-white hover:bg-gray-800">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Add Destinations</span>
+          </Button>
+        </Header>
+      )}
+
       {/* Always show Vendo logo and sidebar toggle on Account Settings page */}
       {pathname === "/account_settings" && (
         <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
@@ -364,14 +420,14 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         </div>
       )}
 
-      {/* Show Vendo logo and sidebar toggle for other pages when sidebar is closed */}
-      {!isSidebarOpen && pathname !== "/account_settings" && (
+      {/* Show Vendo logo and sidebar toggle when sidebar is closed */}
+      {!isSidebarOpen && (
         <>
-          <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
+          <div className="fixed top-6 left-[20px] md:left-4 z-[999999]">
             <div className="flex items-center gap-2">
               <button
                 onClick={handleLogoClick}
-                className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+                className="p-0 cursor-pointer hover:opacity-80 transition-opacity"
               >
                 <div className="h-8 w-8 min-[750px]:w-20 flex items-center justify-center">
                   <Image
@@ -394,7 +450,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
               <div className="relative group">
                 <button
                   onClick={toggleSidebar}
-                  className="p-0 bg-transparent border-none cursor-pointer hover:opacity-80 transition-opacity"
+                  className="p-0 cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -419,9 +475,13 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
             <div className="fixed top-[70px] left-4 z-[10000] flex flex-col gap-3">
               {mainMenuItems
                 .filter(item => {
-                  // On Account Settings page, only show Petzyo logo, hide all other navigation shortcuts
+                  // On Account Settings page, show all navigation items except New Chat
                   if (pathname === "/account_settings") {
-                    return item.name === "Petzyo"
+                    return item.name !== "New Chat"
+                  }
+                  // On Data Management pages, hide all navigation shortcuts (when sidebar is closed)
+                  if (pathname === "/data_management" || pathname === "/data_management/sources" || pathname === "/data_management/sources/settings" || pathname === "/data_management/destinations" || pathname === "/data_management/event" || pathname === "/data_management/customer" || pathname === "/data_management/advertising" || pathname === "/data_management/channel-grouping" || pathname === "/data_management/context" || pathname === "/data_management/funnel-analysis" || pathname === "/data_management/quality-control") {
+                    return false
                   }
                   // On homepage, hide New Chat button
                   if (pathname === "/") {
@@ -500,7 +560,6 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                                         <div className="text-sm font-medium text-gray-900">TechCorp</div>
                                       </div>
                                     </div>
-
                                     {/* StartupXYZ */}
                                     <div
                                       className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer"
@@ -538,9 +597,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                                 height={item.isAvatar ? 30 : 18}
                                 className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
                               />
-                            ) : (
-                              Icon && <Icon className="h-[18px] w-[18px]" />
-                            )}
+                            ) : null}
                           </button>
                         )}
                         {item.notificationColor && (
@@ -564,15 +621,12 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                 })}
             </div>
           )}
-
-          <div
-            className={`fixed top-8 z-[10010] flex items-center gap-3`}
-            style={{
-              right: "1rem",
-            }}
-          ></div>
         </>
       )}
+
+
+
+
 
       {isSidebarOpen && (
         <div
@@ -632,9 +686,13 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
             <div className="space-y-3">
               {mainMenuItems
                 .filter(item => {
-                  // On Account Settings page, only show Petzyo logo, hide all other navigation shortcuts
+                  // On Account Settings page, show all navigation items except New Chat
                   if (pathname === "/account_settings") {
-                    return item.name === "Petzyo"
+                    return item.name !== "New Chat"
+                  }
+                  // On Data Management page, show all navigation items except New Chat (when sidebar is open)
+                  if (pathname === "/data_management") {
+                    return item.name !== "New Chat"
                   }
                   // On homepage, hide New Chat button
                   if (pathname === "/") {
@@ -762,9 +820,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                               height={item.isAvatar ? 30 : 18}
                               className={`${item.isAvatar ? 'h-[30px] w-[30px] rounded-full' : 'h-[18px] w-[18px]'} ${!item.isAvatar && item.customIcon.includes('petzyo-logo.png') ? 'rounded-full' : ''}`}
                             />
-                          ) : (
-                            Icon && <Icon className="h-[18px] w-[18px]" />
-                          )}
+                          ) : null}
                         </div>
                       </div>
                       <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
