@@ -22,3 +22,8 @@ export function useRouter() {
     asPath: '/',
   }
 }
+
+// Mock for Next.js usePathname hook for Vite
+export function usePathname() {
+  return '/'
+}

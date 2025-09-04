@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Activity, BarChart3, FileQuestion, Edit, MoreHorizontal, Bell, ChevronDown, Settings, Building2, Plus } from "lucide-react"
+import { Activity, BarChart3, FileQuestion, Edit, MoreHorizontal, Bell, ChevronDown, Settings, Building2, Plus, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -311,16 +311,20 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         <Header title="Pulse" />
       )}
 
+      {pathname === "/profile_settings" && (
+        <Header title="Profile Settings" mobileTitle="Settings" />
+      )}
+
       {pathname === "/metrics" && (
         <Header title="Key Results" />
       )}
 
       {pathname === "/data_management" && (
-        <Header title="Data Management" showIcons={false} />
+        <Header title="Data Management" />
       )}
 
       {pathname === "/data_management/sources" && (
-        <Header title="Sources" showIcons={false} className="pl-24">
+        <Header title="Sources" className="pl-24">
           <Button variant="default" size="sm" className="flex items-center gap-2 bg-black text-white hover:bg-gray-800">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add Sources</span>
@@ -329,39 +333,39 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
       )}
 
       {pathname === "/data_management/sources/settings" && (
-        <Header title="Settings" showIcons={false} className="pl-24" />
+        <Header title="Settings" className="pl-24" />
       )}
 
       {pathname === "/data_management/quality-control" && (
-        <Header title="Quality Control" showIcons={false} className="pl-24" />
+        <Header title="Quality Control" className="pl-24" />
       )}
 
       {pathname === "/data_management/funnel-analysis" && (
-        <Header title="Funnel Analysis" showIcons={false} className="pl-24" />
+        <Header title="Funnel Analysis" className="pl-24" />
       )}
 
       {pathname === "/data_management/context" && (
-        <Header title="Context" showIcons={false} className="pl-24" />
+        <Header title="Context" className="pl-24" />
       )}
 
       {pathname === "/data_management/channel-grouping" && (
-        <Header title="Channel Grouping" showIcons={false} className="pl-24" />
+        <Header title="Channel Grouping" className="pl-24" />
       )}
 
       {pathname === "/data_management/advertising" && (
-        <Header title="Advertising" showIcons={false} className="pl-24" />
+        <Header title="Advertising" className="pl-24" />
       )}
 
       {pathname === "/data_management/customer" && (
-        <Header title="Customer" showIcons={false} className="pl-24" />
+        <Header title="Customer" className="pl-24" />
       )}
 
       {pathname === "/data_management/event" && (
-        <Header title="Event" showIcons={false} className="pl-24" />
+        <Header title="Event" className="pl-24" />
       )}
 
       {pathname === "/data_management/destinations" && (
-        <Header title="Destinations" showIcons={false} className="pl-24">
+        <Header title="Destinations" className="pl-24">
           <Button variant="default" size="sm" className="flex items-center gap-2 bg-black text-white hover:bg-gray-800">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add Destinations</span>
@@ -369,8 +373,8 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         </Header>
       )}
 
-      {/* Always show Vendo logo and sidebar toggle on Account Settings page */}
-      {pathname === "/account_settings" && (
+      {/* Always show Vendo logo and sidebar toggle on Workspace Settings page */}
+      {pathname === "/workspace_settings" && (
         <div className="fixed top-6 left-[20px] md:left-4 z-[10000]">
           <div className="flex items-center gap-2">
             <button
@@ -475,12 +479,8 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
             <div className="fixed top-[70px] left-4 z-[10000] flex flex-col gap-3">
               {mainMenuItems
                 .filter(item => {
-                  // On Account Settings page, show all navigation items except New Chat
-                  if (pathname === "/account_settings") {
-                    return item.name !== "New Chat"
-                  }
-                  // On Data Management pages, hide all navigation shortcuts (when sidebar is closed)
-                  if (pathname === "/data_management" || pathname === "/data_management/sources" || pathname === "/data_management/sources/settings" || pathname === "/data_management/destinations" || pathname === "/data_management/event" || pathname === "/data_management/customer" || pathname === "/data_management/advertising" || pathname === "/data_management/channel-grouping" || pathname === "/data_management/context" || pathname === "/data_management/funnel-analysis" || pathname === "/data_management/quality-control") {
+                  // On Data Management pages, Workspace Settings, and Profile Settings, hide all navigation shortcuts (when sidebar is closed)
+                  if (pathname === "/workspace_settings" || pathname === "/profile_settings" || pathname === "/data_management" || pathname === "/data_management/sources" || pathname === "/data_management/sources/settings" || pathname === "/data_management/destinations" || pathname === "/data_management/event" || pathname === "/data_management/customer" || pathname === "/data_management/advertising" || pathname === "/data_management/channel-grouping" || pathname === "/data_management/context" || pathname === "/data_management/funnel-analysis" || pathname === "/data_management/quality-control") {
                     return false
                   }
                   // On homepage, hide New Chat button
@@ -511,14 +511,14 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start" className="w-80">
                               <div className="space-y-3">
-                                <DropdownMenuItem onClick={() => router.push("/account_settings")} className="p-0">
+                                <DropdownMenuItem onClick={() => router.push("/workspace_settings")} className="p-0">
                                   <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
                                     <div className="relative">
                                       <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
                                         <Settings className="h-[18px] w-[18px]" />
                                       </div>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Account Settings</span>
+                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Workspace Settings</span>
                                   </div>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => router.push("/data_management")} className="p-0">
@@ -538,14 +538,14 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                                         <Plus className="h-[18px] w-[18px]" />
                                       </div>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Organization</span>
+                                    <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Workspace</span>
                                   </div>
                                 </DropdownMenuItem>
                               </div>
                               <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
                                 <div className="w-full">
                                   <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">
-                                    Switch Organization
+                                    Switch Workspace
                                   </div>
                                   <div className="px-2 py-1">
                                     {/* TechCorp */}
@@ -686,8 +686,8 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
             <div className="space-y-3">
               {mainMenuItems
                 .filter(item => {
-                  // On Account Settings page, show all navigation items except New Chat
-                  if (pathname === "/account_settings") {
+                  // On Workspace Settings page, show all navigation items except New Chat
+                  if (pathname === "/workspace_settings") {
                     return item.name !== "New Chat"
                   }
                   // On Data Management page, show all navigation items except New Chat (when sidebar is open)
@@ -721,19 +721,18 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                               </div>
                             </div>
                             <span className="text-sm font-medium text-gray-900 ml-[3px]">{item.name}</span>
-                            <ChevronDown className="h-4 w-4 text-gray-500 ml-auto" />
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start" className="w-80">
                           <div className="space-y-3">
-                            <DropdownMenuItem onClick={() => router.push("/account_settings")} className="p-0">
+                            <DropdownMenuItem onClick={() => router.push("/workspace_settings")} className="p-0">
                               <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
                                 <div className="relative">
                                   <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
                                     <Settings className="h-[18px] w-[18px]" />
                                   </div>
                                 </div>
-                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Account Settings</span>
+                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Workspace Settings</span>
                               </div>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push("/data_management")} className="p-0">
@@ -753,14 +752,14 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
                                     <Plus className="h-[18px] w-[18px]" />
                                   </div>
                                 </div>
-                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Organization</span>
+                                <span className="text-sm font-medium text-gray-900 ml-[3px]">Add Workspace</span>
                               </div>
                             </DropdownMenuItem>
                           </div>
                           <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
                             <div className="w-full">
                               <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">
-                                Switch Organization
+                                Switch Workspace
                               </div>
                               <div className="px-2 py-1">
                                 {/* TechCorp */}
@@ -916,20 +915,42 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
           </nav>
 
           <div className="fixed bottom-0 left-0 w-[340px] z-[10002]">
-            <button
-              onClick={() => {
-                // Handle profile click - you can add navigation or modal here
-                console.log("Profile clicked")
-              }}
-              className="w-full flex items-center bg-white hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              <Avatar className="h-[30px] w-[30px] ml-4 my-3">
-                <AvatarFallback className="bg-gray-900 text-white font-medium">YK</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0 my-3 mr-4 ml-3 text-left">
-                <div className="text-sm font-medium text-gray-900">Yannick Kiekens</div>
-              </div>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-full flex items-center bg-white hover:bg-gray-50 transition-colors cursor-pointer">
+                  <Avatar className="h-[30px] w-[30px] ml-4 my-3">
+                    <AvatarFallback className="bg-gray-900 text-white font-medium">YK</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0 my-3 mr-4 ml-3 text-left">
+                    <div className="text-sm font-medium text-gray-900">Yannick Kiekens</div>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-80">
+                <div className="space-y-3">
+                  <DropdownMenuItem onClick={() => router.push("/profile_settings")} className="p-0">
+                    <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                      <div className="relative">
+                        <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                          <Settings className="h-[18px] w-[18px]" />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900 ml-[3px]">Profile Settings</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => console.log('Sign out clicked')} className="p-0">
+                    <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                      <div className="relative">
+                        <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                          <LogOut className="h-[18px] w-[18px]" />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900 ml-[3px]">Sign Out</span>
+                    </div>
+                  </DropdownMenuItem>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       )}
