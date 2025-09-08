@@ -197,7 +197,6 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
 
           setMessages((prev) => [...prev, assistantMessage])
           setIsLoading(false)
-          speakMessage(assistantMessage.content)
         },
         1000 + Math.random() * 2000,
       )
@@ -246,8 +245,6 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
 
         setMessages((prev) => [...prev, assistantMessage])
         setIsLoading(false)
-
-        speakMessage(assistantMessage.content)
 
         timeoutRef.current = null
       },
@@ -305,8 +302,21 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
     <div className="flex flex-col h-screen w-full chat-gradient-bg">
       {messages.length > 0 ? (
         <>
-          <div className="absolute top-16 bottom-20 left-0 right-0 overflow-y-auto p-3">
-            <div className="max-w-4xl mx-auto space-y-6">
+          <div
+            className="absolute top-16 bottom-20 left-0 right-0 overflow-y-auto p-3 max-[750px]:px-2"
+            style={{
+              ...(typeof window !== "undefined" && (window.location.pathname === "/chat" || window.location.pathname.startsWith("/chats/"))
+                ? {
+                  marginLeft: "var(--sidebar-width, 0px)",
+                  marginRight: "0",
+                  width: "calc(100vw - var(--sidebar-width, 0px))",
+                  display: "flex",
+                  justifyContent: "center",
+                }
+                : {}),
+            }}
+          >
+            <div className="max-w-6xl mx-auto space-y-6 w-full">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -341,51 +351,119 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 to-transparent pt-0 pb-3 px-3">
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 to-transparent pt-0 pb-3">
             <div
-              className="mx-auto"
+              className="px-3 max-[750px]:px-2"
               style={{
-                ...(typeof window !== "undefined" && window.location.pathname === "/chat"
+                ...(typeof window !== "undefined" && (window.location.pathname === "/chat" || window.location.pathname.startsWith("/chats/"))
                   ? {
                     marginLeft: "var(--sidebar-width, 0px)",
-                    maxWidth: "calc(100vw - var(--sidebar-width, 0px) - 2rem)",
+                    marginRight: "0",
+                    width: "calc(100vw - var(--sidebar-width, 0px))",
+                    display: "flex",
+                    justifyContent: "center",
                   }
                   : {}),
               }}
             >
-              <div className="relative shadow-lg rounded-full w-full">
-                <Input
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask me about your key results, customers, or business insights..."
-                  className="pl-6 pr-14 h-14 rounded-full w-full bg-white placeholder:text-gray-500"
-                  disabled={isLoading}
-                />
-                <Button
-                  onClick={handleVoiceRecord}
-                  variant="ghost"
-                  size="sm"
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100 ${isRecording ? "bg-red-50 text-red-600 hover:bg-red-100" : "text-gray-500"
-                    }`}
-                  disabled={isLoading}
-                >
-                  {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                </Button>
-              </div>
-
-              <div className="text-center mt-2">
-                <p className="text-gray-400 text-sm">
-                  Vendo is a copilot, not an autopilot. think critically.
-                </p>
-              </div>
-
-              {isRecording && (
-                <div className="mt-3 flex items-center justify-center gap-2 text-red-600">
-                  <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium">Recording... Speak now</span>
+              <div className="max-w-6xl w-full">
+                <div className="relative shadow-lg rounded-full w-full">
+                  <div className="relative">
+                    <Input
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder={isMobile ? "Ask about your data" : "Ask me about your key results, customers, or business insights..."}
+                      className="pl-6 pr-14 h-14 rounded-full w-full bg-white placeholder:text-gray-500"
+                      disabled={isLoading}
+                    />
+                    {isRecording && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="flex items-center gap-2 text-red-600 font-medium">
+                          <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                          <span className="text-sm">Recording... Speak now</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    <div className="relative group">
+                      <Button
+                        onClick={handleVoiceRecord}
+                        variant="ghost"
+                        size="sm"
+                        className={`h-8 w-8 p-0 hover:bg-gray-100 ${isRecording ? "bg-red-50 text-red-600 hover:bg-red-100" : "text-gray-500"}`}
+                        disabled={isLoading}
+                      >
+                        <Image
+                          src="/Microphone.svg"
+                          alt="Microphone"
+                          width={18}
+                          height={18}
+                          className="h-[18px] w-[18px]"
+                        />
+                      </Button>
+                      <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                        <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap">
+                          Dictate
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative group">
+                      <Button
+                        onClick={() => {
+                          if (isSpeaking) {
+                            // Stop speech if already playing
+                            window.speechSynthesis.cancel()
+                            setIsSpeaking(false)
+                          } else if (messages.length > 0) {
+                            // Play the last assistant message
+                            const lastAssistantMessage = messages.filter(m => m.role === "assistant").pop()
+                            if (lastAssistantMessage) {
+                              speakMessage(lastAssistantMessage.content)
+                            }
+                          }
+                        }}
+                        variant="ghost"
+                        size="sm"
+                        className={`h-8 w-8 p-0 hover:bg-gray-100 text-gray-500 rounded-full ${isSpeaking ? "bg-blue-200 text-blue-600" : "bg-gray-200"
+                          } ${messages.length === 0 ? "opacity-50" : ""}`}
+                        disabled={messages.length === 0}
+                      >
+                        {isSpeaking ? (
+                          <div className="w-[18px] h-[18px] flex items-center justify-center">
+                            <div className="w-3 h-3 bg-current rounded-sm"></div>
+                          </div>
+                        ) : (
+                          <Image
+                            src="/Soundwave.svg"
+                            alt="Soundwave"
+                            width={18}
+                            height={18}
+                            className="h-[18px] w-[18px]"
+                          />
+                        )}
+                      </Button>
+                      <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                        <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap">
+                          {isSpeaking
+                            ? "Stop Speech"
+                            : messages.length > 0
+                              ? "Play Last Response"
+                              : "No messages to play"
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+
+                <div className="text-center mt-2">
+                  <p className="text-gray-400 text-sm">
+                    {isMobile ? "Vendo is not an autopilot. think critically." : "Vendo is a copilot, not an autopilot. think critically."}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </>
@@ -494,7 +572,15 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
                   </div>
                 </div>
                 <div className="relative group">
-                  <div className="bg-gray-200 rounded-full p-1">
+                  <Button
+                    onClick={() => {
+                      // On home screen, this could play a welcome message or be disabled
+                      // For now, it's just visual
+                    }}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-gray-100 text-gray-500 bg-gray-200 rounded-full"
+                  >
                     <Image
                       src="/Soundwave.svg"
                       alt="Soundwave"
@@ -502,10 +588,10 @@ export function CopilotChat({ chatId, initialPrompt }: CopilotChatProps) {
                       height={18}
                       className="h-[18px] w-[18px]"
                     />
-                  </div>
+                  </Button>
                   <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
                     <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap">
-                      Use Voice Mode
+                      Voice Mode
                     </div>
                   </div>
                 </div>

@@ -22,16 +22,12 @@ export default function PulseFeed() {
   const [updates] = useState<PulseUpdate[]>(pulseUpdates)
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gray-50">
+    <div className="flex-1 flex flex-col h-full">
       {/* Feed */}
       <div
-        className="flex-1 overflow-y-auto w-full mx-auto px-6 pt-20 pb-6"
-        style={{
-          marginLeft: "var(--sidebar-width, 0px)",
-          maxWidth: "calc(100vw - var(--sidebar-width, 0px))",
-        }}
+        className="flex-1 overflow-y-auto w-full mx-auto px-6 pt-20 pb-6 max-[750px]:px-2"
       >
-        <div className="space-y-6">
+        <div className="max-w-[1400px] mx-auto space-y-6">
           {updates.map((update) => (
             <div
               key={update.id}

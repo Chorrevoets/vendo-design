@@ -1,40 +1,65 @@
 "use client"
 
-import { SideMenu } from "@/components/side-menu"
+import DoubleLayeredMenu from "@/components/double-layered-menu"
+import HeaderFilter from "@/components/header-filter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function SourcesPage() {
     const router = useRouter()
     const [showInfoPanel, setShowInfoPanel] = useState(true)
+    const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
+
+    // Force narrow layout on this page
+    useEffect(() => {
+        setIsMainSidebarOpen(false)
+    }, [])
+
+    const secondaryPanelItems = [
+        {
+            name: "Sources",
+            href: "/data_management/sources",
+        },
+        {
+            name: "Data Dictionary",
+            href: "/data_management/metrics",
+        },
+        {
+            name: "Properties",
+            href: "/data_management/properties",
+        },
+        {
+            name: "Context",
+            href: "/data_management/context",
+        },
+        {
+            name: "Quality Control",
+            href: "/data_management/quality-control",
+        },
+    ]
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <SideMenu />
+            {/* Double Layered Menu Component */}
+            <DoubleLayeredMenu
+                isMainSidebarOpen={isMainSidebarOpen}
+                secondaryPanelItems={secondaryPanelItems}
+                panelTitle="Data Management"
+                activeItem="Sources"
+            />
+
+            <HeaderFilter showFilters={false} actionLabel="Add Source" forceNarrowLayout />
 
             <div
-                className="px-6 pt-20 pb-6 mx-auto"
+                className="px-6 pt-24 pb-6"
                 style={{
-                    marginLeft: "var(--sidebar-width, 0px)",
-                    maxWidth: "calc(100vw - var(--sidebar-width, 0px))"
+                    marginLeft: isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)",
+                    maxWidth: isMainSidebarOpen ? "calc(100vw - 340px - 220px)" : "calc(100vw - 64px - 220px)"
                 }}
             >
-                {/* Breadcrumb */}
-                <div className="mb-6">
-                    <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                        <button
-                            onClick={() => router.push('/data_management')}
-                            className="hover:text-gray-900 transition-colors"
-                        >
-                            Data Management
-                        </button>
-                        <ChevronRight className="h-4 w-4" />
-                        <span className="text-gray-900 font-medium">Sources</span>
-                    </nav>
-                </div>
 
                 {/* Page Content */}
                 <div className="space-y-6">
@@ -56,24 +81,6 @@ export default function SourcesPage() {
                                             <p className="text-gray-600">
                                                 Data Sources (sometimes called connections) are the integrations that let Vendo sync with your everyday platforms — like Google Ads, Facebook, Shopify, Mixpanel, and Google Analytics. By connecting them, you turn Vendo into your single source of truth.
                                             </p>
-                                        </div>
-
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Why Connect?</h3>
-                                            <ul className="space-y-4 text-gray-600">
-                                                <li>
-                                                    <div className="font-semibold text-gray-900 mb-1">One place for answers</div>
-                                                    <div>No more jumping between dashboards. Vendo brings your data together so you can see the full picture in seconds.</div>
-                                                </li>
-                                                <li>
-                                                    <div className="font-semibold text-gray-900 mb-1">No-code setup</div>
-                                                    <div>Connect tools in just a few clicks — no engineers needed.</div>
-                                                </li>
-                                                <li>
-                                                    <div className="font-semibold text-gray-900 mb-1">Always up to date</div>
-                                                    <div>Once connected, your data flows in automatically, keeping your insights fresh and reliable.</div>
-                                                </li>
-                                            </ul>
                                         </div>
                                     </div>
 
@@ -121,7 +128,7 @@ export default function SourcesPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push('/data_management/sources/settings')}>
+                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push("/data_management/sources/settings")}>
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-8 h-8 bg-gradient-to-br from-green-400 via-blue-500 to-yellow-400 rounded flex items-center justify-center">
@@ -138,7 +145,7 @@ export default function SourcesPage() {
                                             </td>
                                             <td className="py-3 px-4 text-gray-600">6 days</td>
                                         </tr>
-                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push('/data_management/sources/settings')}>
+                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push("/data_management/sources/settings")}>
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
@@ -155,40 +162,6 @@ export default function SourcesPage() {
                                             </td>
                                             <td className="py-3 px-4 text-gray-500">-</td>
                                         </tr>
-                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push('/data_management/sources/settings')}>
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 via-blue-500 to-yellow-400 rounded flex items-center justify-center">
-                                                        <span className="text-white font-bold text-xs">A</span>
-                                                    </div>
-                                                    <span className="font-medium text-gray-900 hidden sm:inline">Google Ads</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-gray-600">AHR Private Wealth (619-058-5400)</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                                    INCOMPLETE
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-gray-500">-</td>
-                                        </tr>
-                                        <tr className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => router.push('/data_management/sources/settings')}>
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 via-blue-500 to-yellow-400 rounded flex items-center justify-center">
-                                                        <span className="text-white font-bold text-xs">A</span>
-                                                    </div>
-                                                    <span className="font-medium text-gray-900 hidden sm:inline">Google Ads</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-gray-600">Google Ads Account (426-984-7174)</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                                    INCOMPLETE
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-gray-500">-</td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -198,4 +171,4 @@ export default function SourcesPage() {
             </div>
         </div>
     )
-} 
+}

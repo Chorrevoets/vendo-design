@@ -35,16 +35,18 @@ export default function ManageOrganizationPage() {
     // Set initial expanded panel based on screen size
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth >= 1024) { // lg breakpoint
-                setExpandedPanel('all') // Open all panels by default on desktop
+            if (typeof window !== 'undefined' && window.innerWidth >= 1024) { // lg breakpoint
+                setExpandedPanel('company') // Open only Company Information panel by default on desktop
             } else {
-                setExpandedPanel(null) // Keep closed on mobile
+                setExpandedPanel('company') // Open only Company Information panel by default on mobile
             }
         }
 
         handleResize() // Set initial state
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', handleResize)
+            return () => window.removeEventListener('resize', handleResize)
+        }
     }, [])
 
     const isPanelExpanded = (panelName: string) => {
@@ -65,7 +67,7 @@ export default function ManageOrganizationPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <SideMenu />
-            <Header title="Account Settings" showIcons={false}>
+            <Header title="Workspace Settings" showIcons={false} showBackground={false}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -91,7 +93,7 @@ export default function ManageOrganizationPage() {
             </Header>
 
             <div
-                className="px-6 pt-20 pb-6 mx-auto"
+                className="px-4 sm:px-6 pt-20 pb-6 mx-auto"
                 style={{
                     marginLeft: "var(--sidebar-width, 0px)",
                     maxWidth: "calc(100vw - var(--sidebar-width, 0px))"
@@ -106,7 +108,7 @@ export default function ManageOrganizationPage() {
                         <Card>
                             <CardHeader className="bg-gray-50">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold text-gray-900">Company Information</h2>
+                                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Company Information</h2>
                                 </div>
                             </CardHeader>
                             <CardContent>
@@ -114,7 +116,7 @@ export default function ManageOrganizationPage() {
                                     {/* Company Logo and Name Row */}
                                     <div className="flex items-center gap-6">
                                         {/* Company Logo */}
-                                        <div>
+                                        <div className="flex-shrink-0">
                                             <div className="flex items-center justify-center w-[70px] h-[70px] border-2 border-blue-200 rounded-full bg-white shadow-sm overflow-hidden">
                                                 <img
                                                     src="/petzyo-logo.png"
@@ -125,7 +127,7 @@ export default function ManageOrganizationPage() {
                                         </div>
 
                                         {/* Company Name */}
-                                        <div className="flex-1">
+                                        <div className="flex-1 min-w-0">
                                             <Label className="text-sm font-medium text-gray-700 block mb-1">Company Name</Label>
                                             <Input
                                                 value="Petzyo"
@@ -192,7 +194,7 @@ export default function ManageOrganizationPage() {
                         <Card>
                             <CardHeader className="bg-gray-50">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold text-gray-900">Account Details</h2>
+                                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Account Details</h2>
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-6">
@@ -252,11 +254,11 @@ export default function ManageOrganizationPage() {
                         {/* Company Information Card */}
                         <Card>
                             <CardHeader
-                                className="cursor-pointer hover:bg-gray-50 transition-colors"
+                                className="cursor-pointer hover:bg-gray-50 transition-colors py-3 sm:py-4"
                                 onClick={() => togglePanel('company')}
                             >
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold text-gray-900">Company Information</h2>
+                                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Company Information</h2>
                                     <ChevronDown
                                         className={`h-5 w-5 transition-transform ${expandedPanel === 'company' ? 'rotate-180' : ''}`}
                                     />
@@ -265,10 +267,10 @@ export default function ManageOrganizationPage() {
                             {expandedPanel === 'company' && (
                                 <CardContent>
                                     <div className="space-y-6">
-                                        {/* Company Logo and Name Row */}
-                                        <div className="flex items-center gap-6">
+                                        {/* Company Logo and Name Row - Mobile Optimized */}
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                                             {/* Company Logo */}
-                                            <div>
+                                            <div className="flex-shrink-0">
                                                 <div className="flex items-center justify-center w-[70px] h-[70px] border-2 border-blue-200 rounded-full bg-white shadow-sm overflow-hidden">
                                                     <img
                                                         src="/petzyo-logo.png"
@@ -279,7 +281,7 @@ export default function ManageOrganizationPage() {
                                             </div>
 
                                             {/* Company Name */}
-                                            <div className="flex-1">
+                                            <div className="flex-1 min-w-0 w-full sm:w-auto">
                                                 <Label className="text-sm font-medium text-gray-700 block mb-1">Company Name</Label>
                                                 <Input
                                                     value="Petzyo"
@@ -335,7 +337,7 @@ export default function ManageOrganizationPage() {
 
                                     {/* Save Button */}
                                     <div className="flex justify-end mt-6">
-                                        <Button className="bg-gray-900 text-white hover:bg-gray-800">
+                                        <Button className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto">
                                             Save
                                         </Button>
                                     </div>
@@ -346,11 +348,11 @@ export default function ManageOrganizationPage() {
                         {/* Account Details Card */}
                         <Card>
                             <CardHeader
-                                className="cursor-pointer hover:bg-gray-50 transition-colors"
+                                className="cursor-pointer hover:bg-gray-50 transition-colors py-3 sm:py-4"
                                 onClick={() => togglePanel('account')}
                             >
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold text-gray-900">Account Details</h2>
+                                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Account Details</h2>
                                     <ChevronDown
                                         className={`h-5 w-5 transition-transform ${expandedPanel === 'account' ? 'rotate-180' : ''}`}
                                     />
@@ -359,8 +361,8 @@ export default function ManageOrganizationPage() {
                             {expandedPanel === 'account' && (
                                 <CardContent className="space-y-6">
                                     {/* Account ID */}
-                                    <div className="flex items-center py-4 border-b border-gray-100">
-                                        <div className="w-32">
+                                    <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-3">
+                                        <div className="w-full sm:w-32">
                                             <Label className="text-sm font-medium text-gray-700">Account ID</Label>
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -378,12 +380,12 @@ export default function ManageOrganizationPage() {
                                     </div>
 
                                     {/* Dataset ID */}
-                                    <div className="flex items-center py-4 border-b border-gray-100">
-                                        <div className="w-32 min-w-0">
+                                    <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-3">
+                                        <div className="w-full sm:w-32 min-w-0">
                                             <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">Dataset ID</Label>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-lg font-semibold text-gray-900 truncate max-w-[300px]" title="vendoai_data_s00IGNsLa6zdswBy1A7X">vendoai_data_s00IGNsLa6zdswBy1A7X</span>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <span className="text-lg font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-[300px]" title="vendoai_data_s00IGNsLa6zdswBy1A7X">vendoai_data_s00IGNsLa6zdswBy1A7X</span>
                                             <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 flex-shrink-0">
                                                 <Image
                                                     src="/Copy.svg"
@@ -397,8 +399,8 @@ export default function ManageOrganizationPage() {
                                     </div>
 
                                     {/* Created At */}
-                                    <div className="flex items-center py-4">
-                                        <div className="w-32">
+                                    <div className="flex flex-col sm:flex-row sm:items-center py-4 gap-2 sm:gap-3">
+                                        <div className="w-full sm:w-32">
                                             <Label className="text-sm font-medium text-gray-700">Created At</Label>
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -412,180 +414,190 @@ export default function ManageOrganizationPage() {
 
                     {/* Access Management Card - Full Width on Desktop */}
                     <Card>
-                        <CardHeader className="bg-gray-50">
+                        <CardHeader className="bg-gray-50 lg:bg-gray-50 cursor-pointer hover:bg-gray-50 transition-colors py-3 sm:py-4" onClick={() => togglePanel('access')}>
                             <div className="flex items-center justify-between">
-                                <h2 className="text-xl font-semibold text-gray-900">Access Management</h2>
+                                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Access Management</h2>
+                                <ChevronDown
+                                    className={`h-5 w-5 transition-transform lg:hidden ${expandedPanel === 'access' ? 'rotate-180' : ''}`}
+                                />
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            {/* Tabs */}
-                            <div className="flex space-x-1 mb-6">
-                                <button className="px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-md">
-                                    Active Members (4)
-                                </button>
-                                <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
-                                    Invitations (0)
-                                </button>
-                            </div>
+                        {(expandedPanel === 'access' || (typeof window !== 'undefined' && window.innerWidth >= 1024)) && (
+                            <CardContent>
+                                {/* Tabs */}
+                                <div className="flex space-x-1 mb-4 overflow-x-auto pt-2">
+                                    <button className="px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-md whitespace-nowrap">
+                                        Active Members (4)
+                                    </button>
+                                    <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 whitespace-nowrap">
+                                        Invitations (0)
+                                    </button>
+                                </div>
 
-                            {/* Team Members Table */}
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-gray-200">
-                                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Name</th>
-                                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Email</th>
-                                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Organization Role</th>
-                                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Team</th>
-                                            <th className="text-left py-3 px-4 text-sm font-medium text-gray-700"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {/* Yalcin Kaya */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center">
-                                                    <Avatar className="h-8 w-8 mr-3">
-                                                        <AvatarFallback className="bg-blue-600 text-white text-xs">YK</AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="text-sm font-medium text-gray-900">Yalcin Kaya</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">yalcin@growthanalyticsmarketing.com</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                                    Member
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">General</td>
-                                            <td className="py-3 px-4">
-                                                <button className="text-red-600 hover:text-red-800 text-sm font-medium">
-                                                    Remove
-                                                </button>
-                                            </td>
-                                        </tr>
+                                {/* Team Members Table - Mobile Responsive */}
+                                <div className="overflow-x-auto">
+                                    <table className="w-full min-w-[600px]">
+                                        <thead>
+                                            <tr className="border-b border-gray-200">
+                                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Name</th>
+                                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Email</th>
+                                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Organization Role</th>
+                                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Team</th>
+                                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {/* Yalcin Kaya */}
+                                            <tr className="hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center">
+                                                        <Avatar className="h-8 w-8 mr-3">
+                                                            <AvatarFallback className="bg-blue-600 text-white text-xs">YK</AvatarFallback>
+                                                        </Avatar>
+                                                        <span className="text-sm font-medium text-gray-900">Yalcin Kaya</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">yalcin@growthanalyticsmarketing.com</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                        Member
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">General</td>
+                                                <td className="py-3 px-4">
+                                                    <button className="text-red-600 hover:text-red-800 text-sm font-medium">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
 
-                                        {/* GAM */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center">
-                                                    <Avatar className="h-8 w-8 mr-3">
-                                                        <AvatarFallback className="bg-blue-600 text-white text-xs">GA</AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="text-sm font-medium text-gray-900">GAM</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">analytics@growthanalyticsmarketing.com</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                                    Member
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">General</td>
-                                            <td className="py-3 px-4">
-                                                <button className="text-red-600 hover:text-red-800 text-sm font-medium">
-                                                    Remove
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            {/* GAM */}
+                                            <tr className="hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center">
+                                                        <Avatar className="h-8 w-8 mr-3">
+                                                            <AvatarFallback className="bg-blue-600 text-white text-xs">GA</AvatarFallback>
+                                                        </Avatar>
+                                                        <span className="text-sm font-medium text-gray-900">GAM</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">analytics@growthanalyticsmarketing.com</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                        Member
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">General</td>
+                                                <td className="py-3 px-4">
+                                                    <button className="text-red-600 hover:text-red-800 text-sm font-medium">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
 
-                                        {/* Adnan Hidayat */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center">
-                                                    <Avatar className="h-8 w-8 mr-3">
-                                                        <AvatarFallback className="bg-blue-600 text-white text-xs">AH</AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="text-sm font-medium text-gray-900">Adnan hidayat</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">komputok@gmail.com</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                                    Member
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">General</td>
-                                            <td className="py-3 px-4">
-                                                <button className="text-red-600 hover:text-red-800 text-sm font-medium">
-                                                    Remove
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            {/* Adnan Hidayat */}
+                                            <tr className="hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center">
+                                                        <Avatar className="h-8 w-8 mr-3">
+                                                            <AvatarFallback className="bg-blue-600 text-white text-xs">AH</AvatarFallback>
+                                                        </Avatar>
+                                                        <span className="text-sm font-medium text-gray-900">Adnan hidayat</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">komputok@gmail.com</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                        Member
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">General</td>
+                                                <td className="py-3 px-4">
+                                                    <button className="text-red-600 hover:text-red-800 text-sm font-medium">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
 
-                                        {/* Coen Horrevoets */}
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="py-3 px-4">
-                                                <div className="flex items-center">
-                                                    <Avatar className="h-8 w-8 mr-3">
-                                                        <AvatarFallback className="bg-blue-600 text-white text-xs">CH</AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="text-sm font-medium text-gray-900">Coen Horrevoets</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">c.horrevoets@gmail.com</td>
-                                            <td className="py-3 px-4">
-                                                <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                                    Admin
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-4 text-sm text-gray-600">General</td>
-                                            <td className="py-3 px-4">
-                                                {/* No remove button for admin */}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                            {/* Coen Horrevoets */}
+                                            <tr className="hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <div className="flex items-center">
+                                                        <Avatar className="h-8 w-8 mr-3">
+                                                            <AvatarFallback className="bg-blue-600 text-white text-xs">CH</AvatarFallback>
+                                                        </Avatar>
+                                                        <span className="text-sm font-medium text-gray-900">Coen Horrevoets</span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">c.horrevoets@gmail.com</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                        Admin
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4 text-sm text-gray-600">General</td>
+                                                <td className="py-3 px-4">
+                                                    {/* No remove button for admin */}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                            {/* Invite Member Button */}
-                            <div className="flex justify-end mt-6 pt-4 border-t border-gray-100">
-                                <Button className="bg-gray-900 text-white hover:bg-gray-800">
-                                    Invite Member
-                                </Button>
-                            </div>
-                        </CardContent>
+                                {/* Invite Member Button */}
+                                <div className="flex justify-end mt-6 pt-4 border-t border-gray-100">
+                                    <Button className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto">
+                                        Invite Member
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        )}
                     </Card>
 
                     {/* Billing & Subscription Card - Full Width on Desktop */}
                     <Card>
-                        <CardHeader className="bg-gray-50">
+                        <CardHeader className="bg-gray-50 lg:bg-gray-50 cursor-pointer hover:bg-gray-50 transition-colors py-3 sm:py-4" onClick={() => togglePanel('billing')}>
                             <div className="flex items-center justify-between">
-                                <h2 className="text-xl font-semibold text-gray-900">Billing & Subscription</h2>
+                                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Billing & Subscription</h2>
+                                <ChevronDown
+                                    className={`h-5 w-5 transition-transform lg:hidden ${expandedPanel === 'billing' ? 'rotate-180' : ''}`}
+                                />
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Plus Plan</h3>
-                                    <div className="space-y-3">
-                                        <Button className="bg-gray-900 text-white hover:bg-gray-800">
-                                            Update Subscription
-                                        </Button>
-                                        <div>
-                                            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                                Cancel Subscription
-                                            </button>
+                        {(expandedPanel === 'billing' || (typeof window !== 'undefined' && window.innerWidth >= 1024)) && (
+                            <CardContent>
+                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                                    <div className="flex-1">
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-4">Plus Plan</h3>
+                                        <div className="space-y-3">
+                                            <Button className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto">
+                                                Update Subscription
+                                            </Button>
+                                            <div>
+                                                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                    Cancel Subscription
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="bg-gray-50 rounded-lg p-4 w-64">
-                                    <div className="text-xs text-gray-500 mb-2">20,000 CREDIT LIMIT</div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
-                                        <div
-                                            className="bg-green-500 h-2 rounded-full"
-                                            style={{ width: '5%' }}
-                                        ></div>
+                                    <div className="bg-gray-50 rounded-lg p-4 w-full lg:w-64">
+                                        <div className="text-xs text-gray-500 mb-2">20,000 CREDIT LIMIT</div>
+                                        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                                            <div
+                                                className="bg-green-500 h-2 rounded-full"
+                                                style={{ width: '5%' }}
+                                            ></div>
+                                        </div>
+                                        <div className="flex items-baseline justify-between mb-2">
+                                            <span className="text-2xl font-bold text-gray-900">477 credits</span>
+                                            <span className="text-lg font-semibold text-gray-900">5%</span>
+                                        </div>
+                                        <div className="text-xs text-gray-500">Period ends July 27, 2025</div>
                                     </div>
-                                    <div className="flex items-baseline justify-between mb-2">
-                                        <span className="text-2xl font-bold text-gray-900">477 credits</span>
-                                        <span className="text-lg font-semibold text-gray-900">5%</span>
-                                    </div>
-                                    <div className="text-xs text-gray-500">Period ends July 27, 2025</div>
                                 </div>
-                            </div>
-                        </CardContent>
+                            </CardContent>
+                        )}
                     </Card>
                 </div>
             </div>

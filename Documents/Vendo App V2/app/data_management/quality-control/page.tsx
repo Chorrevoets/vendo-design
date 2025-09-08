@@ -1,41 +1,64 @@
 "use client"
 
-import { SideMenu } from "@/components/side-menu"
+import DoubleLayeredMenu from "@/components/double-layered-menu"
+import HeaderFilter from "@/components/header-filter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus, ChevronRight } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function QualityControlPage() {
     const router = useRouter()
     const [showInfoPanel, setShowInfoPanel] = useState(true)
+    const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
+
+    // Force narrow layout on this page
+    useEffect(() => {
+        setIsMainSidebarOpen(false)
+    }, [])
+
+    const secondaryPanelItems = [
+        {
+            name: "Sources",
+            href: "/data_management/sources",
+        },
+        {
+            name: "Data Dictionary",
+            href: "/data_management/metrics",
+        },
+        {
+            name: "Properties",
+            href: "/data_management/properties",
+        },
+        {
+            name: "Context",
+            href: "/data_management/context",
+        },
+        {
+            name: "Quality Control",
+            href: "/data_management/quality-control",
+        },
+    ]
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <SideMenu />
+            <DoubleLayeredMenu
+                isMainSidebarOpen={isMainSidebarOpen}
+                secondaryPanelItems={secondaryPanelItems}
+                panelTitle="Data Management"
+                activeItem="Quality Control"
+            />
+
+            <HeaderFilter showFilters={false} actionLabel="Add Check" title="Quality Control" forceNarrowLayout />
 
             <div
-                className="px-6 pt-20 pb-6 mx-auto"
+                className="px-6 pt-24 pb-6 mx-auto"
                 style={{
-                    marginLeft: "var(--sidebar-width, 0px)",
-                    maxWidth: "calc(100vw - var(--sidebar-width, 0px))"
+                    marginLeft: isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)",
+                    maxWidth: isMainSidebarOpen ? "calc(100vw - 340px - 220px)" : "calc(100vw - 64px - 220px)"
                 }}
             >
-                {/* Breadcrumb */}
-                <div className="mb-6">
-                    <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                        <button
-                            onClick={() => router.push('/data_management')}
-                            className="hover:text-gray-900 transition-colors"
-                        >
-                            Data Management
-                        </button>
-                        <ChevronRight className="h-4 w-4" />
-                        <span className="text-gray-900 font-medium">Quality Control</span>
-                    </nav>
-                </div>
-
                 {/* Page Content */}
                 <div className="space-y-6">
                     {showInfoPanel && (

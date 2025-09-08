@@ -1,13 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { SideMenu } from "@/components/side-menu"
-import { Header } from "@/components/header"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import SingleLayerMenu from "@/components/single-layer-menu"
+import HeaderFilter from "@/components/header-filter"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ProfileSettingsPage() {
     const [profileData, setProfileData] = useState({
@@ -21,19 +20,20 @@ export default function ProfileSettingsPage() {
 
     const handleUpdateProfile = () => {
         console.log("Profile updated:", profileData)
-        // Here you would typically make an API call to update the profile
     }
+
+    const [menuState, setMenuState] = useState<"open" | "hidden">("open")
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <SideMenu />
-            <Header title="Profile Settings" mobileTitle="Settings" />
+            <SingleLayerMenu forceState={menuState} onToggleState={(next) => setMenuState(next === "narrow" ? "open" : (next as "open" | "hidden"))} />
+            <HeaderFilter showFilters={false} title="Profile" showActionButton={false} showMenu={false} />
 
             <div
                 className="px-6 pt-20 pb-6 mx-auto"
                 style={{
-                    marginLeft: "var(--sidebar-width, 0px)",
-                    maxWidth: "calc(100vw - var(--sidebar-width, 0px))"
+                    marginLeft: "var(--content-left, var(--sidebar-width, 0px))",
+                    maxWidth: "calc(100vw - var(--content-left, var(--sidebar-width, 0px)))"
                 }}
             >
                 <div className="max-w-2xl mx-auto">

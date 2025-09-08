@@ -36,16 +36,16 @@ export default function SubScreensNavPage() {
                 <Image
                   src="/vendo-logo-mark.png"
                   alt="Vendo"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 block min-[750px]:hidden"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 block min-[750px]:hidden"
                 />
                 <Image
-                  src="/vendo-logo-wordmark.png"
+                  src="/vendo-logo-mark.png"
                   alt="Vendo"
-                  width={80}
-                  height={20}
-                  className="h-5 w-auto hidden min-[750px]:block"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 hidden min-[750px]:block"
                 />
               </div>
             </div>

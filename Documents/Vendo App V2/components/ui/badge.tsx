@@ -15,12 +15,13 @@ const badgeVariants = cva(
         destructive:
           "border border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
         outline: "text-foreground border focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-        statusGreen: "bg-green-700 text-white hover:bg-green-800",
-        statusOrange: "bg-orange-700 text-white hover:bg-orange-800",
-        statusRed: "bg-red-700 text-white hover:bg-red-800",
-        statusGray: "bg-gray-700 text-white hover:bg-gray-800",
-        statusBlue: "bg-blue-700 text-white hover:bg-blue-800",
-        statusPurple: "bg-purple-700 text-white hover:bg-purple-800",
+        statusGreen: "bg-green-600 text-white hover:bg-green-700",
+        statusOrange: "bg-orange-600 text-white hover:bg-orange-700",
+        statusRed: "bg-red-600 text-white hover:bg-red-700",
+        statusGray: "bg-gray-600 text-white hover:bg-gray-700",
+        statusBlue: "bg-blue-600 text-white hover:bg-blue-700",
+        statusPurple: "bg-purple-600 text-white hover:bg-purple-700",
+        statusBlack: "bg-black text-white hover:bg-black/90",
       },
     },
     defaultVariants: {
@@ -29,7 +30,7 @@ const badgeVariants = cva(
   },
 )
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> { }
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />
