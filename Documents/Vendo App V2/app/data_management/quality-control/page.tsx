@@ -24,12 +24,20 @@ export default function QualityControlPage() {
             href: "/data_management/sources",
         },
         {
-            name: "Data Dictionary",
+            name: "Metrics",
             href: "/data_management/metrics",
+        },
+        {
+            name: "Events",
+            href: "/data_management/event",
         },
         {
             name: "Properties",
             href: "/data_management/properties",
+        },
+        {
+            name: "Grouping",
+            href: "/data_management/channel-grouping",
         },
         {
             name: "Context",

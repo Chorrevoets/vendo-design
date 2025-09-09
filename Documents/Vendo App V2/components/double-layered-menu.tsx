@@ -7,7 +7,7 @@ import { ChevronRight, Settings, BarChart3, Plus } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { LogOut } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SearchChatsModal } from "@/components/search-chats-modal"
 
 interface DoubleLayeredMenuProps {
@@ -31,6 +31,11 @@ export default function DoubleLayeredMenu({
   const router = useRouter()
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [isSecondaryCollapsed, setIsSecondaryCollapsed] = useState(false)
+
+  useEffect(() => {
+    const width = isSecondaryCollapsed ? 100 : 230
+    document.documentElement.style.setProperty("--secondary-panel-width", `${width}px`)
+  }, [isSecondaryCollapsed])
 
   const narrowMenuItems = [
     {
@@ -91,111 +96,113 @@ export default function DoubleLayeredMenu({
           </div>
 
           {/* Menu items */}
-          <div className="flex-1 w-full space-y-2 mt-1">
-            {narrowMenuItems.map((item) => (
-              item.name === "Petzyo" ? (
-                <div key={item.name} className="relative group">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className="flex items-center rounded-lg hover:bg-gray-100 transition-colors h-10 w-10 justify-center mx-3 relative"
-                        aria-label={item.name}
-                      >
-                        <Image
-                          src={item.icon}
-                          alt={item.name}
-                          width={30}
-                          height={30}
-                          className="rounded-full"
-                        />
-                        {item.hasNotification && (
-                          <div className={`pointer-events-none absolute top-0 right-0 w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
-                        )}
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-80">
-                      <div className="space-y-3">
-                        <DropdownMenuItem onClick={() => router.push("/workspace_settings/profile")} className="p-0">
-                          <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
-                            <div className="relative">
-                              <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
-                                <Settings className="h-[18px] w-[18px]" />
+          {!isSecondaryCollapsed && (
+            <div className="flex-1 w-full space-y-2 mt-1">
+              {narrowMenuItems.map((item) => (
+                item.name === "Petzyo" ? (
+                  <div key={item.name} className="relative group">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="flex items-center rounded-lg hover:bg-gray-100 transition-colors h-10 w-10 justify-center mx-3 relative"
+                          aria-label={item.name}
+                        >
+                          <Image
+                            src={item.icon}
+                            alt={item.name}
+                            width={30}
+                            height={30}
+                            className="rounded-full"
+                          />
+                          {item.hasNotification && (
+                            <div className={`pointer-events-none absolute top-0 right-0 w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-80">
+                        <div className="space-y-3">
+                          <DropdownMenuItem onClick={() => router.push("/workspace_settings/profile")} className="p-0">
+                            <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                              <div className="relative">
+                                <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                  <Settings className="h-[18px] w-[18px]" />
+                                </div>
                               </div>
+                              <span className="text-sm font-medium text-gray-900 ml-[3px]">Workspace Settings</span>
                             </div>
-                            <span className="text-sm font-medium text-gray-900 ml-[3px]">Workspace Settings</span>
-                          </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => router.push("/data_management/sources")} className="p-0">
-                          <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
-                            <div className="relative">
-                              <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
-                                <BarChart3 className="h-[18px] w-[18px]" />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push("/data_management/sources")} className="p-0">
+                            <div className="relative flex items-center gap-1 hover:bg-gray-50 rounded-md h-[36px] px-2 transition-colors bg-transparent border-none cursor-pointer text-left w-full ml-[-10px]">
+                              <div className="relative">
+                                <div className="bg-transparent text-black h-9 w-9 gap-2 justify-center rounded-md flex items-center ml-0">
+                                  <BarChart3 className="h-[18px] w-[18px]" />
+                                </div>
                               </div>
+                              <span className="text-sm font-medium text-gray-900 ml-[3px]">Data Management</span>
                             </div>
-                            <span className="text-sm font-medium text-gray-900 ml-[3px]">Data Management</span>
-                          </div>
-                        </DropdownMenuItem>
-                      </div>
-                      <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
-                        <div className="w-full">
-                          <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">Switch Workspace</div>
-                          <div className="px-2 py-1">
-                            <div className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer" onClick={() => console.log("Switch to TechCorp")}>
-                              <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
-                                <div className="text-white text-xs font-bold">TE</div>
-                              </div>
-                              <div className="flex-1">
-                                <div className="text-sm font-medium text-gray-900">TechCorp</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer" onClick={() => console.log("Switch to StartupXYZ")}>
-                              <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
-                                <div className="text-white text-xs font-bold">ST</div>
-                              </div>
-                              <div className="flex-1">
-                                <div className="text-sm font-medium text-gray-900">StartupXYZ</div>
-                              </div>
-                            </div>
-                          </div>
+                          </DropdownMenuItem>
                         </div>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-[999999]">
-                    {item.name}
+                        <DropdownMenuItem className="p-0 hover:bg-transparent focus:bg-transparent mt-[14px]">
+                          <div className="w-full">
+                            <div className="px-2 py-1.5 text-sm font-medium text-gray-700 flex items-center">Switch Workspace</div>
+                            <div className="px-2 py-1">
+                              <div className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer" onClick={() => console.log("Switch to TechCorp")}>
+                                <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                  <div className="text-white text-xs font-bold">TE</div>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-sm font-medium text-gray-900">TechCorp</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3 px-2 py-2 rounded-md hover:bg-gray-50 cursor-pointer" onClick={() => console.log("Switch to StartupXYZ")}>
+                                <div className="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-full bg-gray-600">
+                                  <div className="text-white text-xs font-bold">ST</div>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="text-sm font-medium text-gray-900">StartupXYZ</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-[999999]">
+                      {item.name}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div key={item.name} className="relative group">
-                  <button
-                    onClick={() => {
-                      if (item.name === "Search Chats") {
-                        setIsSearchModalOpen(true)
-                      } else {
-                        router.push(item.href)
-                      }
-                    }}
-                    className="flex items-center rounded-lg hover:bg-gray-100 transition-colors h-10 w-10 justify-center mx-3 relative"
-                    aria-label={item.name}
-                  >
-                    <Image
-                      src={item.icon}
-                      alt={item.name}
-                      width={item.isAvatar ? 30 : 20}
-                      height={item.isAvatar ? 30 : 20}
-                      className={item.isAvatar ? "rounded-full" : ""}
-                    />
-                    {item.hasNotification && (
-                      <div className={`pointer-events-none absolute top-0 right-0 w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
-                    )}
-                  </button>
-                  <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-[999999]">
-                    {item.name}
+                ) : (
+                  <div key={item.name} className="relative group">
+                    <button
+                      onClick={() => {
+                        if (item.name === "Search Chats") {
+                          setIsSearchModalOpen(true)
+                        } else {
+                          router.push(item.href)
+                        }
+                      }}
+                      className="flex items-center rounded-lg hover:bg-gray-100 transition-colors h-10 w-10 justify-center mx-3 relative"
+                      aria-label={item.name}
+                    >
+                      <Image
+                        src={item.icon}
+                        alt={item.name}
+                        width={item.isAvatar ? 30 : 20}
+                        height={item.isAvatar ? 30 : 20}
+                        className={item.isAvatar ? "rounded-full" : ""}
+                      />
+                      {item.hasNotification && (
+                        <div className={`pointer-events-none absolute top-0 right-0 w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
+                      )}
+                    </button>
+                    <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-[999999]">
+                      {item.name}
+                    </div>
                   </div>
-                </div>
-              )
-            ))}
-          </div>
+                )
+              ))}
+            </div>
+          )}
 
           {/* Bottom element */}
           <div className="w-full mt-auto pb-[2px]">
@@ -244,15 +251,15 @@ export default function DoubleLayeredMenu({
 
       {/* Secondary Panel - always visible, adjust position based on sidebar state */}
       <div
-        className="fixed top-0 h-full w-[230px] bg-white border-r border-gray-200 flex flex-col z-[10002]"
+        className={`${isSecondaryCollapsed ? "w-[100px] h-[61px] border-b" : "w-[230px] h-full"} fixed top-0 bg-white border-r border-gray-200 flex flex-col z-[10002]`}
         style={{
           left: isMainSidebarOpen ? "340px" : "64px"
         }}
       >
         <div className="pl-6 pr-2 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">{panelTitle}</h2>
+          <h2 className={`text-lg font-semibold text-gray-900 ${isSecondaryCollapsed ? "sr-only" : ""}`}>{panelTitle}</h2>
           <div className="ml-auto flex items-center gap-2">
-            {panelActions ? <div>{panelActions}</div> : null}
+            {panelActions && !isSecondaryCollapsed ? <div>{panelActions}</div> : null}
             <button
               className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-gray-100"
               aria-label={isSecondaryCollapsed ? "Open side menu" : "Close side menu"}
@@ -262,7 +269,7 @@ export default function DoubleLayeredMenu({
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-[18px] w-[18px] transition-transform scale-x-[-1] ${isSecondaryCollapsed ? "" : ""}`}
+                className={`h-[18px] w-[18px] transition-transform scale-x-[-1]`}
               >
                 <path d="M20 7 4 7" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
                 <path d="M15 12 4 12" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
