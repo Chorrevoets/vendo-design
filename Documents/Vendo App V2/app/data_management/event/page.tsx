@@ -2,9 +2,9 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import EventCard from "@/components/event-card"
+import TopDashboard from "@/components/top-dashboard"
 import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState, useEffect, useMemo } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
@@ -152,21 +152,7 @@ export default function EventsPage() {
                 }}
             >
                 <div className="space-y-6">
-                    {/* Placeholder Dashboards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[0, 1, 2].map(i => (
-                            <Card key={i} className="bg-white">
-                                <CardHeader>
-                                    <CardTitle className="text-base font-semibold text-gray-900">Placeholder Dashboard</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-gray-600 text-sm">
-                                        This is a placeholder for a small dashboard widget.
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                    <TopDashboard />
 
                     {/* Events List */}
                     <div className="space-y-4">
