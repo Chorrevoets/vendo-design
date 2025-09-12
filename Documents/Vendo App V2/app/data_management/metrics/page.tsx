@@ -1,7 +1,8 @@
 "use client"
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
-import { MetricCard, type Metric } from "@/components/metric-card"
+import EventCard from "@/components/event-card"
+import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo } from "react"
 
@@ -149,7 +150,7 @@ export default function MetricsPage() {
             >
                 <div className="space-y-4">
                     {filtered.map((m, idx) => (
-                        <MetricCard key={idx} metric={m} />
+                        <EventCard key={idx} metric={m} />
                     ))}
                 </div>
             </div>

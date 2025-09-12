@@ -1,7 +1,8 @@
 "use client"
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
-import { MetricCard, type Metric } from "@/components/metric-card"
+import EventCard from "@/components/event-card"
+import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState, useEffect, useMemo } from "react"
@@ -170,16 +171,14 @@ export default function EventsPage() {
                     {/* Events List */}
                     <div className="space-y-4">
                         {filtered.map((m, idx) => (
-                            <div
+                            <EventCard
                                 key={idx}
-                                className="cursor-pointer"
+                                metric={m}
                                 onClick={() => {
                                     setSelectedMetric(m)
                                     setIsDialogOpen(true)
                                 }}
-                            >
-                                <MetricCard metric={m} />
-                            </div>
+                            />
                         ))}
                     </div>
                 </div>
