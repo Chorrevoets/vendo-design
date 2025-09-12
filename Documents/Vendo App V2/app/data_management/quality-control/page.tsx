@@ -14,7 +14,7 @@ export default function QualityControlPage() {
 
     const secondaryPanelItems = [
         {
-            name: "Data Quality",
+            name: "Quality",
             href: "/data_management/quality-control",
         },
         {
@@ -34,11 +34,7 @@ export default function QualityControlPage() {
             href: "/data_management/customer",
         },
         {
-            name: "Ad Properties",
-            href: "/data_management/properties",
-        },
-        {
-            name: "Grouping",
+            name: "Channel Grouping",
             href: "/data_management/channel-grouping",
         },
         {
@@ -52,11 +48,11 @@ export default function QualityControlPage() {
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
-                panelTitle="Data Management"
-                activeItem="Data Quality"
+                panelTitle="Data"
+                activeItem="Quality"
             />
 
-            <HeaderFilter showFilters={false} title="Data Quality" forceNarrowLayout />
+            <HeaderFilter showFilters={false} title="Quality" forceNarrowLayout />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"

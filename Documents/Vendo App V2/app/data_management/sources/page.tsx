@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, ChevronRight, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
+import TopDashboard from "@/components/top-dashboard"
 
 export default function SourcesPage() {
     const router = useRouter()
@@ -22,7 +23,7 @@ export default function SourcesPage() {
 
     const secondaryPanelItems = [
         {
-            name: "Data Quality",
+            name: "Quality",
             href: "/data_management/quality-control",
         },
         {
@@ -42,11 +43,7 @@ export default function SourcesPage() {
             href: "/data_management/customer",
         },
         {
-            name: "Ad Properties",
-            href: "/data_management/properties",
-        },
-        {
-            name: "Grouping",
+            name: "Channel Grouping",
             href: "/data_management/channel-grouping",
         },
         {
@@ -73,7 +70,7 @@ export default function SourcesPage() {
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
-                panelTitle="Data Management"
+                panelTitle="Data"
                 activeItem="Sources"
             />
 
@@ -113,13 +110,8 @@ export default function SourcesPage() {
 
                                         {/* Image Placeholder */}
                                         <div className="space-y-4">
-                                            <div className="bg-gray-100 rounded-lg p-8 flex items-center justify-center">
-                                                <div className="text-center">
-                                                    <div className="w-16 h-16 bg-gray-300 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                                                        <span className="text-gray-500 text-2xl">📊</span>
-                                                    </div>
-                                                    <p className="text-gray-500 text-sm">Info graphic comes here</p>
-                                                </div>
+                                            <div className="bg-gray-100 rounded-lg p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+                                                <img src="/Vendo Data Monkey.png" alt="Vendo Data Monkey" className="w-full h-auto rounded-md" />
                                             </div>
                                         </div>
                                     </div>
@@ -127,6 +119,11 @@ export default function SourcesPage() {
                             </Card>
                         </div>
                     )}
+
+                    {/* Dashboard */}
+                    <div className="px-4 sm:px-6 lg:px-8">
+                        <TopDashboard />
+                    </div>
 
                     {/* Data Sources Table - Simple in card */}
                     <div className="px-4 sm:px-6 lg:px-8">
@@ -178,13 +175,14 @@ export default function SourcesPage() {
                                                         </td>
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{source.lastRun}</td>
                                                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                            <a
-                                                                href="#"
-                                                                onClick={(e) => { e.preventDefault(); handleRowClick(source) }}
-                                                                className="text-indigo-600 hover:text-indigo-900"
+                                                            <button
+                                                                type="button"
+                                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRowClick(source) }}
+                                                                className="inline-flex items-center text-gray-500 hover:text-gray-700"
+                                                                aria-label={`Open ${source.name}`}
                                                             >
-                                                                Edit<span className="sr-only">, {source.name}</span>
-                                                            </a>
+                                                                <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 ))}

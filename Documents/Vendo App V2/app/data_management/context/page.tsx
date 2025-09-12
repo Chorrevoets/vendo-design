@@ -20,7 +20,7 @@ export default function ContextPage() {
 
     const secondaryPanelItems = [
         {
-            name: "Data Quality",
+            name: "Quality",
             href: "/data_management/quality-control",
         },
         {
@@ -40,11 +40,7 @@ export default function ContextPage() {
             href: "/data_management/customer",
         },
         {
-            name: "Ad Properties",
-            href: "/data_management/properties",
-        },
-        {
-            name: "Grouping",
+            name: "Channel Grouping",
             href: "/data_management/channel-grouping",
         },
         {
@@ -59,7 +55,7 @@ export default function ContextPage() {
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
-                panelTitle="Data Management"
+                panelTitle="Data"
                 activeItem="Context"
             />
 

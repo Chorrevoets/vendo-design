@@ -7,6 +7,7 @@ type Stat = {
     name: string
     stat: string
     previousStat: string
+    previousLabel?: string
     change: string
     changeType: "increase" | "decrease"
 }
@@ -26,10 +27,10 @@ export type TopDashboardProps = {
     stats?: Stat[]
 }
 
-export default function TopDashboard({ title = "Last 30 days", stats = defaultStats }: TopDashboardProps) {
+export default function TopDashboard({ title, stats = defaultStats }: TopDashboardProps) {
     return (
         <div>
-            <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+            {title ? <h3 className="text-base font-semibold text-gray-900">{title}</h3> : null}
             <dl className="mt-5 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
                 {stats.map((item) => (
                     <div key={item.name} className="px-4 py-5 sm:p-6">
@@ -37,7 +38,7 @@ export default function TopDashboard({ title = "Last 30 days", stats = defaultSt
                         <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
                             <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
                                 {item.stat}
-                                <span className="ml-2 text-sm font-medium text-gray-500">from {item.previousStat}</span>
+                                <span className="ml-2 text-sm font-medium text-gray-500">{item.previousLabel ?? "from"} {item.previousStat}</span>
                             </div>
 
                             <div

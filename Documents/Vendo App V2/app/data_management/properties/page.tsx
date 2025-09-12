@@ -34,11 +34,7 @@ export default function PropertiesPage() {
             href: "/data_management/customer",
         },
         {
-            name: "Ad Properties",
-            href: "/data_management/properties",
-        },
-        {
-            name: "Grouping",
+            name: "Channel Grouping",
             href: "/data_management/channel-grouping",
         },
         {
@@ -53,7 +49,7 @@ export default function PropertiesPage() {
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
-                panelTitle="Data Management"
+                panelTitle="Data"
                 activeItem="Ad Properties"
             />
 
