@@ -3,10 +3,14 @@
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import { MetricCard, type Metric } from "@/components/metric-card"
 import HeaderFilter from "@/components/header-filter"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState, useEffect, useMemo } from "react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function EventsPage() {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [selectedMetric, setSelectedMetric] = useState<Metric | null>(null)
 
     // Force narrow layout on this page
     useEffect(() => {
@@ -14,6 +18,10 @@ export default function EventsPage() {
     }, [])
 
     const secondaryPanelItems = [
+        {
+            name: "Data Quality",
+            href: "/data_management/quality-control",
+        },
         {
             name: "Sources",
             href: "/data_management/sources",
@@ -27,7 +35,11 @@ export default function EventsPage() {
             href: "/data_management/event",
         },
         {
-            name: "Properties",
+            name: "Customer Properties",
+            href: "/data_management/customer",
+        },
+        {
+            name: "Ad Properties",
             href: "/data_management/properties",
         },
         {
@@ -37,10 +49,6 @@ export default function EventsPage() {
         {
             name: "Context",
             href: "/data_management/context",
-        },
-        {
-            name: "Quality Control",
-            href: "/data_management/quality-control",
         },
     ]
 
@@ -142,12 +150,54 @@ export default function EventsPage() {
                     maxWidth: isMainSidebarOpen ? "calc(100vw - 340px - 230px)" : "calc(100vw - 64px - 230px)"
                 }}
             >
-                <div className="space-y-4">
-                    {filtered.map((m, idx) => (
-                        <MetricCard key={idx} metric={m} />
-                    ))}
+                <div className="space-y-6">
+                    {/* Placeholder Dashboards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[0, 1, 2].map(i => (
+                            <Card key={i} className="bg-white">
+                                <CardHeader>
+                                    <CardTitle className="text-base font-semibold text-gray-900">Placeholder Dashboard</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-gray-600 text-sm">
+                                        This is a placeholder for a small dashboard widget.
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {/* Events List */}
+                    <div className="space-y-4">
+                        {filtered.map((m, idx) => (
+                            <div
+                                key={idx}
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    setSelectedMetric(m)
+                                    setIsDialogOpen(true)
+                                }}
+                            >
+                                <MetricCard metric={m} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{selectedMetric?.name ?? "Event"}</DialogTitle>
+                        <DialogDescription>
+                            This is a placeholder modal for event details and actions.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="text-gray-600">
+                        More content about "{selectedMetric?.name ?? "Selected Event"}" will go here.
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 } 

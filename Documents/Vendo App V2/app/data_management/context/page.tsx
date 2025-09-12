@@ -20,6 +20,10 @@ export default function ContextPage() {
 
     const secondaryPanelItems = [
         {
+            name: "Data Quality",
+            href: "/data_management/quality-control",
+        },
+        {
             name: "Sources",
             href: "/data_management/sources",
         },
@@ -32,7 +36,11 @@ export default function ContextPage() {
             href: "/data_management/event",
         },
         {
-            name: "Properties",
+            name: "Customer Properties",
+            href: "/data_management/customer",
+        },
+        {
+            name: "Ad Properties",
             href: "/data_management/properties",
         },
         {
@@ -43,10 +51,7 @@ export default function ContextPage() {
             name: "Context",
             href: "/data_management/context",
         },
-        {
-            name: "Quality Control",
-            href: "/data_management/quality-control",
-        },
+
     ]
 
     return (
