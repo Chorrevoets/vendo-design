@@ -132,75 +132,73 @@ export default function SourcesPage() {
                         </Card>
                     )}
 
-                    {/* Data Sources Table - Tailwind style */}
-                    <div>
-                        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                            <div className="sm:flex sm:items-center">
-                                <div className="sm:flex-auto">
-                                    <h1 className="text-base font-semibold text-gray-900">Data Sources</h1>
-                                    <p className="mt-2 text-sm text-gray-700">
-                                        A list of all data sources, including description, status, and last run.
-                                    </p>
-                                </div>
-                                <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                                    <button
-                                        type="button"
-                                        onClick={() => router.push("/data_management/sources/settings")}
-                                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        Add source
-                                    </button>
-                                </div>
+                    {/* Data Sources Table - Simple in card */}
+                    <div className="px-4 sm:px-6 lg:px-8">
+                        <div className="sm:flex sm:items-center">
+                            <div className="sm:flex-auto">
+                                <h1 className="text-base font-semibold text-gray-900">Data Sources</h1>
+                                <p className="mt-2 text-sm text-gray-700">
+                                    A list of all data sources, including description, status, and last run.
+                                </p>
+                            </div>
+                            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                                <button
+                                    type="button"
+                                    onClick={() => router.push("/data_management/sources/settings")}
+                                    className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Add source
+                                </button>
                             </div>
                         </div>
-                        <div className="mt-8 flow-root overflow-hidden">
-                            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                                <table className="w-full text-left">
-                                    <thead className="bg-white">
-                                        <tr>
-                                            <th scope="col" className="relative isolate py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
-                                                Name
-                                                <div className="absolute inset-y-0 right-full -z-10 w-screen border-b border-b-gray-200" />
-                                                <div className="absolute inset-y-0 left-0 -z-10 w-screen border-b border-b-gray-200" />
-                                            </th>
-                                            <th scope="col" className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                                                Description
-                                            </th>
-                                            <th scope="col" className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell">
-                                                Status
-                                            </th>
-                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Last Run
-                                            </th>
-                                            <th scope="col" className="py-3.5 pl-3">
-                                                <span className="sr-only">Edit</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {sources.map((source) => (
-                                            <tr key={source.name} className="cursor-pointer" onClick={() => router.push("/data_management/sources/settings")}>
-                                                <td className="relative py-4 pr-3 text-sm font-medium text-gray-900">
-                                                    {source.name}
-                                                    <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
-                                                    <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
-                                                </td>
-                                                <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">{source.description}</td>
-                                                <td className="hidden px-3 py-4 text-sm text-gray-500 md:table-cell">{source.status}</td>
-                                                <td className="px-3 py-4 text-sm text-gray-500">{source.lastRun}</td>
-                                                <td className="py-4 pl-3 text-right text-sm font-medium">
-                                                    <a
-                                                        href="#"
-                                                        onClick={(e) => { e.preventDefault(); router.push("/data_management/sources/settings") }}
-                                                        className="text-indigo-600 hover:text-indigo-900"
-                                                    >
-                                                        Edit<span className="sr-only">, {source.name}</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                        <div className="mt-8 flow-root">
+                            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                    <div className="overflow-hidden shadow outline outline-1 outline-black/5 sm:rounded-lg">
+                                        <table className="relative min-w-full divide-y divide-gray-300">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                        Name
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Description
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Status
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Last Run
+                                                    </th>
+                                                    <th scope="col" className="py-3.5 pl-3 pr-4 sm:pr-6">
+                                                        <span className="sr-only">Edit</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 bg-white">
+                                                {sources.map((source) => (
+                                                    <tr key={source.name} className="cursor-pointer" onClick={() => router.push("/data_management/sources/settings")}>
+                                                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                            {source.name}
+                                                        </td>
+                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{source.description}</td>
+                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{source.status}</td>
+                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{source.lastRun}</td>
+                                                        <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                            <a
+                                                                href="#"
+                                                                onClick={(e) => { e.preventDefault(); router.push("/data_management/sources/settings") }}
+                                                                className="text-indigo-600 hover:text-indigo-900"
+                                                            >
+                                                                Edit<span className="sr-only">, {source.name}</span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
