@@ -17,7 +17,6 @@ type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeCol
 export default function EventsPage() {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
     const [selectedMetric, setSelectedMetric] = useState<Metric | null>(null)
-    const [showInfoPanel, setShowInfoPanel] = useState(true)
     const [enabledByName, setEnabledByName] = useState<Record<string, boolean>>({})
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [expandedByProp, setExpandedByProp] = useState<Record<string, boolean>>({})
@@ -252,39 +251,7 @@ export default function EventsPage() {
                 }}
             >
                 <div className="space-y-6">
-                    {showInfoPanel && (
-                        <div className="px-4 sm:px-6 lg:px-8">
-                            <Card className="bg-white relative">
-                                <button
-                                    onClick={() => setShowInfoPanel(false)}
-                                    className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-                                    aria-label="Close"
-                                >
-                                    <X className="h-5 w-5" />
-                                </button>
-                                <CardHeader>
-                                    <CardTitle className="text-xl font-semibold text-gray-900">Info copy comes here</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                        {/* Text Content */}
-                                        <div className="lg:col-span-2 space-y-6">
-                                            <p className="text-gray-600">
-                                                Info copy comes here
-                                            </p>
-                                        </div>
-
-                                        {/* Image Placeholder */}
-                                        <div className="space-y-4">
-                                            <div className="bg-gray-100 rounded-lg p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-                                                <img src="/Vendo Data Monkey.png" alt="Vendo Data Monkey" className="w-full h-auto rounded-md" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    )}
+                    {/* Removed placeholder info panel */}
 
                     <div className="px-4 sm:px-6 lg:px-8">
                         <div>
