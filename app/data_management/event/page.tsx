@@ -288,7 +288,15 @@ export default function EventsPage() {
 
                     <div className="px-4 sm:px-6 lg:px-8">
                         <div>
-                            <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
+                            <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
+                                    <dd className="mt-1">
+                                        <div className="text-2xl font-semibold text-gray-900">434</div>
+                                        <div className="mt-2 text-sm font-medium text-gray-500">9/16/2025</div>
+                                        <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
+                                    </dd>
+                                </div>
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Total Events</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
