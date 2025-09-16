@@ -391,7 +391,7 @@ export default function EventsPage() {
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <TabsTrigger value="properties" className="text-lg">
+                                                    <TabsTrigger value="properties" className="text-lg data-[state=active]:bg-white data-[state=active]:text-black">
                                                         <span className="flex items-center gap-2">
                                                             Properties
                                                             <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">5 Errors</span>
@@ -400,7 +400,7 @@ export default function EventsPage() {
                                                     <TooltipProvider>
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
-                                                                <TabsTrigger value="dataQuality" className="text-lg">
+                                                                <TabsTrigger value="dataQuality" className="text-lg data-[state=active]:bg-white data-[state=active]:text-black">
                                                                     <span className="flex items-center gap-2">
                                                                         Data Quality
                                                                         <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">6 Issues</span>
