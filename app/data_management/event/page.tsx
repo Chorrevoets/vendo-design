@@ -6,7 +6,7 @@ import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { X, Plus } from "lucide-react"
+import { X, Plus, AlertTriangle, Sparkles } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -461,6 +461,18 @@ export default function EventsPage() {
                                                                         </SelectContent>
                                                                     </Select>
                                                                 </div>
+                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100">
+                                                                    <AlertTriangle className="h-4 w-4" />
+                                                                    View Property Anomalies
+                                                                </button>
+                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">
+                                                                    <Sparkles className="h-4 w-4" />
+                                                                    Generate All
+                                                                </button>
+                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-600">
+                                                                    <Sparkles className="h-4 w-4" />
+                                                                    Generate Missing (0)
+                                                                </button>
                                                                 <button className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Plus className="h-4 w-4" />
                                                                     Add Property
