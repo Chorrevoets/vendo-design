@@ -293,7 +293,7 @@ export default function EventsPage() {
                                     <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
                                     <dd className="mt-1">
                                         <div className="text-2xl font-semibold text-gray-900">434</div>
-                                        <div className="mt-2 text-sm font-medium text-gray-500">9/16/2025</div>
+                                        <div className="mt-2 text-sm font-medium text-gray-500">Sep 16, 2025</div>
                                         <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
                                     </dd>
                                 </div>
@@ -445,7 +445,7 @@ export default function EventsPage() {
                                                         <dt className="text-base font-normal text-gray-900">Last Seen</dt>
                                                         <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
                                                             <div className="flex items-baseline text-2xl font-semibold text-gray-900">
-                                                                9/16/2025
+                                                                Sep 16, 2025
                                                                 <span className="ml-2 text-sm font-medium text-gray-500">21:30:00</span>
                                                             </div>
                                                         </dd>
