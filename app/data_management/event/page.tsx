@@ -397,23 +397,27 @@ export default function EventsPage() {
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <div className="flex items-center gap-2">
-                                                        <TabsTrigger value="properties">Properties</TabsTrigger>
-                                                        <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200 cursor-default">5 Errors</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
-                                                        <TooltipProvider>
-                                                            <Tooltip>
-                                                                <TooltipTrigger asChild>
-                                                                    <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200 cursor-default">6 Issues</span>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent className="bg-black text-white border-none">
-                                                                    6 issues detected (Possible volume spike/drop detected, 5 properties with low schema coverage)
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </TooltipProvider>
-                                                    </div>
+                                                    <TabsTrigger value="properties">
+                                                        <span className="flex items-center gap-2">
+                                                            Properties
+                                                            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">5 Errors</span>
+                                                        </span>
+                                                    </TabsTrigger>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <TabsTrigger value="dataQuality">
+                                                                    <span className="flex items-center gap-2">
+                                                                        Data Quality
+                                                                        <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">6 Issues</span>
+                                                                    </span>
+                                                                </TabsTrigger>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-black text-white border-none">
+                                                                6 issues detected (Possible volume spike/drop detected, 5 properties with low schema coverage)
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
