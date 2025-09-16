@@ -27,7 +27,7 @@ export default function EventsPage() {
 
     useEffect(() => {
         const defaults: Record<string, boolean> = {}
-        metrics.forEach((m) => { defaults[m.name] = true })
+        metrics.forEach((m) => { defaults[m.name] = m.status !== "inactive" })
         setEnabledByName(defaults)
     }, [])
 
