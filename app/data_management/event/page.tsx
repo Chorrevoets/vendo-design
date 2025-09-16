@@ -253,7 +253,7 @@ export default function EventsPage() {
                 <div className="space-y-6">
                     {/* Removed placeholder info panel */}
 
-                        <div className="px-4 sm:px-6 lg:px-8">
+                    <div className="px-4 sm:px-6 lg:px-8">
                         <div>
                             <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
                                 <div className="px-4 py-5 sm:p-6">
@@ -283,7 +283,7 @@ export default function EventsPage() {
                                             <span className="ml-2 text-sm font-medium text-gray-500">Recent activity</span>
                                         </div>
                                     </dd>
-                                            </div>
+                                </div>
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Active Events</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
@@ -292,7 +292,7 @@ export default function EventsPage() {
                                             <span className="ml-2 text-sm font-medium text-gray-500">Event types currently tracking</span>
                                         </div>
                                     </dd>
-                                    </div>
+                                </div>
                             </dl>
                         </div>
                     </div>
@@ -419,7 +419,7 @@ export default function EventsPage() {
                                                                 Mixpanel
                                                             </div>
                                                         </dd>
-                                                </div>
+                                                    </div>
                                                 </dl>
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
@@ -577,7 +577,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                            </button>
+                                                                </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
