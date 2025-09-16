@@ -17,6 +17,7 @@ interface DoubleLayeredMenuProps {
     href: string
     badgeCount?: number
     badgeColor?: "red" | "green" | "orange" | "gray" | "blue"
+    badgeLabel?: string
   }>
   panelTitle?: string
   activeItem?: string
@@ -286,7 +287,7 @@ export default function DoubleLayeredMenu({
             <nav className="space-y-2">
               {secondaryPanelItems.map((item) => {
                 const isActive = activeItem === item.name
-                const showBadge = typeof item.badgeCount === "number" && item.badgeCount > 0
+                const showBadge = (typeof item.badgeCount === "number" && item.badgeCount > 0) || (typeof item.badgeLabel === "string" && item.badgeLabel.length > 0)
                 const badgeClass =
                   item.badgeColor === "green" ? "bg-green-100 text-green-700 ring-green-200" :
                     item.badgeColor === "orange" ? "bg-orange-100 text-orange-700 ring-orange-200" :
@@ -306,7 +307,7 @@ export default function DoubleLayeredMenu({
                     <span className="ml-2 flex items-center gap-2">
                       {showBadge && (
                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${badgeClass}`}>
-                          {item.badgeCount}
+                          {item.badgeLabel ?? item.badgeCount}
                         </span>
                       )}
                       {isActive && <ChevronRight className="h-4 w-4 text-blue-400" />}

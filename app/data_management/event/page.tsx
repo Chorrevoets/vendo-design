@@ -10,7 +10,7 @@ import { X, Plus } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
-type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue" }
+type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue"; badgeLabel?: string }
 
 export default function EventsPage() {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
@@ -49,6 +49,7 @@ export default function EventsPage() {
             href: "/data_management/event",
             badgeCount: 11,
             badgeColor: "red",
+            badgeLabel: "11 Errors",
         },
         {
             name: "Customer Properties",
