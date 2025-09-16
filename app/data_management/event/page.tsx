@@ -6,7 +6,7 @@ import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { X, AlertTriangle, Sparkles } from "lucide-react"
+import { X, AlertTriangle, Sparkles, CheckCircle } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -253,7 +253,7 @@ export default function EventsPage() {
                 <div className="space-y-6">
                     {/* Removed placeholder info panel */}
 
-                    <div className="px-4 sm:px-6 lg:px-8">
+                        <div className="px-4 sm:px-6 lg:px-8">
                         <div>
                             <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
                                 <div className="px-4 py-5 sm:p-6">
@@ -283,7 +283,7 @@ export default function EventsPage() {
                                             <span className="ml-2 text-sm font-medium text-gray-500">Recent activity</span>
                                         </div>
                                     </dd>
-                                </div>
+                                            </div>
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Active Events</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
@@ -292,7 +292,7 @@ export default function EventsPage() {
                                             <span className="ml-2 text-sm font-medium text-gray-500">Event types currently tracking</span>
                                         </div>
                                     </dd>
-                                </div>
+                                    </div>
                             </dl>
                         </div>
                     </div>
@@ -392,7 +392,7 @@ export default function EventsPage() {
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
                                             {/* Drawer stats strip - Tailwind stats pattern */}
                                             <div>
-                                                <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
+                                                <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
                                                     <div className="px-4 py-5 sm:p-6">
                                                         <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
                                                         <dd className="mt-1">
@@ -419,16 +419,7 @@ export default function EventsPage() {
                                                                 Mixpanel
                                                             </div>
                                                         </dd>
-                                                    </div>
-                                                    <div className="px-4 py-5 sm:p-6">
-                                                        <dt className="text-base font-normal text-gray-900">Last Seen</dt>
-                                                        <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
-                                                            <div className="flex items-baseline text-2xl font-semibold text-gray-900">
-                                                                Sep 16, 2025
-                                                                <span className="ml-2 text-sm font-medium text-gray-500">21:30:00</span>
-                                                            </div>
-                                                        </dd>
-                                                    </div>
+                                                </div>
                                                 </dl>
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
@@ -457,6 +448,47 @@ export default function EventsPage() {
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
+                                                    {/* Secondary dashboard strip shown only for Data Quality */}
+                                                    <div>
+                                                        <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
+                                                            <div className="px-4 py-5 sm:p-6">
+                                                                <dt className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                                                                    Missing Data
+                                                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                                                </dt>
+                                                                <dd className="mt-2">
+                                                                    <div className="text-2xl font-semibold text-green-600">0</div>
+                                                                    <div className="mt-1 text-sm text-gray-600">No days with missing data</div>
+                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-green-50 px-3 py-1.5 text-sm font-semibold text-green-700 ring-1 ring-inset ring-green-200 hover:bg-green-100">View Chart</button>
+                                                                </dd>
+                                                            </div>
+                                                            <div className="px-4 py-5 sm:p-6">
+                                                                <dt className="text-base font-semibold text-gray-900">Volume Anomaly</dt>
+                                                                <dd className="mt-2">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="text-xl font-semibold text-orange-600">Possible spike in activity</div>
+                                                                        <span className="inline-flex items-center rounded-md bg-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">AI</span>
+                                                                        <AlertTriangle className="h-5 w-5 text-red-500" />
+                                                                    </div>
+                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 ring-1 ring-inset ring-rose-200 hover:bg-rose-100">View Chart</button>
+                                                                </dd>
+                                                            </div>
+                                                            <div className="px-4 py-5 sm:p-6">
+                                                                <dt className="text-base font-semibold text-gray-900">Properties with low schema coverage</dt>
+                                                                <dd className="mt-2">
+                                                                    <div className="text-2xl font-semibold text-red-600">5</div>
+                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700">Fix Issues</button>
+                                                                </dd>
+                                                            </div>
+                                                            <div className="px-4 py-5 sm:p-6">
+                                                                <dt className="text-base font-semibold text-gray-900">New Properties</dt>
+                                                                <dd className="mt-2">
+                                                                    <div className="text-2xl font-semibold text-orange-600">0</div>
+                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-orange-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-orange-600">Review and Add</button>
+                                                                </dd>
+                                                            </div>
+                                                        </dl>
+                                                    </div>
                                                     <div className="space-y-3">
                                                         {/* Volume Trends with Anomaly Detection (Last 30 Days) */}
                                                         <div className="overflow-hidden rounded-lg bg-white shadow">
@@ -548,7 +580,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                                </button>
+                                                            </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
@@ -647,4 +679,4 @@ export default function EventsPage() {
             )}
         </div>
     )
-}
+} 
