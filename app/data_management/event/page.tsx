@@ -287,45 +287,36 @@ export default function EventsPage() {
                     )}
 
                     <div className="px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="text-lg font-semibold text-gray-900">Total Events</div>
-                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
-                                        <div className="mt-2 text-sm text-gray-500">Since Sep 16, 2025</div>
-                                    </div>
-                                    <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
-                                        <Calendar className="h-6 w-6" />
-                                    </div>
+                        <div>
+                            <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Total Events</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Since Sep 16, 2025</span>
+                                        </div>
+                                    </dd>
                                 </div>
-                            </div>
-
-                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="text-lg font-semibold text-gray-900">Last 30 Days</div>
-                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
-                                        <div className="mt-2 text-sm text-gray-500">Recent activity</div>
-                                    </div>
-                                    <div className="rounded-xl bg-green-50 p-3 text-green-600">
-                                        <Eye className="h-6 w-6" />
-                                    </div>
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Last 30 Days</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Recent activity</span>
+                                        </div>
+                                    </dd>
                                 </div>
-                            </div>
-
-                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <div className="text-lg font-semibold text-gray-900">Active Events</div>
-                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
-                                        <div className="mt-2 text-sm text-gray-500">Event types currently tracking</div>
-                                    </div>
-                                    <div className="rounded-xl bg-violet-50 p-3 text-violet-600">
-                                        <ShoppingCart className="h-6 w-6" />
-                                    </div>
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Active Events</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Event types currently tracking</span>
+                                        </div>
+                                    </dd>
                                 </div>
-                            </div>
+                            </dl>
                         </div>
                     </div>
 
