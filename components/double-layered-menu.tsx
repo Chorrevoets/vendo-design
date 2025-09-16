@@ -287,12 +287,12 @@ export default function DoubleLayeredMenu({
               {secondaryPanelItems.map((item) => {
                 const isActive = activeItem === item.name
                 const showBadge = typeof item.badgeCount === "number" && item.badgeCount > 0
-                const badgeBg =
-                  item.badgeColor === "green" ? "bg-green-600" :
-                  item.badgeColor === "orange" ? "bg-orange-600" :
-                  item.badgeColor === "gray" ? "bg-gray-600" :
-                  item.badgeColor === "blue" ? "bg-blue-600" :
-                  "bg-red-600"
+                const badgeClass =
+                  item.badgeColor === "green" ? "bg-green-100 text-green-700 ring-green-200" :
+                    item.badgeColor === "orange" ? "bg-orange-100 text-orange-700 ring-orange-200" :
+                      item.badgeColor === "gray" ? "bg-gray-100 text-gray-700 ring-gray-200" :
+                        item.badgeColor === "blue" ? "bg-blue-100 text-blue-700 ring-blue-200" :
+                          "bg-red-100 text-red-700 ring-red-200"
                 return (
                   <button
                     key={item.name}
@@ -305,7 +305,7 @@ export default function DoubleLayeredMenu({
                     <span className="text-sm font-medium">{item.name}</span>
                     <span className="ml-2 flex items-center gap-2">
                       {showBadge && (
-                        <span className={`inline-flex items-center justify-center text-white text-[10px] font-semibold h-5 min-w-[20px] px-1.5 rounded-full ${badgeBg}`}>
+                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${badgeClass}`}>
                           {item.badgeCount}
                         </span>
                       )}
