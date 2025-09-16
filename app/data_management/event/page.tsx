@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { X, Plus } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue"; badgeLabel?: string }
@@ -115,6 +116,7 @@ export default function EventsPage() {
 
     const [typeFilter, setTypeFilter] = useState<"all" | "event" | "custom" | "funnel">("all")
     const [searchQuery, setSearchQuery] = useState<string>("")
+    const [propertyFilter, setPropertyFilter] = useState<string>("all")
     const [sourceFilter, setSourceFilter] = useState<string>("all")
     const [statusFilter, setStatusFilter] = useState<"all" | "green" | "orange" | "red" | "inactive">("all")
     // removed sort controls
@@ -436,10 +438,25 @@ export default function EventsPage() {
                                                     <div className="space-y-3">
                                                         <div className="flex items-center justify-between">
                                                             <div className="text-sm font-semibold text-gray-900">Properties ({eventProperties.length})</div>
-                                                            <button className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
-                                                                <Plus className="h-4 w-4" />
-                                                                Add Property
-                                                            </button>
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-48">
+                                                                    <Select value={propertyFilter} onValueChange={(v) => setPropertyFilter(v)}>
+                                                                        <SelectTrigger className="h-9">
+                                                                            <SelectValue placeholder="All Properties" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="all">All Properties</SelectItem>
+                                                                            <SelectItem value="issues">Has Issues</SelectItem>
+                                                                            <SelectItem value="low-coverage">Low Coverage</SelectItem>
+                                                                            <SelectItem value="new">New Properties</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                </div>
+                                                                <button className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
+                                                                    <Plus className="h-4 w-4" />
+                                                                    Add Property
+                                                                </button>
+                                                            </div>
                                                         </div>
 
                                                         <div className="overflow-hidden shadow outline outline-1 outline-black/5 sm:rounded-lg">
