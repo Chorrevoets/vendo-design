@@ -113,6 +113,7 @@ export default function EventsPage() {
     ]
 
     const [typeFilter, setTypeFilter] = useState<"all" | "event" | "custom" | "funnel">("all")
+    const [searchQuery, setSearchQuery] = useState<string>("")
     const [sourceFilter, setSourceFilter] = useState<string>("all")
     const [statusFilter, setStatusFilter] = useState<"all" | "green" | "orange" | "red" | "inactive">("all")
     // removed sort controls
@@ -132,11 +133,12 @@ export default function EventsPage() {
                 (typeFilter === "funnel" && m.type === "Funnel")
 
             const sourceOk = sourceFilter === "all" || m.sources.includes(sourceFilter)
+            const nameOk = searchQuery.trim() === "" || m.name.toLowerCase().includes(searchQuery.trim().toLowerCase())
             const statusOk = statusFilter === "all" || m.status === statusFilter
-            return typeOk && sourceOk && statusOk
+            return typeOk && sourceOk && statusOk && nameOk
         })
         return filteredRows
-    }, [metrics, typeFilter, sourceFilter, statusFilter])
+    }, [metrics, typeFilter, sourceFilter, statusFilter, searchQuery])
 
     const eventProperties = useMemo(() => ([
         {
@@ -212,8 +214,9 @@ export default function EventsPage() {
 
             <HeaderFilter
                 forceNarrowLayout
-                typeValue={typeFilter}
-                onTypeChange={setTypeFilter}
+                showTypeAsSearch
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
                 sourceValue={sourceFilter}
                 onSourceChange={setSourceFilter}
                 sourceOptions={sourceOptions}

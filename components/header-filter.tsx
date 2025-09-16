@@ -14,6 +14,11 @@ type HeaderFilterProps = {
     // Filters (optional)
     typeValue?: "all" | "event" | "custom" | "funnel"
     onTypeChange?: (value: "all" | "event" | "custom" | "funnel") => void
+    // When true, render a search input instead of the type dropdown
+    showTypeAsSearch?: boolean
+    searchValue?: string
+    onSearchChange?: (value: string) => void
+    searchPlaceholder?: string
     sourceValue?: string
     onSourceChange?: (value: string) => void
     sourceOptions?: string[]
@@ -35,6 +40,10 @@ type HeaderFilterProps = {
 export default function HeaderFilter({
     typeValue = "all",
     onTypeChange,
+    showTypeAsSearch = false,
+    searchValue = "",
+    onSearchChange,
+    searchPlaceholder = "Search...",
     sourceValue = "all",
     onSourceChange,
     sourceOptions = [],
@@ -94,18 +103,27 @@ export default function HeaderFilter({
                 <div className={`flex items-center gap-3 flex-wrap flex-1 pr-28`}>
                     {showFilters ? (
                         <>
-                            <div className="w-44">
-                                <Select value={typeValue} onValueChange={(v) => onTypeChange && onTypeChange(v as any)}>
-                                    <SelectTrigger className="h-9">
-                                        <SelectValue placeholder="All Metrics" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Metrics</SelectItem>
-                                        <SelectItem value="event">Event</SelectItem>
-                                        <SelectItem value="custom">Custom Metric</SelectItem>
-                                        <SelectItem value="funnel">Funnel</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                            <div className="w-56">
+                                {showTypeAsSearch ? (
+                                    <Input
+                                        value={searchValue}
+                                        onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                                        placeholder={searchPlaceholder}
+                                        className="h-9"
+                                    />
+                                ) : (
+                                    <Select value={typeValue} onValueChange={(v) => onTypeChange && onTypeChange(v as any)}>
+                                        <SelectTrigger className="h-9">
+                                            <SelectValue placeholder="All Metrics" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Metrics</SelectItem>
+                                            <SelectItem value="event">Event</SelectItem>
+                                            <SelectItem value="custom">Custom Metric</SelectItem>
+                                            <SelectItem value="funnel">Funnel</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
                             </div>
 
                             <div className="w-44">
