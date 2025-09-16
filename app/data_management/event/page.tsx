@@ -474,11 +474,11 @@ export default function EventsPage() {
                                                                     <tr>
                                                                         <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Property Name</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Coverage</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">First Seen</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sample Values</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Required</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Coverage</th>
                                                                         <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Status</th>
                                                                     </tr>
                                                                 </thead>
@@ -518,21 +518,6 @@ export default function EventsPage() {
                                                                             {
                                                                                 /* Coverage column with color coding */
                                                                             }
-                                                                            {(() => {
-                                                                                const coveragePool = [100, 95, 90, 85, 80, 70, 60, 50]
-                                                                                const cov = coveragePool[idx % coveragePool.length]
-                                                                                const colorClass = cov >= 90
-                                                                                    ? "text-green-700 bg-green-50 ring-green-200"
-                                                                                    : cov >= 60
-                                                                                    ? "text-orange-700 bg-orange-50 ring-orange-200"
-                                                                                    : "text-red-700 bg-red-50 ring-red-200"
-                                                                                return (
-                                                                                    <td className="align-top whitespace-nowrap px-3 py-4 text-sm">
-                                                                                        <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorClass}`}>{cov}%</span>
-                                                                                    </td>
-                                                                                )
-                                                                            })()}
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.first}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm" onClick={(e) => e.stopPropagation()}>
@@ -543,6 +528,20 @@ export default function EventsPage() {
                                                                                     className="!h-5 !w-10 data-[state=checked]:!bg-green-500"
                                                                                 />
                                                                             </td>
+                                                                            {(() => {
+                                                                                const coveragePool = [100, 95, 90, 85, 80, 70, 60, 50]
+                                                                                const cov = coveragePool[idx % coveragePool.length]
+                                                                                const colorClass = cov >= 90
+                                                                                    ? "text-green-700 bg-green-50 ring-green-200"
+                                                                                    : cov >= 60
+                                                                                        ? "text-orange-700 bg-orange-50 ring-orange-200"
+                                                                                        : "text-red-700 bg-red-50 ring-red-200"
+                                                                                return (
+                                                                                    <td className="align-top whitespace-nowrap px-3 py-4 text-sm">
+                                                                                        <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorClass}`}>{cov}%</span>
+                                                                                    </td>
+                                                                                )
+                                                                            })()}
                                                                             <td className="align-top whitespace-nowrap py-4 pl-3 pr-4 text-sm sm:pr-6">
                                                                                 <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">{p.status}</span>
                                                                             </td>
