@@ -469,18 +469,15 @@ export default function EventsPage() {
                                                                     <AlertTriangle className="h-4 w-4" />
                                                                     View Property Anomalies
                                                                 </button>
-                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">
+                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                                                                     <Sparkles className="h-4 w-4" />
                                                                     Generate All
                                                                 </button>
-                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-600">
-                                                                    <Sparkles className="h-4 w-4" />
+                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
+                                                                    <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
                                                                 </button>
-                                                                <button className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
-                                                                    <Plus className="h-4 w-4" />
-                                                                    Add Property
-                                                                </button>
+                                                                {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
 
