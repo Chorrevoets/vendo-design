@@ -428,12 +428,19 @@ export default function EventsPage() {
 
                                                 <TabsContent value="properties">
                                                     <div className="space-y-3">
-                                                        {/* Description card */}
-                                                        <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
-                                                            <div className="px-4 py-5 sm:px-6">
-                                                                <h3 className="text-base font-semibold leading-6 text-gray-900">Event Description</h3>
-                                                            </div>
+                                                        {/* Description card (no title) */}
+                                                        <div className="overflow-hidden rounded-lg bg-white shadow">
                                                             <div className="px-4 py-5 sm:p-6">
+                                                                <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-1">
+                                                                    <span>Description</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="text-gray-400 hover:text-gray-600"
+                                                                        aria-label="Edit event description"
+                                                                    >
+                                                                        <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                    </button>
+                                                                </div>
                                                                 <p className="text-sm text-gray-700 leading-6">
                                                                     The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis.
                                                                 </p>
