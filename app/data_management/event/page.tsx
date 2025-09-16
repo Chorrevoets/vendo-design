@@ -292,8 +292,10 @@ export default function EventsPage() {
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
                                     <dd className="mt-1">
-                                        <div className="text-2xl font-semibold text-gray-900">434</div>
-                                        <div className="mt-2 text-sm font-medium text-gray-500">Sep 16, 2025</div>
+                                        <div className="flex items-baseline gap-2">
+                                            <div className="text-2xl font-semibold text-gray-900">434</div>
+                                            <span className="text-sm font-medium text-gray-500">Sep 16, 2025</span>
+                                        </div>
                                         <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
                                     </dd>
                                 </div>
