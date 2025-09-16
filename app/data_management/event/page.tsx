@@ -470,7 +470,45 @@ export default function EventsPage() {
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
-                                                    <div className="space-y-3" />
+                                                    <div className="space-y-3">
+                                                        {/* Volume Trends with Anomaly Detection (Last 30 Days) */}
+                                                        <div className="overflow-hidden rounded-lg bg-white shadow">
+                                                            <div className="px-4 py-5 sm:px-6">
+                                                                <h3 className="text-base font-semibold text-gray-900">Volume Trends with Anomaly Detection (Last 30 Days)</h3>
+                                                                <p className="mt-1 text-sm text-gray-500">Gray bars show expected variance (±2.5 standard deviations)</p>
+                                                            </div>
+                                                            <div className="px-4 py-5 sm:p-6">
+                                                                {/* Lightweight SVG placeholder chart */}
+                                                                <div className="relative w-full rounded-md border border-gray-200 bg-gray-50">
+                                                                    <svg viewBox="0 0 800 300" className="w-full h-64">
+                                                                        {/* expected variance band */}
+                                                                        <path d="M0 200 C100 190 200 180 300 185 C400 190 500 195 600 190 C700 185 800 195 800 195 L800 240 C700 235 600 230 500 235 C400 240 300 245 200 240 C100 235 0 240 0 240 Z" fill="#eef2f7" />
+                                                                        {/* expected (dashed) */}
+                                                                        <path d="M0 210 C100 205 200 200 300 205 C400 210 500 215 600 210 C700 205 800 210 800 210" stroke="#9aa3b2" strokeDasharray="6 6" fill="none" strokeWidth="2" />
+                                                                        {/* actual line */}
+                                                                        <polyline points="0,220 50,140 100,230 150,240 200,170 250,160 300,240 350,100 400,240 450,260 500,230 550,180 600,200 650,120 700,240 750,280 800,230" fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
+                                                                        {/* medium anomaly dot */}
+                                                                        <circle cx="360" cy="100" r="6" fill="#f59e0b" stroke="#fff" strokeWidth="2" />
+                                                                    </svg>
+                                                                </div>
+
+                                                                {/* Anomaly summary */}
+                                                                <div className="mt-4 rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-gray-800">
+                                                                    <div className="font-semibold mb-1">Anomaly Summary</div>
+                                                                    1 anomalies detected in the last 30 days (0 high severity and 1 medium severity)
+                                                                </div>
+
+                                                                {/* Legend */}
+                                                                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-700">
+                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-blue-600"></span> Actual Volume</div>
+                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gray-400"></span> Expected Volume</div>
+                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gray-200 border border-gray-300"></span> ±2.5 Standard Deviations</div>
+                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-red-600"></span> High Anomaly</div>
+                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span> Medium Anomaly</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </TabsContent>
 
                                                 <TabsContent value="properties">
