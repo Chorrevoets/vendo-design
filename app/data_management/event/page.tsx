@@ -482,7 +482,7 @@ export default function EventsPage() {
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody className="divide-y divide-gray-200 bg-white">
-                                                                    {eventProperties.map((p) => (
+                                                                    {eventProperties.map((p, idx) => (
                                                                         <tr key={p.name}>
                                                                             <td className="align-top py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                                                 <div className="flex items-center gap-2">
@@ -511,8 +511,8 @@ export default function EventsPage() {
                                                                                     )}
                                                                                 </div>
                                                                             </td>
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm">
-                                                                                <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-200">{p.type}</span>
+                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-700">
+                                                                                {p.type === "unknown" ? (idx % 2 === 0 ? "String" : "Integer") : p.type}
                                                                             </td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.first}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
