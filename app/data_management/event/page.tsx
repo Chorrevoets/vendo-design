@@ -425,7 +425,17 @@ export default function EventsPage() {
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
                                             {/* Drawer stats strip - Tailwind stats pattern */}
                                             <div>
-                                                <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
+                                                <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
+                                                    <div className="px-4 py-5 sm:p-6">
+                                                        <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
+                                                        <dd className="mt-1">
+                                                            <div className="flex items-baseline gap-2">
+                                                                <div className="text-2xl font-semibold text-gray-900">434</div>
+                                                                <span className="text-sm font-medium text-gray-500">Sep 16, 2025</span>
+                                                            </div>
+                                                            <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
+                                                        </dd>
+                                                    </div>
                                                     <div className="px-4 py-5 sm:p-6">
                                                         <dt className="text-base font-normal text-gray-900">Total Events</dt>
                                                         <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
@@ -451,7 +461,7 @@ export default function EventsPage() {
                                                                 <span className="ml-2 text-sm font-medium text-gray-500">21:30:00</span>
                                                             </div>
                                                         </dd>
-                                                </div>
+                                                    </div>
                                                 </dl>
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
@@ -571,7 +581,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                            </button>
+                                                                </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
@@ -670,4 +680,4 @@ export default function EventsPage() {
             )}
         </div>
     )
-} 
+}
