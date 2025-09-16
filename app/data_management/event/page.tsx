@@ -441,7 +441,7 @@ export default function EventsPage() {
                                                                 <span className="ml-2 text-sm font-medium text-gray-500">21:30:00</span>
                                                             </div>
                                                         </dd>
-                                                    </div>
+                                                </div>
                                                 </dl>
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
@@ -470,15 +470,7 @@ export default function EventsPage() {
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
-                                                    <div className="space-y-3">
-                                                        <TopDashboard
-                                                            stats={[
-                                                                { name: "Total Events", stat: "71,897", previousStat: "Jun 13, 2025", previousLabel: "Since", change: "12%", changeType: "increase" },
-                                                                { name: "Avg. Open Rate", stat: "58.16%", previousStat: "56.14%", change: "2.02%", changeType: "increase" },
-                                                                { name: "Avg. Click Rate", stat: "24.57%", previousStat: "28.62%", change: "4.05%", changeType: "decrease" },
-                                                            ]}
-                                                        />
-                                                    </div>
+                                                    <div className="space-y-3" />
                                                 </TabsContent>
 
                                                 <TabsContent value="properties">
@@ -531,7 +523,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                                </button>
+                                                            </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
