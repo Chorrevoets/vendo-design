@@ -115,6 +115,8 @@ export default function EventsPage() {
     const [typeFilter, setTypeFilter] = useState<"all" | "event" | "custom" | "funnel">("all")
     const [sourceFilter, setSourceFilter] = useState<string>("all")
     const [statusFilter, setStatusFilter] = useState<"all" | "green" | "orange" | "red" | "inactive">("all")
+    const [sortKey, setSortKey] = useState<"none" | "lastSeen" | "status">("none")
+    const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
 
     const sourceOptions = useMemo(() => {
         const set = new Set<string>()
@@ -123,7 +125,7 @@ export default function EventsPage() {
     }, [metrics])
 
     const filtered = useMemo(() => {
-        return metrics.filter(m => {
+        const filteredRows = metrics.filter(m => {
             const typeOk =
                 typeFilter === "all" ||
                 (typeFilter === "event" && m.type === "Event") ||
@@ -134,7 +136,23 @@ export default function EventsPage() {
             const statusOk = statusFilter === "all" || m.status === statusFilter
             return typeOk && sourceOk && statusOk
         })
-    }, [metrics, typeFilter, sourceFilter, statusFilter])
+
+        if (sortKey === "none") return filteredRows
+
+        const statusWeight: Record<string, number> = { red: 0, orange: 1, green: 2 }
+        const sign = sortDir === "asc" ? 1 : -1
+        return [...filteredRows].sort((a, b) => {
+            if (sortKey === "lastSeen") {
+                const da = new Date(a.lastSeen).getTime()
+                const db = new Date(b.lastSeen).getTime()
+                return (da - db) * sign
+            }
+            // sortKey === "status"
+            const wa = statusWeight[a.status] ?? 0
+            const wb = statusWeight[b.status] ?? 0
+            return (wa - wb) * sign
+        })
+    }, [metrics, typeFilter, sourceFilter, statusFilter, sortKey, sortDir])
 
     const eventProperties = useMemo(() => ([
         {
@@ -292,8 +310,34 @@ export default function EventsPage() {
                                                 <tr>
                                                     <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Event</th>
                                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sources</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <button
+                                                            type="button"
+                                                            className="inline-flex items-center gap-1 hover:text-gray-700"
+                                                            onClick={() => {
+                                                                setSortKey(prev => prev === "lastSeen" ? "lastSeen" : "lastSeen")
+                                                                setSortDir(prev => (sortKey === "lastSeen" ? (prev === "asc" ? "desc" : "asc") : "asc"))
+                                                            }}
+                                                            aria-label="Sort by Last Seen"
+                                                        >
+                                                            <span>Last Seen</span>
+                                                            <img src="/List.svg" alt="sort" className="h-4 w-4 opacity-70" />
+                                                        </button>
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <button
+                                                            type="button"
+                                                            className="inline-flex items-center gap-1 hover:text-gray-700"
+                                                            onClick={() => {
+                                                                setSortKey(prev => prev === "status" ? "status" : "status")
+                                                                setSortDir(prev => (sortKey === "status" ? (prev === "asc" ? "desc" : "asc") : "asc"))
+                                                            }}
+                                                            aria-label="Sort by Status"
+                                                        >
+                                                            <span>Status</span>
+                                                            <img src="/List.svg" alt="sort" className="h-4 w-4 opacity-70" />
+                                                        </button>
+                                                    </th>
                                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Enabled</th>
                                                     <th scope="col" className="py-3.5 pl-3 pr-4 sm:pr-6"><span className="sr-only">Open</span></th>
                                                 </tr>
