@@ -430,8 +430,8 @@ export default function EventsPage() {
                                                     <div className="space-y-3">
                                                         {/* Description card with header */}
                                                         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
-                                                            <div className="px-4 py-5 sm:px-6">
-                                                                <h3 className="text-base font-semibold leading-6 text-gray-900">Event Description</h3>
+                                                            <div className="bg-gray-50 px-4 py-3.5 sm:px-6">
+                                                                <h3 className="text-sm font-semibold text-gray-900">Event Description</h3>
                                                             </div>
                                                             <div className="px-4 py-5 sm:p-6">
                                                                 <p className="text-sm text-gray-700 leading-6">
