@@ -105,12 +105,15 @@ export default function HeaderFilter({
                         <>
                             <div className="w-56">
                                 {showTypeAsSearch ? (
-                                    <Input
-                                        value={searchValue}
-                                        onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                                        placeholder={searchPlaceholder}
-                                        className="h-9"
-                                    />
+                                    <div className="relative">
+                                        <img src="/Magnifer.svg" alt="Search" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                                        <Input
+                                            value={searchValue}
+                                            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                                            placeholder={searchPlaceholder}
+                                            className="h-9 pl-8"
+                                        />
+                                    </div>
                                 ) : (
                                     <Select value={typeValue} onValueChange={(v) => onTypeChange && onTypeChange(v as any)}>
                                         <SelectTrigger className="h-9">
