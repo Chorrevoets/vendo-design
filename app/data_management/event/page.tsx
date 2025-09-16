@@ -10,6 +10,8 @@ import { X, Plus } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
+type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue" }
+
 export default function EventsPage() {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
     const [selectedMetric, setSelectedMetric] = useState<Metric | null>(null)
@@ -29,7 +31,7 @@ export default function EventsPage() {
         setEnabledByName(defaults)
     }, [])
 
-    const secondaryPanelItems = [
+    const secondaryPanelItems: SecondaryItem[] = [
         {
             name: "Quality",
             href: "/data_management/quality-control",
@@ -45,6 +47,8 @@ export default function EventsPage() {
         {
             name: "Events",
             href: "/data_management/event",
+            badgeCount: 11,
+            badgeColor: "red",
         },
         {
             name: "Customer Properties",
@@ -301,13 +305,13 @@ export default function EventsPage() {
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{m.lastSeen}</td>
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm">
                                                             {m.status === "green" ? (
-                                                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">GREEN</span>
+                                                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">Healthy</span>
                                                             ) : m.status === "orange" ? (
-                                                                <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">ORANGE</span>
+                                                                <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">Warning</span>
                                                             ) : m.status === "red" ? (
-                                                                <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">RED</span>
+                                                                <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">Error</span>
                                                             ) : (
-                                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 ring-1 ring-inset ring-gray-200">INACTIVE</span>
+                                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 ring-1 ring-inset ring-gray-200">Inactive</span>
                                                             )}
                                                         </td>
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500" onClick={(e) => e.stopPropagation()}>
