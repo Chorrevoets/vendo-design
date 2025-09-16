@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { X, Plus } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue"; badgeLabel?: string }
 
@@ -396,7 +397,19 @@ export default function EventsPage() {
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                    <div className="flex items-center gap-2">
+                                                        <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200 cursor-default">6 Issues</span>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent className="bg-black text-white border-none">
+                                                                    6 issues detected (Possible volume spike/drop detected, 5 properties with low schema coverage)
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    </div>
                                                     <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                 </TabsList>
 
