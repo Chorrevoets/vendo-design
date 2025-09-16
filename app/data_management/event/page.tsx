@@ -466,7 +466,6 @@ export default function EventsPage() {
                                                                 <dd className="mt-2">
                                                                     <div className="flex items-center gap-2">
                                                                         <div className="text-xl font-semibold text-orange-600">Possible spike in activity</div>
-                                                                        <span className="inline-flex items-center rounded-md bg-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">AI</span>
                                                                         <AlertTriangle className="h-5 w-5 text-red-500" />
                                                                     </div>
                                                                 </dd>
@@ -487,7 +486,7 @@ export default function EventsPage() {
                                                             </div>
                                                         </dl>
                                                     </div>
-                                                    <div className="space-y-3">
+                                                    <div className="mt-6 space-y-3">
                                                         {/* Volume Trends with Anomaly Detection (Last 30 Days) */}
                                                         <div className="overflow-hidden rounded-lg bg-white shadow">
                                                             <div className="px-4 py-5 sm:px-6">
