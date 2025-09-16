@@ -410,7 +410,7 @@ export default function EventsPage() {
                                                 <TabsList>
                                                     <TabsTrigger value="properties">
                                                         <span className="flex items-center gap-2">
-                                                            {`Properties (${eventProperties.length}) (% Errors)`}
+                                                            Properties
                                                             <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">5 Errors</span>
                                                         </span>
                                                     </TabsTrigger>
@@ -446,7 +446,7 @@ export default function EventsPage() {
                                                 <TabsContent value="properties">
                                                     <div className="space-y-3">
                                                         <div className="flex items-center justify-between">
-                                                            <div className="text-sm font-semibold text-transparent">.</div>
+                                                            <div className="text-sm font-semibold text-gray-900">Properties ({eventProperties.length})</div>
                                                             <div className="flex items-center gap-3">
                                                                 <div className="w-48">
                                                                     <Select value={propertyFilter} onValueChange={(v) => setPropertyFilter(v)}>
@@ -484,13 +484,13 @@ export default function EventsPage() {
                                                             <table className="relative min-w-full divide-y divide-gray-300">
                                                                 <thead className="bg-gray-50">
                                                                     <tr>
-                                                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-base font-bold text-gray-900 sm:pl-6">Property Name</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-base font-bold text-gray-900">Type</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-base font-bold text-gray-900">Last Seen</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-base font-bold text-gray-900">Sample Values</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-base font-bold text-gray-900">Required</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-base font-bold text-gray-900">Coverage</th>
-                                                                        <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-base font-bold text-gray-900 sm:pr-6">Status</th>
+                                                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Property Name</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sample Values</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Required</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Coverage</th>
+                                                                        <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Status</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody className="divide-y divide-gray-200 bg-white">
