@@ -292,7 +292,7 @@ export default function EventsPage() {
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Total Events</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
-                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
                                             0
                                             <span className="ml-2 text-sm font-medium text-gray-500">Since Sep 16, 2025</span>
                                         </div>
@@ -301,7 +301,7 @@ export default function EventsPage() {
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Last 30 Days</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
-                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
                                             0
                                             <span className="ml-2 text-sm font-medium text-gray-500">Recent activity</span>
                                         </div>
@@ -310,7 +310,7 @@ export default function EventsPage() {
                                 <div className="px-4 py-5 sm:p-6">
                                     <dt className="text-base font-normal text-gray-900">Active Events</dt>
                                     <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
-                                        <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
                                             0
                                             <span className="ml-2 text-sm font-medium text-gray-500">Event types currently tracking</span>
                                         </div>
@@ -500,7 +500,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                            </button>
+                                                                </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
