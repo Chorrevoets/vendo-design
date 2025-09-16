@@ -434,7 +434,7 @@ export default function EventsPage() {
                                                                 <h3 className="text-sm font-semibold text-gray-900">Event Description</h3>
                                                             </div>
                                                             <div className="px-4 py-5 sm:p-6">
-                                                                <div className="flex items-center justify-between mb-2">
+                                                                <div className="flex items-center gap-2 mb-2">
                                                                     <div className="text-sm font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</div>
                                                                     <button
                                                                         type="button"
