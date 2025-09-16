@@ -397,7 +397,10 @@ export default function EventsPage() {
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                    <div className="flex items-center gap-2">
+                                                        <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                        <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200 cursor-default">5 Errors</span>
+                                                    </div>
                                                     <div className="flex items-center gap-2">
                                                         <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                         <TooltipProvider>
