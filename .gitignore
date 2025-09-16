@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.dist/
+dist/
+build/
+.next/
+.nuxt/
+.out/
+.out_static/
+.turbo/
+.cache/
+coverage/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Framework/platform
+.vercel/
+.netlify/
+.expo/
+.firebase/
+
+# Misc
+*.local
