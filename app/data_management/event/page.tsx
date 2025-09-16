@@ -216,7 +216,7 @@ export default function EventsPage() {
     useEffect(() => {
         const defaults: Record<string, boolean> = {}
         eventProperties.forEach(p => {
-            defaults[p.name] = false
+            defaults[p.name] = true
         })
         setRequiredByProp(defaults)
     }, [eventProperties])
