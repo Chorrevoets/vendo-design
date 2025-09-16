@@ -397,8 +397,9 @@ export default function EventsPage() {
                                             </div>
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
+                                                    <TabsTrigger value="properties">Properties</TabsTrigger>
                                                     <div className="flex items-center gap-2">
-                                                        <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                        <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                         <TooltipProvider>
                                                             <Tooltip>
                                                                 <TooltipTrigger asChild>
@@ -410,7 +411,6 @@ export default function EventsPage() {
                                                             </Tooltip>
                                                         </TooltipProvider>
                                                     </div>
-                                                    <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
