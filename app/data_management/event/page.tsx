@@ -394,10 +394,10 @@ export default function EventsPage() {
                                                     The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis.
                                                 </p>
                                             </div>
-                                            <Tabs defaultValue="dataQuality" className="space-y-3">
+                                            <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                     <TabsTrigger value="properties">Properties</TabsTrigger>
+                                                    <TabsTrigger value="dataQuality">Data Quality</TabsTrigger>
                                                 </TabsList>
 
                                                 <TabsContent value="dataQuality">
