@@ -6,7 +6,7 @@ import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { X, Plus, AlertTriangle, Sparkles } from "lucide-react"
+import { X, Plus, AlertTriangle, Sparkles, Calendar, Eye, ShoppingCart } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -287,13 +287,46 @@ export default function EventsPage() {
                     )}
 
                     <div className="px-4 sm:px-6 lg:px-8">
-                        <TopDashboard
-                            stats={[
-                                { name: "Total Events", stat: "71,897", previousStat: "Jun 13, 2025", previousLabel: "Since", change: "12%", changeType: "increase" },
-                                { name: "Avg. Open Rate", stat: "58.16%", previousStat: "56.14%", change: "2.02%", changeType: "increase" },
-                                { name: "Avg. Click Rate", stat: "24.57%", previousStat: "28.62%", change: "4.05%", changeType: "decrease" },
-                            ]}
-                        />
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <div className="text-lg font-semibold text-gray-900">Total Events</div>
+                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
+                                        <div className="mt-2 text-sm text-gray-500">Since Sep 16, 2025</div>
+                                    </div>
+                                    <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
+                                        <Calendar className="h-6 w-6" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <div className="text-lg font-semibold text-gray-900">Last 30 Days</div>
+                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
+                                        <div className="mt-2 text-sm text-gray-500">Recent activity</div>
+                                    </div>
+                                    <div className="rounded-xl bg-green-50 p-3 text-green-600">
+                                        <Eye className="h-6 w-6" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <div className="text-lg font-semibold text-gray-900">Active Events</div>
+                                        <div className="mt-2 text-4xl font-bold text-gray-900">0</div>
+                                        <div className="mt-2 text-sm text-gray-500">Event types currently tracking</div>
+                                    </div>
+                                    <div className="rounded-xl bg-violet-50 p-3 text-violet-600">
+                                        <ShoppingCart className="h-6 w-6" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Events Table - Simple in card */}
