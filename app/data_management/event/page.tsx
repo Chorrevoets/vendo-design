@@ -137,7 +137,13 @@ export default function EventsPage() {
             const statusOk = statusFilter === "all" || m.status === statusFilter
             return typeOk && sourceOk && statusOk && nameOk
         })
-        return filteredRows
+        // Order by status priority: Error (red) -> Warning (orange) -> Healthy (green) -> Inactive (inactive)
+        const statusWeight: Record<string, number> = { red: 0, orange: 1, green: 2, inactive: 3 }
+        return [...filteredRows].sort((a, b) => {
+            const wa = statusWeight[a.status] ?? 99
+            const wb = statusWeight[b.status] ?? 99
+            return wa - wb
+        })
     }, [metrics, typeFilter, sourceFilter, statusFilter, searchQuery])
 
     const eventProperties = useMemo(() => ([
