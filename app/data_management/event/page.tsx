@@ -459,7 +459,6 @@ export default function EventsPage() {
                                                                 <dd className="mt-2">
                                                                     <div className="text-2xl font-semibold text-green-600">0</div>
                                                                     <div className="mt-1 text-sm text-gray-600">No days with missing data</div>
-                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-green-50 px-3 py-1.5 text-sm font-semibold text-green-700 ring-1 ring-inset ring-green-200 hover:bg-green-100">View Chart</button>
                                                                 </dd>
                                                             </div>
                                                             <div className="px-4 py-5 sm:p-6">
@@ -470,7 +469,6 @@ export default function EventsPage() {
                                                                         <span className="inline-flex items-center rounded-md bg-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">AI</span>
                                                                         <AlertTriangle className="h-5 w-5 text-red-500" />
                                                                     </div>
-                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 ring-1 ring-inset ring-rose-200 hover:bg-rose-100">View Chart</button>
                                                                 </dd>
                                                             </div>
                                                             <div className="px-4 py-5 sm:p-6">
