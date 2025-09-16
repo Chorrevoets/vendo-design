@@ -432,7 +432,7 @@ export default function EventsPage() {
                                                         <div className="overflow-hidden rounded-lg bg-white shadow">
                                                             <div className="px-4 py-5 sm:p-6">
                                                                 <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-1">
-                                                                    <span>Description</span>
+                                                                    <span>Event Description</span>
                                                                     <button
                                                                         type="button"
                                                                         className="text-gray-400 hover:text-gray-600"
