@@ -386,12 +386,12 @@ export default function EventsPage() {
                                     </div>
                                     <div className="relative flex h-full flex-col bg-white shadow-xl">
                                         <div className="sticky top-0 z-10 bg-white px-4 sm:px-6 h-[61px] border-b flex items-center">
-                                            <h2 className="text-base font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</h2>
+                                            <h2 className="text-lg font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</h2>
                                         </div>
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
                                             <Tabs defaultValue="properties" className="space-y-3">
                                                 <TabsList>
-                                                    <TabsTrigger value="properties" className="text-lg rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
+                                                    <TabsTrigger value="properties" className="text-base rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
                                                         <span className="flex items-center gap-2">
                                                             Event Details
                                                             <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">5 Errors</span>
@@ -400,7 +400,7 @@ export default function EventsPage() {
                                                     <TooltipProvider>
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
-                                                                <TabsTrigger value="dataQuality" className="text-lg rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
+                                                                <TabsTrigger value="dataQuality" className="text-base rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
                                                                     <span className="flex items-center gap-2">
                                                                         Data Quality
                                                                         <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">6 Issues</span>
@@ -476,7 +476,7 @@ export default function EventsPage() {
                                                                 <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
                                                                     <Sparkles className="h-4 w-4 text-white" />
                                                                     Generate Missing (0)
-                                                                </button>
+                                                            </button>
                                                                 {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
