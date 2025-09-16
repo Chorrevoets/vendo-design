@@ -447,7 +447,7 @@ export default function EventsPage() {
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center justify-between">
-                                                            <div className="text-sm font-semibold text-gray-900">Properties ({eventProperties.length})</div>
+                                                            <div />
                                                             <div className="flex items-center gap-3">
                                                                 <div className="w-48">
                                                                     <Select value={propertyFilter} onValueChange={(v) => setPropertyFilter(v)}>
