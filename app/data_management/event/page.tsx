@@ -21,6 +21,7 @@ export default function EventsPage() {
     const [enabledByName, setEnabledByName] = useState<Record<string, boolean>>({})
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [expandedByProp, setExpandedByProp] = useState<Record<string, boolean>>({})
+    const [requiredByProp, setRequiredByProp] = useState<Record<string, boolean>>({})
 
     // Force narrow layout on this page
     useEffect(() => {
@@ -211,6 +212,14 @@ export default function EventsPage() {
             status: "live",
         },
     ]), [])
+
+    useEffect(() => {
+        const defaults: Record<string, boolean> = {}
+        eventProperties.forEach(p => {
+            defaults[p.name] = false
+        })
+        setRequiredByProp(defaults)
+    }, [eventProperties])
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -468,6 +477,7 @@ export default function EventsPage() {
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">First Seen</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
                                                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sample Values</th>
+                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Required</th>
                                                                         <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Status</th>
                                                                     </tr>
                                                                 </thead>
@@ -507,6 +517,14 @@ export default function EventsPage() {
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.first}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
                                                                             <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
+                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm" onClick={(e) => e.stopPropagation()}>
+                                                                                <Switch
+                                                                                    checked={requiredByProp[p.name] ?? false}
+                                                                                    onCheckedChange={(checked) => setRequiredByProp(prev => ({ ...prev, [p.name]: checked }))}
+                                                                                    aria-label={`Toggle required for ${p.name}`}
+                                                                                    className="!h-5 !w-10 data-[state=checked]:!bg-green-500"
+                                                                                />
+                                                                            </td>
                                                                             <td className="align-top whitespace-nowrap py-4 pl-3 pr-4 text-sm sm:pr-6">
                                                                                 <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">{p.status}</span>
                                                                             </td>
