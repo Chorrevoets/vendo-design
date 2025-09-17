@@ -6,7 +6,11 @@ import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { X, AlertTriangle, Sparkles, CheckCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
+import { X, AlertTriangle, Sparkles, CheckCircle, ArrowUp, ArrowDown } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -21,6 +25,19 @@ export default function EventsPage() {
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [expandedByProp, setExpandedByProp] = useState<Record<string, boolean>>({})
     const [requiredByProp, setRequiredByProp] = useState<Record<string, boolean>>({})
+    const [sourceFilterOpen, setSourceFilterOpen] = useState(false)
+    const [selectedSourcesDraft, setSelectedSourcesDraft] = useState<Set<string>>(new Set())
+    const [appliedSources, setAppliedSources] = useState<string[]>([])
+    const [eventSearchOpen, setEventSearchOpen] = useState(false)
+    const [eventSearchDraft, setEventSearchDraft] = useState("")
+    const [lastSeenFilterOpen, setLastSeenFilterOpen] = useState(false)
+    const [lastSeenSort, setLastSeenSort] = useState<"asc" | "desc" | null>(null)
+    const [statusColFilterOpen, setStatusColFilterOpen] = useState(false)
+    const [selectedStatusesDraft, setSelectedStatusesDraft] = useState<Set<"Error" | "Warning" | "Healthy">>(new Set())
+    const [appliedStatuses, setAppliedStatuses] = useState<Array<"Error" | "Warning" | "Healthy">>([])
+    const [enabledFilterOpen, setEnabledFilterOpen] = useState(false)
+    const [selectedEnabledDraft, setSelectedEnabledDraft] = useState<Set<"Enabled" | "Disabled">>(new Set())
+    const [appliedEnabled, setAppliedEnabled] = useState<Array<"Enabled" | "Disabled">>([])
 
     // Force narrow layout on this page
     useEffect(() => {
@@ -135,19 +152,40 @@ export default function EventsPage() {
                 (typeFilter === "custom" && m.type === "Custom") ||
                 (typeFilter === "funnel" && m.type === "Funnel")
 
-            const sourceOk = sourceFilter === "all" || m.sources.includes(sourceFilter)
+            const headerSourceOk = sourceFilter === "all" || m.sources.includes(sourceFilter)
+            const sourcesAppliedOk = appliedSources.length === 0 || appliedSources.some(s => m.sources.includes(s))
+            const sourceOk = headerSourceOk && sourcesAppliedOk
             const nameOk = searchQuery.trim() === "" || m.name.toLowerCase().includes(searchQuery.trim().toLowerCase())
             const statusOk = statusFilter === "all" || m.status === statusFilter
-            return typeOk && sourceOk && statusOk && nameOk
+
+            // Column Status filter (Error/Warning/Healthy)
+            const statusMap: Record<"Error" | "Warning" | "Healthy", string> = { Error: "red", Warning: "orange", Healthy: "green" }
+            const statusColOk =
+                appliedStatuses.length === 0 || appliedStatuses.some(label => m.status === statusMap[label])
+
+            // Column Enabled filter
+            const allowedEnabledFlags = new Set(appliedEnabled.map(v => v === "Enabled"))
+            const enabledFlag = (enabledByName[m.name] ?? true)
+            const enabledOk = allowedEnabledFlags.size === 0 || allowedEnabledFlags.has(enabledFlag)
+
+            return typeOk && sourceOk && statusOk && statusColOk && enabledOk && nameOk
         })
-        // Order by status priority: Error (red) -> Warning (orange) -> Healthy (green) -> Inactive (inactive)
+        // Sorting
+        if (lastSeenSort) {
+            return [...filteredRows].sort((a, b) => {
+                const ta = new Date(a.lastSeen).getTime()
+                const tb = new Date(b.lastSeen).getTime()
+                return lastSeenSort === "asc" ? ta - tb : tb - ta
+            })
+        }
+        // Default: Order by status priority: Error (red) -> Warning (orange) -> Healthy (green) -> Inactive (inactive)
         const statusWeight: Record<string, number> = { red: 0, orange: 1, green: 2, inactive: 3 }
         return [...filteredRows].sort((a, b) => {
             const wa = statusWeight[a.status] ?? 99
             const wb = statusWeight[b.status] ?? 99
             return wa - wb
         })
-    }, [metrics, typeFilter, sourceFilter, statusFilter, searchQuery])
+    }, [metrics, typeFilter, sourceFilter, statusFilter, searchQuery, appliedSources, appliedStatuses, appliedEnabled, lastSeenSort, enabledByName])
 
     const eventProperties = useMemo(() => ([
         {
@@ -220,6 +258,32 @@ export default function EventsPage() {
         setRequiredByProp(defaults)
     }, [eventProperties])
 
+    // Sync draft selections with applied sources when opening the popover
+    useEffect(() => {
+        if (sourceFilterOpen) {
+            setSelectedSourcesDraft(new Set(appliedSources))
+        }
+    }, [sourceFilterOpen, appliedSources])
+
+    useEffect(() => {
+        if (eventSearchOpen) {
+            setEventSearchDraft(searchQuery)
+        }
+    }, [eventSearchOpen, searchQuery])
+
+    // Sync drafts for Status/Enabled when opening their popovers
+    useEffect(() => {
+        if (statusColFilterOpen) {
+            setSelectedStatusesDraft(new Set(appliedStatuses))
+        }
+    }, [statusColFilterOpen, appliedStatuses])
+
+    useEffect(() => {
+        if (enabledFilterOpen) {
+            setSelectedEnabledDraft(new Set(appliedEnabled))
+        }
+    }, [enabledFilterOpen, appliedEnabled])
+
     return (
         <div className="min-h-screen bg-gray-50">
             <DoubleLayeredMenu
@@ -231,14 +295,7 @@ export default function EventsPage() {
 
             <HeaderFilter
                 forceNarrowLayout
-                showTypeAsSearch
-                searchValue={searchQuery}
-                onSearchChange={setSearchQuery}
-                sourceValue={sourceFilter}
-                onSourceChange={setSourceFilter}
-                sourceOptions={sourceOptions}
-                statusValue={statusFilter}
-                onStatusChange={setStatusFilter}
+                showFilters={false}
                 showActionButton={false}
                 showMenu={false}
             />
@@ -314,11 +371,253 @@ export default function EventsPage() {
                                             </colgroup>
                                             <thead className="bg-gray-50">
                                                 <tr>
-                                                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Event</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sources</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Enabled</th>
+                                                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                        <Popover open={eventSearchOpen} onOpenChange={setEventSearchOpen}>
+                                                            <PopoverTrigger asChild>
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                    <span>Event</span>
+                                                                    <img src={searchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="start" className="w-72 p-3">
+                                                                <div className="space-y-2">
+                                                                    <div className="relative">
+                                                                        <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                                                                        <Input
+                                                                            value={eventSearchDraft}
+                                                                            onChange={(e) => setEventSearchDraft(e.target.value)}
+                                                                            placeholder="Search events..."
+                                                                            className="h-9 pl-8"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="pt-1 flex items-center gap-2">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => { setSearchQuery(""); setEventSearchDraft(""); setEventSearchOpen(false) }}
+                                                                        >
+                                                                            Clear
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => { setSearchQuery(eventSearchDraft); setEventSearchOpen(false) }}
+                                                                        >
+                                                                            Search
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <Popover open={sourceFilterOpen} onOpenChange={setSourceFilterOpen}>
+                                                            <PopoverTrigger asChild>
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                    <span>Sources</span>
+                                                                    <img src={appliedSources.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                <div className="space-y-2">
+                                                                    {[
+                                                                        "Shopify",
+                                                                        "Meta",
+                                                                        "TicTok",
+                                                                        "Google Ads",
+                                                                        "Mix Panel",
+                                                                    ].map((label) => {
+                                                                        const checked = selectedSourcesDraft.has(label)
+                                                                        return (
+                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                <Checkbox
+                                                                                    checked={checked}
+                                                                                    onCheckedChange={(v) => {
+                                                                                        setSelectedSourcesDraft(prev => {
+                                                                                            const next = new Set(prev)
+                                                                                            if (v) next.add(label); else next.delete(label)
+                                                                                            return next
+                                                                                        })
+                                                                                    }}
+                                                                                />
+                                                                                <span>{label}</span>
+                                                                            </label>
+                                                                        )
+                                                                    })}
+                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedSources([])
+                                                                                setSelectedSourcesDraft(new Set())
+                                                                                setSourceFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Clear filters
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedSources(Array.from(selectedSourcesDraft))
+                                                                                setSourceFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Filter
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <Popover open={lastSeenFilterOpen} onOpenChange={setLastSeenFilterOpen}>
+                                                            <PopoverTrigger asChild>
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                    <span>Last Seen</span>
+                                                                    <img src={lastSeenSort ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="start" className="w-56 p-2">
+                                                                <div className="space-y-1">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-left"
+                                                                        onClick={() => { setLastSeenSort("asc"); setLastSeenFilterOpen(false) }}
+                                                                    >
+                                                                        <ArrowUp className="h-4 w-4" />
+                                                                        Sort Ascending
+                                                                    </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-left"
+                                                                        onClick={() => { setLastSeenSort("desc"); setLastSeenFilterOpen(false) }}
+                                                                    >
+                                                                        <ArrowDown className="h-4 w-4" />
+                                                                        Sort Descending
+                                                                    </button>
+                                                                    {lastSeenSort && (
+                                                                        <div className="pt-2">
+                                                                            <Button
+                                                                                variant="outline"
+                                                                                className="h-9 w-full"
+                                                                                onClick={() => { setLastSeenSort(null); setLastSeenFilterOpen(false) }}
+                                                                            >
+                                                                                Clear
+                                                                            </Button>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <Popover open={statusColFilterOpen} onOpenChange={setStatusColFilterOpen}>
+                                                            <PopoverTrigger asChild>
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                    <span>Status</span>
+                                                                    <img src={appliedStatuses.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                <div className="space-y-2">
+                                                                    {(["Error", "Warning", "Healthy"] as const).map((label) => {
+                                                                        const checked = selectedStatusesDraft.has(label)
+                                                                        return (
+                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                <Checkbox
+                                                                                    checked={checked}
+                                                                                    onCheckedChange={(v) => {
+                                                                                        setSelectedStatusesDraft(prev => {
+                                                                                            const next = new Set(prev)
+                                                                                            if (v) next.add(label); else next.delete(label)
+                                                                                            return next
+                                                                                        })
+                                                                                    }}
+                                                                                />
+                                                                                <span>{label}</span>
+                                                                            </label>
+                                                                        )
+                                                                    })}
+                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedStatuses([])
+                                                                                setSelectedStatusesDraft(new Set())
+                                                                                setStatusColFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Clear filters
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedStatuses(Array.from(selectedStatusesDraft))
+                                                                                setStatusColFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Filter
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </th>
+                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        <Popover open={enabledFilterOpen} onOpenChange={setEnabledFilterOpen}>
+                                                            <PopoverTrigger asChild>
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                    <span>Enabled</span>
+                                                                    <img src={appliedEnabled.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                <div className="space-y-2">
+                                                                    {(["Enabled", "Disabled"] as const).map((label) => {
+                                                                        const checked = selectedEnabledDraft.has(label)
+                                                                        return (
+                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                <Checkbox
+                                                                                    checked={checked}
+                                                                                    onCheckedChange={(v) => {
+                                                                                        setSelectedEnabledDraft(prev => {
+                                                                                            const next = new Set(prev)
+                                                                                            if (v) next.add(label); else next.delete(label)
+                                                                                            return next
+                                                                                        })
+                                                                                    }}
+                                                                                />
+                                                                                <span>{label}</span>
+                                                                            </label>
+                                                                        )
+                                                                    })}
+                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedEnabled([])
+                                                                                setSelectedEnabledDraft(new Set())
+                                                                                setEnabledFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Clear filters
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="h-9 flex-1"
+                                                                            onClick={() => {
+                                                                                setAppliedEnabled(Array.from(selectedEnabledDraft))
+                                                                                setEnabledFilterOpen(false)
+                                                                            }}
+                                                                        >
+                                                                            Filter
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </th>
                                                     <th scope="col" className="py-3.5 pl-3 pr-4 sm:pr-6"><span className="sr-only">Open</span></th>
                                                 </tr>
                                             </thead>
