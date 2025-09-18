@@ -130,6 +130,7 @@ export default function MetricsPage() {
 
             <HeaderFilter
                 forceNarrowLayout
+                title="Metrics"
                 typeValue={typeFilter}
                 onTypeChange={setTypeFilter}
                 sourceValue={sourceFilter}

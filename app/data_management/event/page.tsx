@@ -4,7 +4,7 @@ import DoubleLayeredMenu from "@/components/double-layered-menu"
 import TopDashboard from "@/components/top-dashboard"
 import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -38,6 +38,35 @@ export default function EventsPage() {
     const [enabledFilterOpen, setEnabledFilterOpen] = useState(false)
     const [selectedEnabledDraft, setSelectedEnabledDraft] = useState<Set<"Enabled" | "Disabled">>(new Set())
     const [appliedEnabled, setAppliedEnabled] = useState<Array<"Enabled" | "Disabled">>([])
+    const [showTrendsCard, setShowTrendsCard] = useState(false)
+    const trendsCardRef = useRef<HTMLDivElement | null>(null)
+    const propertiesTableRef = useRef<HTMLDivElement | null>(null)
+    const [statusTheme, setStatusTheme] = useState<"green" | "orange" | "red">("green")
+    const statusThemeClasses = useMemo(() => {
+        switch (statusTheme) {
+            case "orange":
+                return {
+                    title: "text-yellow-700",
+                    value: "text-yellow-700",
+                    sub: "text-yellow-600",
+                    icon: "text-yellow-400",
+                }
+            case "red":
+                return {
+                    title: "text-red-700",
+                    value: "text-red-700",
+                    sub: "text-red-600",
+                    icon: "text-red-400",
+                }
+            default:
+                return {
+                    title: "text-green-700",
+                    value: "text-green-700",
+                    sub: "text-green-600",
+                    icon: "text-emerald-400",
+                }
+        }
+    }, [statusTheme])
 
     // Force narrow layout on this page
     useEffect(() => {
@@ -102,10 +131,32 @@ export default function EventsPage() {
             firstSeen: "March 5, 2025",
             lastSeen: "Sep 5, 2025",
             count: 160,
-            sources: ["Meta", "Google", "Meta"],
+            sources: ["Meta"],
             status: "orange",
             description:
                 "The `$mp_session_record` event captures the start of a user's session recording, providing a snapshot of the user's environment and initial activity. This event signals the beginning of a recorded user session, enabling analysis of user",
+        },
+        {
+            name: "Cart page views",
+            type: "Event",
+            firstSeen: "May 2, 2025",
+            lastSeen: "Sep 7, 2025",
+            count: 4231,
+            sources: ["Google"],
+            status: "green",
+            description:
+                "Fires when a user views the cart page.",
+        },
+        {
+            name: "Product detail engagement",
+            type: "Custom",
+            firstSeen: "Jun 11, 2025",
+            lastSeen: "Sep 12, 2025",
+            count: 987,
+            sources: ["Meta"],
+            status: "orange",
+            description:
+                "Measures engagement on product detail pages.",
         },
         {
             name: "Check Out Conversion",
@@ -187,6 +238,24 @@ export default function EventsPage() {
         })
     }, [metrics, typeFilter, sourceFilter, statusFilter, searchQuery, appliedSources, appliedStatuses, appliedEnabled, lastSeenSort, enabledByName])
 
+    // Active filters/search indicators
+    const hasActiveSearch = searchQuery.trim() !== ""
+    const hasAppliedSources = appliedSources.length > 0
+    const hasAppliedStatuses = appliedStatuses.length > 0
+    const hasAppliedEnabled = appliedEnabled.length > 0
+    const hasTypeFilter = typeFilter !== "all"
+    const hasAnyActiveFilters = hasActiveSearch || hasAppliedSources || hasAppliedStatuses || hasAppliedEnabled || hasTypeFilter
+
+    const clearAllFilters = () => {
+        setSearchQuery("")
+        setAppliedSources([])
+        setAppliedStatuses([])
+        setAppliedEnabled([])
+        setTypeFilter("all")
+    }
+
+    // Removed global clear-all action per request
+
     const eventProperties = useMemo(() => ([
         {
             name: "$browser",
@@ -258,6 +327,88 @@ export default function EventsPage() {
         setRequiredByProp(defaults)
     }, [eventProperties])
 
+    // Drawer properties filtering helpers
+    const availablePropTypes = useMemo(() => {
+        const set = new Set<string>()
+        eventProperties.forEach((p, i) => {
+            const displayType = p.type === "unknown" ? (i % 2 === 0 ? "String" : "Integer") : p.type
+            set.add(displayType)
+        })
+        return Array.from(set)
+    }, [eventProperties])
+
+    // Drawer: Properties table filters/search state
+    const [propSearchOpen, setPropSearchOpen] = useState(false)
+    const [propSearchDraft, setPropSearchDraft] = useState("")
+    const [propSearchQuery, setPropSearchQuery] = useState("")
+
+    const [propTypeFilterOpen, setPropTypeFilterOpen] = useState(false)
+    const [selectedPropTypesDraft, setSelectedPropTypesDraft] = useState<Set<string>>(new Set())
+    const [appliedPropTypes, setAppliedPropTypes] = useState<string[]>([])
+
+    const [propLastSeenSort, setPropLastSeenSort] = useState<"asc" | "desc" | null>(null)
+    const [propCoverageSort, setPropCoverageSort] = useState<"asc" | "desc" | null>(null)
+
+    const [propRequiredFilterOpen, setPropRequiredFilterOpen] = useState(false)
+    const [selectedRequiredDraft, setSelectedRequiredDraft] = useState<Set<"Required" | "Optional">>(new Set())
+    const [appliedRequired, setAppliedRequired] = useState<Array<"Required" | "Optional">>([])
+
+    // Drawer: Additional controls
+    const [propSampleSearchOpen, setPropSampleSearchOpen] = useState(false)
+    const [propStatusFilterOpen, setPropStatusFilterOpen] = useState(false)
+    const [propSelectedStatusesDraft, setPropSelectedStatusesDraft] = useState<Set<string>>(new Set())
+    const [propAppliedStatuses, setPropAppliedStatuses] = useState<string[]>([])
+
+    const filteredProps = useMemo(() => {
+        // Start with original list paired with index for deterministic type calc
+        let rows = eventProperties.map((p, i) => ({ p, i }))
+
+        // Search by property name
+        if (propSearchQuery.trim() !== "") {
+            const q = propSearchQuery.trim().toLowerCase()
+            rows = rows.filter(({ p }) => p.name.toLowerCase().includes(q))
+        }
+
+        // Type filter
+        if (appliedPropTypes.length > 0) {
+            const need = new Set(appliedPropTypes)
+            rows = rows.filter(({ p, i }) => {
+                const displayType = p.type === "unknown" ? (i % 2 === 0 ? "String" : "Integer") : p.type
+                return need.has(displayType)
+            })
+        }
+
+        // Required filter
+        if (appliedRequired.length > 0) {
+            const allowed = new Set(appliedRequired.map(v => v === "Required"))
+            rows = rows.filter(({ p }) => allowed.has(requiredByProp[p.name] ?? false))
+        }
+
+        // Status filter
+        if (propAppliedStatuses.length > 0) {
+            const allowedStatuses = new Set(propAppliedStatuses)
+            rows = rows.filter(({ p }) => allowedStatuses.has(p.status))
+        }
+
+        // Sort by last seen
+        if (propCoverageSort) {
+            const coveragePool = [100, 95, 90, 85, 80, 70, 60, 50]
+            rows = [...rows].sort((a, b) => {
+                const ca = coveragePool[a.i % coveragePool.length]
+                const cb = coveragePool[b.i % coveragePool.length]
+                return propCoverageSort === "asc" ? ca - cb : cb - ca
+            })
+        } else if (propLastSeenSort) {
+            rows = [...rows].sort((a, b) => {
+                const ya = new Date(`${a.p.last}, 2025`).getTime()
+                const yb = new Date(`${b.p.last}, 2025`).getTime()
+                return propLastSeenSort === "asc" ? ya - yb : yb - ya
+            })
+        }
+
+        return rows
+    }, [eventProperties, propSearchQuery, appliedPropTypes, appliedRequired, propAppliedStatuses, propLastSeenSort, propCoverageSort, requiredByProp])
+
     // Sync draft selections with applied sources when opening the popover
     useEffect(() => {
         if (sourceFilterOpen) {
@@ -284,6 +435,37 @@ export default function EventsPage() {
         }
     }, [enabledFilterOpen, appliedEnabled])
 
+    // Sync drafts when popovers open
+    useEffect(() => {
+        if (propSearchOpen) setPropSearchDraft(propSearchQuery)
+    }, [propSearchOpen, propSearchQuery])
+    useEffect(() => {
+        if (propSampleSearchOpen) setPropSearchDraft(propSearchQuery)
+    }, [propSampleSearchOpen, propSearchQuery])
+    useEffect(() => {
+        if (propTypeFilterOpen) setSelectedPropTypesDraft(new Set(appliedPropTypes))
+    }, [propTypeFilterOpen, appliedPropTypes])
+    useEffect(() => {
+        if (propRequiredFilterOpen) setSelectedRequiredDraft(new Set(appliedRequired))
+    }, [propRequiredFilterOpen, appliedRequired])
+    useEffect(() => {
+        if (propStatusFilterOpen) setPropSelectedStatusesDraft(new Set(propAppliedStatuses))
+    }, [propStatusFilterOpen, propAppliedStatuses])
+
+    const propsHasActiveSearch = propSearchQuery.trim() !== ""
+    const propsHasTypes = appliedPropTypes.length > 0
+    const propsHasRequired = appliedRequired.length > 0
+    const propsHasAnyActive = propsHasActiveSearch || propsHasTypes || propsHasRequired || propLastSeenSort !== null || propCoverageSort !== null || propAppliedStatuses.length > 0
+
+    const clearAllPropFilters = () => {
+        setPropSearchQuery("")
+        setAppliedPropTypes([])
+        setAppliedRequired([])
+        setPropLastSeenSort(null)
+        setPropCoverageSort(null)
+        setPropAppliedStatuses([])
+    }
+
     return (
         <div className="min-h-screen bg-gray-50">
             <DoubleLayeredMenu
@@ -298,6 +480,7 @@ export default function EventsPage() {
                 showFilters={false}
                 showActionButton={false}
                 showMenu={false}
+                title="Events"
             />
 
             <div
@@ -320,7 +503,6 @@ export default function EventsPage() {
                                             <div className="text-2xl font-semibold text-gray-900">434</div>
                                             <span className="text-sm font-medium text-gray-500">Sep 16, 2025</span>
                                         </div>
-                                        <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
                                     </dd>
                                 </div>
                                 <div className="px-4 py-5 sm:p-6">
@@ -413,7 +595,7 @@ export default function EventsPage() {
                                                         <Popover open={sourceFilterOpen} onOpenChange={setSourceFilterOpen}>
                                                             <PopoverTrigger asChild>
                                                                 <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                    <span>Sources</span>
+                                                                    <span>Source</span>
                                                                     <img src={appliedSources.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
                                                                 </button>
                                                             </PopoverTrigger>
@@ -472,9 +654,15 @@ export default function EventsPage() {
                                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                         <Popover open={lastSeenFilterOpen} onOpenChange={setLastSeenFilterOpen}>
                                                             <PopoverTrigger asChild>
-                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700 whitespace-nowrap">
                                                                     <span>Last Seen</span>
-                                                                    <img src={lastSeenSort ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                    {lastSeenSort === "asc" ? (
+                                                                        <ArrowUp className="h-4 w-4" />
+                                                                    ) : lastSeenSort === "desc" ? (
+                                                                        <ArrowDown className="h-4 w-4" />
+                                                                    ) : (
+                                                                        <img src="/List.svg" alt="" className="h-4 w-4" />
+                                                                    )}
                                                                 </button>
                                                             </PopoverTrigger>
                                                             <PopoverContent align="start" className="w-56 p-2">
@@ -620,6 +808,76 @@ export default function EventsPage() {
                                                     </th>
                                                     <th scope="col" className="py-3.5 pl-3 pr-4 sm:pr-6"><span className="sr-only">Open</span></th>
                                                 </tr>
+                                                {hasAnyActiveFilters && (
+                                                    <tr>
+                                                        <th colSpan={6} className="px-4 pt-0 pb-3 sm:px-6">
+                                                            <div className="flex flex-wrap items-center gap-1">
+                                                                {hasTypeFilter && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setTypeFilter("all")}
+                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                    >
+                                                                        <span>Type: {typeFilter === "event" ? "Event" : typeFilter === "custom" ? "Custom" : "Funnel"}</span>
+                                                                        <X className="h-3 w-3" />
+                                                                    </button>
+                                                                )}
+                                                                {hasActiveSearch && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setSearchQuery("")}
+                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                    >
+                                                                        <span>Search: {searchQuery}</span>
+                                                                        <X className="h-3 w-3" />
+                                                                    </button>
+                                                                )}
+                                                                {appliedSources.map((s) => (
+                                                                    <button
+                                                                        key={`source-${s}`}
+                                                                        type="button"
+                                                                        onClick={() => setAppliedSources(prev => prev.filter(v => v !== s))}
+                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                    >
+                                                                        <span>Source: {s}</span>
+                                                                        <X className="h-3 w-3" />
+                                                                    </button>
+                                                                ))}
+                                                                {appliedStatuses.map((s) => (
+                                                                    <button
+                                                                        key={`status-${s}`}
+                                                                        type="button"
+                                                                        onClick={() => setAppliedStatuses(prev => prev.filter(v => v !== s))}
+                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                    >
+                                                                        <span>Status: {s}</span>
+                                                                        <X className="h-3 w-3" />
+                                                                    </button>
+                                                                ))}
+                                                                {appliedEnabled.map((e) => (
+                                                                    <button
+                                                                        key={`enabled-${e}`}
+                                                                        type="button"
+                                                                        onClick={() => setAppliedEnabled(prev => prev.filter(v => v !== e))}
+                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                    >
+                                                                        <span>{e}</span>
+                                                                        <X className="h-3 w-3" />
+                                                                    </button>
+                                                                ))}
+                                                                <div className="ml-auto">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={clearAllFilters}
+                                                                        className="text-xs font-normal text-gray-500 hover:text-gray-700 hover:underline underline-offset-2"
+                                                                    >
+                                                                        Clear all
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                )}
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
                                                 {filtered.map((m, idx) => (
@@ -670,6 +928,13 @@ export default function EventsPage() {
 
                     <div className="fixed inset-0 z-[10000002] overflow-hidden">
                         <div className="absolute inset-0 overflow-hidden">
+                            {/* Overlay controls to the left */}
+                            <div className="fixed left-2 top-2 z-[10000005] flex flex-col gap-2">
+                                <button className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-black shadow-sm hover:bg-gray-50" onClick={() => setStatusTheme("green")}>Green</button>
+                                <button className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-black shadow-sm hover:bg-gray-50" onClick={() => setStatusTheme("orange")}>Orange</button>
+                                <button className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-black shadow-sm hover:bg-gray-50" onClick={() => setStatusTheme("red")}>Red</button>
+                            </div>
+
                             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
                                 <div className="pointer-events-auto relative w-screen max-w-lg sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl transform transition duration-500 ease-in-out translate-x-0">
                                     {/* Outside close button */}
@@ -689,6 +954,29 @@ export default function EventsPage() {
                                             <h2 className="text-lg font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</h2>
                                         </div>
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
+                                            {(statusTheme === "red" || statusTheme === "orange") && (
+                                                <div className={`border-l-4 p-4 ${statusTheme === "orange" ? "border-yellow-400 bg-yellow-50" : "border-red-400 bg-red-50"}`}>
+                                                    <div className="flex items-center">
+                                                        <div className="shrink-0">
+                                                            <img src={statusTheme === "orange" ? "/Orange.svg" : "/Red.svg"} alt="" className="h-5 w-5" />
+                                                        </div>
+                                                        <div className="ml-3 flex-1">
+                                                            <p className={`text-sm ${statusTheme === "orange" ? "text-yellow-700" : "text-red-700"}`}>
+                                                                {statusTheme === "orange" ?
+                                                                    "2 properties miss descriptions, reducing AI accuracy and recommendations." :
+                                                                    "5 properties miss descriptions, reducing AI accuracy and recommendations."}
+                                                            </p>
+                                                        </div>
+                                                        <div className="ml-3">
+                                                            <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50">
+                                                                <img src="/AI.svg" alt="" className="h-3.5 w-3.5" />
+                                                                Generate missing descriptions
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {/* Drawer stats strip - Tailwind stats pattern */}
                                             <div>
                                                 <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
@@ -699,7 +987,6 @@ export default function EventsPage() {
                                                                 <div className="text-2xl font-semibold text-gray-900">434</div>
                                                                 <span className="text-sm font-medium text-gray-500">Sep 16, 2025</span>
                                                             </div>
-                                                            <div className="mt-2 text-sm font-medium text-green-600">Sync Status: Active</div>
                                                         </dd>
                                                     </div>
                                                     <div className="px-4 py-5 sm:p-6">
@@ -719,252 +1006,500 @@ export default function EventsPage() {
                                                             </div>
                                                         </dd>
                                                     </div>
+
+                                                    {/* Horizontal divider between rows */}
+                                                    <div className="hidden md:block md:col-span-3 h-px bg-gray-200" />
+
+                                                    {/* Row 2 (previously second strip) */}
+                                                    <div className="px-4 py-5 sm:p-6">
+                                                        <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
+                                                            <span>{statusTheme === "red" ? "Data Incomplete" : statusTheme === "orange" ? "Some Data Missing" : "All data is complete"}</span>
+                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
+                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
+                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
+                                                            </svg>
+                                                        </dt>
+                                                        <dd className="mt-1">
+                                                            <div className="flex items-baseline gap-2">
+                                                                <div className={`text-2xl font-semibold ${statusThemeClasses.value}`}>{statusTheme === "red" ? 11 : statusTheme === "orange" ? 1 : 0}</div>
+                                                                <span className={`text-sm font-medium ${statusThemeClasses.sub}`}>missing days</span>
+                                                            </div>
+                                                        </dd>
+                                                        {(statusTheme === "red" || statusTheme === "orange") && (
+                                                            <dd className="mt-3 mb-1 flex justify-center">
+                                                                <button
+                                                                    type="button"
+                                                                    className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
+                                                                    onClick={() => { setPropCoverageSort("asc"); propertiesTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }}
+                                                                >
+                                                                    <img src="/Sort.svg" alt="" className="h-3.5 w-3.5" />
+                                                                    Show Low Coverage Properties
+                                                                </button>
+                                                            </dd>
+                                                        )}
+                                                    </div>
+                                                    <div className="px-4 py-5 sm:p-6">
+                                                        <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
+                                                            <span>{statusTheme === "red" ? "Data outside normal range" : statusTheme === "orange" ? "Above normal range" : "Data within normal range"}</span>
+                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
+                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
+                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
+                                                            </svg>
+                                                        </dt>
+                                                        <dd className="mt-1">
+                                                            <div className="flex items-baseline gap-2">
+                                                                <div className={`text-2xl font-semibold ${statusThemeClasses.value}`}>{statusTheme === "red" ? 13 : statusTheme === "orange" ? 1 : 0}</div>
+                                                                <span className={`text-sm font-medium ${statusThemeClasses.sub}`}>{statusTheme === "red" ? "critical spikes detected" : "spikes detected"}</span>
+                                                            </div>
+                                                        </dd>
+                                                        <dd className="mt-3 mb-1 flex justify-center">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
+                                                                onClick={() => {
+                                                                    setShowTrendsCard(true)
+                                                                    setTimeout(() => {
+                                                                        trendsCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                                                    }, 0)
+                                                                }}
+                                                            >
+                                                                <img src="/Key-result.svg" alt="" className="h-3.5 w-3.5" />
+                                                                Show Volume Trends
+                                                            </button>
+                                                        </dd>
+                                                    </div>
+                                                    <div className="px-4 py-5 sm:p-6">
+                                                        <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
+                                                            <span>{statusTheme === "red" ? "Insufficient Coverage" : statusTheme === "orange" ? "Moderate Coverage" : "Healthy Coverage"}</span>
+                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
+                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
+                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
+                                                            </svg>
+                                                        </dt>
+                                                        <dd className="mt-1">
+                                                            <div className="flex items-baseline gap-2">
+                                                                <div className={`text-2xl font-semibold ${statusThemeClasses.value}`}>{statusTheme === "red" ? 66 : statusTheme === "orange" ? 2 : 0}</div>
+                                                                <span className={`text-sm font-medium ${statusThemeClasses.sub}`}>properties with low coverage</span>
+                                                            </div>
+                                                        </dd>
+                                                        {(statusTheme === "red" || statusTheme === "orange") && (
+                                                            <dd className="mt-3 mb-1 flex justify-center">
+                                                                <button
+                                                                    type="button"
+                                                                    className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
+                                                                    onClick={() => { setPropCoverageSort("asc"); propertiesTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }}
+                                                                >
+                                                                    <img src="/Sort.svg" alt="" className="h-3.5 w-3.5" />
+                                                                    Show Low Coverage Properties
+                                                                </button>
+                                                            </dd>
+                                                        )}
+                                                    </div>
                                                 </dl>
                                             </div>
-                                            <Tabs defaultValue="properties" className="space-y-3">
-                                                <TabsList>
-                                                    <TabsTrigger value="properties" className="text-base rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
-                                                        <span className="flex items-center gap-2">
-                                                            Event Details
-                                                            <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">5 Errors</span>
-                                                        </span>
-                                                    </TabsTrigger>
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <TabsTrigger value="dataQuality" className="text-base rounded-md data-[state=active]:bg-white data-[state=active]:text-black">
-                                                                    <span className="flex items-center gap-2">
-                                                                        Data Quality
-                                                                        <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 ring-1 ring-inset ring-orange-200">6 Issues</span>
-                                                                    </span>
-                                                                </TabsTrigger>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent className="bg-black text-white border-none">
-                                                                6 issues detected (Possible volume spike/drop detected, 5 properties with low schema coverage)
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-                                                </TabsList>
 
-                                                <TabsContent value="dataQuality">
-                                                    {/* Secondary dashboard strip shown only for Data Quality */}
-                                                    <div>
-                                                        <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                <dt className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                                                                    Missing Data
-                                                                    <CheckCircle className="h-5 w-5 text-green-500" />
-                                                                </dt>
-                                                                <dd className="mt-2">
-                                                                    <div className="text-2xl font-semibold text-green-600">0</div>
-                                                                    <div className="mt-1 text-sm text-gray-600">No days with missing data</div>
-                                                                </dd>
-                                                            </div>
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                <dt className="text-base font-semibold text-gray-900">Volume Anomaly</dt>
-                                                                <dd className="mt-2">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="text-xl font-semibold text-orange-600">Possible spike in activity</div>
-                                                                        <AlertTriangle className="h-5 w-5 text-red-500" />
-                                                                    </div>
-                                                                </dd>
-                                                            </div>
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                <dt className="text-base font-semibold text-gray-900">Properties with low schema coverage</dt>
-                                                                <dd className="mt-2">
-                                                                    <div className="text-2xl font-semibold text-red-600">5</div>
-                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700">Fix Issues</button>
-                                                                </dd>
-                                                            </div>
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                <dt className="text-base font-semibold text-gray-900">New Properties</dt>
-                                                                <dd className="mt-2">
-                                                                    <div className="text-2xl font-semibold text-orange-600">0</div>
-                                                                    <button type="button" className="mt-3 inline-flex items-center justify-center rounded-md bg-orange-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-orange-600">Review and Add</button>
-                                                                </dd>
-                                                            </div>
-                                                        </dl>
+
+                                            {showTrendsCard && (
+                                                <div ref={trendsCardRef} className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                                                    <div className="bg-gray-50 px-4 py-3.5 sm:px-6">
+                                                        <div className="flex items-center justify-between">
+                                                            <h3 className="text-sm font-semibold text-gray-900">{selectedMetric?.name ?? "Event"} Volume Trend</h3>
+                                                            <button
+                                                                type="button"
+                                                                aria-label="Close"
+                                                                className="text-gray-400 hover:text-gray-600"
+                                                                onClick={() => setShowTrendsCard(false)}
+                                                            >
+                                                                <X className="h-4 w-4" />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="mt-6 space-y-3">
-                                                        {/* Volume Trends with Anomaly Detection (Last 30 Days) */}
-                                                        <div className="overflow-hidden rounded-lg bg-white shadow">
-                                                            <div className="px-4 py-5 sm:px-6">
-                                                                <h3 className="text-base font-semibold text-gray-900">Volume Trends with Anomaly Detection (Last 30 Days)</h3>
-                                                                <p className="mt-1 text-sm text-gray-500">Gray bars show expected variance (±2.5 standard deviations)</p>
-                                                            </div>
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                {/* Lightweight SVG placeholder chart */}
-                                                                <div className="relative w-full rounded-md border border-gray-200 bg-gray-50">
-                                                                    <svg viewBox="0 0 800 300" className="w-full h-64">
-                                                                        {/* expected variance band */}
-                                                                        <path d="M0 200 C100 190 200 180 300 185 C400 190 500 195 600 190 C700 185 800 195 800 195 L800 240 C700 235 600 230 500 235 C400 240 300 245 200 240 C100 235 0 240 0 240 Z" fill="#eef2f7" />
-                                                                        {/* expected (dashed) */}
-                                                                        <path d="M0 210 C100 205 200 200 300 205 C400 210 500 215 600 210 C700 205 800 210 800 210" stroke="#9aa3b2" strokeDasharray="6 6" fill="none" strokeWidth="2" />
-                                                                        {/* actual line */}
-                                                                        <polyline points="0,220 50,140 100,230 150,240 200,170 250,160 300,240 350,100 400,240 450,260 500,230 550,180 600,200 650,120 700,240 750,280 800,230" fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
-                                                                        {/* medium anomaly dot */}
-                                                                        <circle cx="360" cy="100" r="6" fill="#f59e0b" stroke="#fff" strokeWidth="2" />
+                                                    <div className="px-4 py-5 sm:p-6 space-y-4">
+                                                        <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4">
+                                                            <div className="flex items-center">
+                                                                <div className="shrink-0">
+                                                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-500">
+                                                                        <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
+                                                                        <path d="M12 7v6" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"></path>
+                                                                        <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
                                                                     </svg>
                                                                 </div>
-
-                                                                {/* Anomaly summary */}
-                                                                <div className="mt-4 rounded-md border border-yellow-200 bg-yellow-50 p-4 text-sm text-gray-800">
-                                                                    <div className="font-semibold mb-1">Anomaly Summary</div>
-                                                                    1 anomalies detected in the last 30 days (0 high severity and 1 medium severity)
+                                                                <div className="ml-3 flex-1">
+                                                                    <p className="text-sm text-yellow-700">
+                                                                        1 anomalies detected in the last 30 days (0 high severity and 1 medium severity)
+                                                                    </p>
                                                                 </div>
-
-                                                                {/* Legend */}
-                                                                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-700">
-                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-blue-600"></span> Actual Volume</div>
-                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gray-400"></span> Expected Volume</div>
-                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gray-200 border border-gray-300"></span> ±2.5 Standard Deviations</div>
-                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-red-600"></span> High Anomaly</div>
-                                                                    <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span> Medium Anomaly</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </TabsContent>
-
-                                                <TabsContent value="properties">
-                                                    <div className="space-y-3">
-                                                        {/* Description card with header */}
-                                                        <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
-                                                            <div className="bg-gray-50 px-4 py-3.5 sm:px-6">
-                                                                <h3 className="text-sm font-semibold text-gray-900">Event Description</h3>
-                                                            </div>
-                                                            <div className="px-4 py-5 sm:p-6">
-                                                                <div className="flex items-center gap-2 mb-2">
-                                                                    <div className="text-sm font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</div>
-                                                                    <button
-                                                                        type="button"
-                                                                        className="text-gray-400 hover:text-gray-600"
-                                                                        aria-label="Edit event name and description"
-                                                                    >
-                                                                        <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                <div className="ml-3">
+                                                                    <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50" onClick={() => { setPropCoverageSort("asc"); propertiesTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }}>
+                                                                        <img src="/Sort.svg" alt="" className="h-3.5 w-3.5" />
+                                                                        Show Low Coverage Properties
                                                                     </button>
                                                                 </div>
-                                                                <p className="text-sm text-gray-700 leading-6">
-                                                                    The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="mt-4 sm:mt-6 flex items-center justify-between">
-                                                            <div />
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="w-48">
-                                                                    <Select value={propertyFilter} onValueChange={(v) => setPropertyFilter(v)}>
-                                                                        <SelectTrigger className="h-9">
-                                                                            <SelectValue placeholder="All Properties" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="all">All Properties</SelectItem>
-                                                                            <SelectItem value="issues">Has Issues</SelectItem>
-                                                                            <SelectItem value="low-coverage">Low Coverage</SelectItem>
-                                                                            <SelectItem value="new">New Properties</SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100">
-                                                                    <AlertTriangle className="h-4 w-4" />
-                                                                    View Property Anomalies
-                                                                </button>
-                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                                                                    <Sparkles className="h-4 w-4" />
-                                                                    Generate All
-                                                                </button>
-                                                                <button type="button" className="inline-flex items-center gap-2 rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800">
-                                                                    <Sparkles className="h-4 w-4 text-white" />
-                                                                    Generate Missing (0)
-                                                                </button>
-                                                                {/* Removed Add Property button as requested */}
                                                             </div>
                                                         </div>
 
-                                                        <div className="overflow-hidden shadow outline outline-1 outline-black/5 sm:rounded-lg">
-                                                            <table className="relative min-w-full divide-y divide-gray-300">
-                                                                <thead className="bg-gray-50">
-                                                                    <tr>
-                                                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Event Properties ({eventProperties.length})</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Seen</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sample Values</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Required</th>
-                                                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Coverage</th>
-                                                                        <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Status</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody className="divide-y divide-gray-200 bg-white">
-                                                                    {eventProperties.map((p, idx) => (
-                                                                        <tr key={p.name}>
-                                                                            <td className="align-top py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                                                                <div className="flex items-center gap-2">
-                                                                                    <span className="font-medium text-gray-900">{p.name}</span>
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        className="text-gray-400 hover:text-gray-600"
-                                                                                        aria-label={`Edit ${p.name} name and description`}
-                                                                                    >
-                                                                                        <img src="/New-chat.svg" alt="" className="h-4 w-4" />
-                                                                                    </button>
-                                                                                </div>
-                                                                                <div className="mt-1 text-gray-600">
-                                                                                    {expandedByProp[p.name]
-                                                                                        ? p.description
-                                                                                        : (p.description.length > 240 ? p.description.slice(0, 240) + "…" : p.description)
-                                                                                    }
-                                                                                    {p.description.length > 240 && (
-                                                                                        <button
-                                                                                            type="button"
-                                                                                            className="ml-2 text-gray-500 hover:text-gray-700"
-                                                                                            onClick={() => setExpandedByProp(prev => ({ ...prev, [p.name]: !prev[p.name] }))}
-                                                                                        >
-                                                                                            {expandedByProp[p.name] ? "Less" : "More"}
-                                                                                        </button>
-                                                                                    )}
-                                                                                </div>
-                                                                            </td>
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-700">
-                                                                                {p.type === "unknown" ? (idx % 2 === 0 ? "String" : "Integer") : p.type}
-                                                                            </td>
-                                                                            {
-                                                                                /* Coverage column with color coding */
-                                                                            }
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
-                                                                            <td className="align-top whitespace-nowrap px-3 py-4 text-sm" onClick={(e) => e.stopPropagation()}>
-                                                                                <Switch
-                                                                                    checked={requiredByProp[p.name] ?? false}
-                                                                                    onCheckedChange={(checked) => setRequiredByProp(prev => ({ ...prev, [p.name]: checked }))}
-                                                                                    aria-label={`Toggle required for ${p.name}`}
-                                                                                    className="!h-5 !w-10 data-[state=checked]:!bg-green-500"
-                                                                                />
-                                                                            </td>
-                                                                            {(() => {
-                                                                                const coveragePool = [100, 95, 90, 85, 80, 70, 60, 50]
-                                                                                const cov = coveragePool[idx % coveragePool.length]
-                                                                                const colorClass = cov >= 90
-                                                                                    ? "text-green-700 bg-green-50 ring-green-200"
-                                                                                    : cov >= 60
-                                                                                        ? "text-orange-700 bg-orange-50 ring-orange-200"
-                                                                                        : "text-red-700 bg-red-50 ring-red-200"
-                                                                                return (
-                                                                                    <td className="align-top whitespace-nowrap px-3 py-4 text-sm">
-                                                                                        <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorClass}`}>{cov}%</span>
-                                                                                    </td>
-                                                                                )
-                                                                            })()}
-                                                                            <td className="align-top whitespace-nowrap py-4 pl-3 pr-4 text-sm sm:pr-6">
-                                                                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">{p.status}</span>
-                                                                            </td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
+                                                        <p className="text-xs text-gray-600">Gray band indicates the normal range (±2.5 SD)</p>
+
+                                                        <div className="relative w-full rounded-md bg-gray-50">
+                                                            <img src="/Chart.png" alt="Volume Trends chart" className="w-full h-auto rounded-md" />
                                                         </div>
                                                     </div>
-                                                </TabsContent>
-                                            </Tabs>
+                                                </div>
+                                            )}
+
+                                            {/* Main content (formerly tab content) */}
+                                            <div>
+                                                <div className="space-y-3">
+                                                    {/* Description card with header */}
+                                                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                                                        <div className="bg-gray-50 px-4 py-3.5 sm:px-6">
+                                                            <h3 className="text-sm font-semibold text-gray-900">Event Description</h3>
+                                                        </div>
+                                                        <div className="px-4 py-5 sm:p-6">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <div className="text-sm font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</div>
+                                                                <button
+                                                                    type="button"
+                                                                    className="text-gray-400 hover:text-gray-600"
+                                                                    aria-label="Edit event name and description"
+                                                                >
+                                                                    <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                </button>
+                                                            </div>
+                                                            <p className="text-sm text-gray-700 leading-6">
+                                                                The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {/* Alert moved above Tabs; removed duplicate here */}
+
+                                                    <div ref={propertiesTableRef} className="overflow-hidden shadow outline outline-1 outline-black/5 sm:rounded-lg">
+                                                        <table className="table-fixed relative min-w-full divide-y divide-gray-300">
+                                                            <colgroup>
+                                                                <col className="w-[40%]" />
+                                                                <col className="w-[12%]" />
+                                                                <col className="w-[12%]" />
+                                                                <col className="w-[8%]" />
+                                                                <col className="w-[8%]" />
+                                                                <col className="w-[10%]" />
+                                                                <col className="w-[10%]" />
+                                                            </colgroup>
+                                                            <thead className="bg-gray-50">
+                                                                <tr>
+                                                                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-1/3">
+                                                                        <Popover open={propSearchOpen} onOpenChange={setPropSearchOpen}>
+                                                                            <PopoverTrigger asChild>
+                                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                                    <span>Event Properties ({eventProperties.length})</span>
+                                                                                    <img src={propSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent align="start" className="w-72 p-3">
+                                                                                <div className="space-y-2">
+                                                                                    <div className="relative">
+                                                                                        <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                                                                                        <Input
+                                                                                            value={propSearchDraft}
+                                                                                            onChange={(e) => setPropSearchDraft(e.target.value)}
+                                                                                            placeholder="Search Values..."
+                                                                                            className="h-9 pl-8"
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div className="pt-1 flex items-center gap-2">
+                                                                                        <Button
+                                                                                            variant="outline"
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropSearchQuery(""); setPropSearchDraft(""); setPropSearchOpen(false) }}
+                                                                                        >
+                                                                                            Clear
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropSearchQuery(propSearchDraft); setPropSearchOpen(false) }}
+                                                                                        >
+                                                                                            Search
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </th>
+                                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/12">
+                                                                        <Popover open={propSampleSearchOpen} onOpenChange={setPropSampleSearchOpen}>
+                                                                            <PopoverTrigger asChild>
+                                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                                    <span>Sample Values</span>
+                                                                                    <img src={propSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent align="start" className="w-72 p-3">
+                                                                                <div className="space-y-2">
+                                                                                    <div className="relative">
+                                                                                        <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                                                                                        <Input
+                                                                                            value={propSearchDraft}
+                                                                                            onChange={(e) => setPropSearchDraft(e.target.value)}
+                                                                                            placeholder="Search Values..."
+                                                                                            className="h-9 pl-8"
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div className="pt-1 flex items-center gap-2">
+                                                                                        <Button
+                                                                                            variant="outline"
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropSearchQuery(""); setPropSearchDraft(""); setPropSampleSearchOpen(false) }}
+                                                                                        >
+                                                                                            Clear
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropSearchQuery(propSearchDraft); setPropSampleSearchOpen(false) }}
+                                                                                        >
+                                                                                            Apply
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </th>
+                                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/6">
+                                                                        <Popover open={propTypeFilterOpen} onOpenChange={setPropTypeFilterOpen}>
+                                                                            <PopoverTrigger asChild>
+                                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                                    <span>Type</span>
+                                                                                    <img src={appliedPropTypes.length > 0 ? "/List.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                                <div className="space-y-2">
+                                                                                    {availablePropTypes.map((label) => {
+                                                                                        const checked = selectedPropTypesDraft.has(label)
+                                                                                        return (
+                                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                                <Checkbox
+                                                                                                    checked={checked}
+                                                                                                    onCheckedChange={(v) => {
+                                                                                                        setSelectedPropTypesDraft(prev => {
+                                                                                                            const next = new Set(prev)
+                                                                                                            if (v) next.add(label); else next.delete(label)
+                                                                                                            return next
+                                                                                                        })
+                                                                                                    }}
+                                                                                                />
+                                                                                                <span>{label}</span>
+                                                                                            </label>
+                                                                                        )
+                                                                                    })}
+                                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                                        <Button
+                                                                                            variant="outline"
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setAppliedPropTypes([]); setSelectedPropTypesDraft(new Set()); setPropTypeFilterOpen(false) }}
+                                                                                        >
+                                                                                            Clear filters
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setAppliedPropTypes(Array.from(selectedPropTypesDraft)); setPropTypeFilterOpen(false) }}
+                                                                                        >
+                                                                                            Filter
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </th>
+                                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/6">
+                                                                        <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700 whitespace-nowrap" onClick={() => setPropLastSeenSort(prev => prev === "asc" ? "desc" : prev === "desc" ? null : "asc")}>
+                                                                            <span>Last Seen</span>
+                                                                            {propLastSeenSort === "asc" ? (
+                                                                                <ArrowUp className="h-4 w-4" />
+                                                                            ) : propLastSeenSort === "desc" ? (
+                                                                                <ArrowDown className="h-4 w-4" />
+                                                                            ) : (
+                                                                                <img src="/List.svg" alt="" className="h-4 w-4" />
+                                                                            )}
+                                                                        </button>
+                                                                    </th>
+
+                                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/12">
+                                                                        <Popover open={propRequiredFilterOpen} onOpenChange={setPropRequiredFilterOpen}>
+                                                                            <PopoverTrigger asChild>
+                                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                                    <span>Required</span>
+                                                                                    <img src={appliedRequired.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                                <div className="space-y-2">
+                                                                                    {["Required", "Optional"].map((label) => {
+                                                                                        const checked = selectedRequiredDraft.has(label as "Required" | "Optional")
+                                                                                        return (
+                                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                                <Checkbox
+                                                                                                    checked={checked}
+                                                                                                    onCheckedChange={(v) => {
+                                                                                                        setSelectedRequiredDraft(prev => {
+                                                                                                            const next = new Set(prev)
+                                                                                                            if (v) next.add(label as "Required" | "Optional"); else next.delete(label as "Required" | "Optional")
+                                                                                                            return next
+                                                                                                        })
+                                                                                                    }}
+                                                                                                />
+                                                                                                <span>{label}</span>
+                                                                                            </label>
+                                                                                        )
+                                                                                    })}
+                                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                                        <Button
+                                                                                            variant="outline"
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setAppliedRequired([]); setSelectedRequiredDraft(new Set()); setPropRequiredFilterOpen(false) }}
+                                                                                        >
+                                                                                            Clear filters
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setAppliedRequired(Array.from(selectedRequiredDraft)); setPropRequiredFilterOpen(false) }}
+                                                                                        >
+                                                                                            Filter
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </th>
+                                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-1/12">
+                                                                        <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700 whitespace-nowrap" onClick={() => setPropCoverageSort(prev => prev === "asc" ? "desc" : prev === "desc" ? null : "asc")}>
+                                                                            <span>Coverage</span>
+                                                                            {propCoverageSort === "asc" ? (
+                                                                                <ArrowUp className="h-4 w-4" />
+                                                                            ) : propCoverageSort === "desc" ? (
+                                                                                <ArrowDown className="h-4 w-4" />
+                                                                            ) : (
+                                                                                <img src="/List.svg" alt="" className="h-4 w-4" />
+                                                                            )}
+                                                                        </button>
+                                                                    </th>
+                                                                    <th scope="col" className="py-3.5 pl-3 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6 w-1/12">
+                                                                        <Popover open={propStatusFilterOpen} onOpenChange={setPropStatusFilterOpen}>
+                                                                            <PopoverTrigger asChild>
+                                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                                    <span>Status</span>
+                                                                                    <img src={propAppliedStatuses.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </PopoverTrigger>
+                                                                            <PopoverContent align="start" className="w-64 p-3">
+                                                                                <div className="space-y-2">
+                                                                                    {["live", "inactive"].map((label) => {
+                                                                                        const checked = propSelectedStatusesDraft.has(label)
+                                                                                        return (
+                                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                                                <Checkbox
+                                                                                                    checked={checked}
+                                                                                                    onCheckedChange={(v) => {
+                                                                                                        setPropSelectedStatusesDraft(prev => {
+                                                                                                            const next = new Set(prev)
+                                                                                                            if (v) next.add(label); else next.delete(label)
+                                                                                                            return next
+                                                                                                        })
+                                                                                                    }}
+                                                                                                />
+                                                                                                <span>{label}</span>
+                                                                                            </label>
+                                                                                        )
+                                                                                    })}
+                                                                                    <div className="pt-2 flex items-center gap-2">
+                                                                                        <Button
+                                                                                            variant="outline"
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropAppliedStatuses([]); setPropSelectedStatusesDraft(new Set()); setPropStatusFilterOpen(false) }}
+                                                                                        >
+                                                                                            Clear filters
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            className="h-9 flex-1"
+                                                                                            onClick={() => { setPropAppliedStatuses(Array.from(propSelectedStatusesDraft)); setPropStatusFilterOpen(false) }}
+                                                                                        >
+                                                                                            Filter
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </PopoverContent>
+                                                                        </Popover>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-gray-200 bg-white">
+                                                                {filteredProps.map(({ p, i }) => (
+                                                                    <tr key={p.name}>
+                                                                        <td className="align-top py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <span className="font-medium text-gray-900">{p.name}</span>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className="text-gray-400 hover:text-gray-600"
+                                                                                    aria-label={`Edit ${p.name} name and description`}
+                                                                                >
+                                                                                    <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                                </button>
+                                                                            </div>
+                                                                            <div className="mt-1 text-gray-600">
+                                                                                {expandedByProp[p.name]
+                                                                                    ? p.description
+                                                                                    : (p.description.length > 240 ? p.description.slice(0, 240) + "…" : p.description)
+                                                                                }
+                                                                                {p.description.length > 240 && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="ml-2 text-gray-500 hover:text-gray-700"
+                                                                                        onClick={() => setExpandedByProp(prev => ({ ...prev, [p.name]: !prev[p.name] }))}
+                                                                                    >
+                                                                                        {expandedByProp[p.name] ? "Less" : "More"}
+                                                                                    </button>
+                                                                                )}
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-700">
+                                                                            {p.type === "unknown" ? (i % 2 === 0 ? "String" : "Integer") : p.type}
+                                                                        </td>
+                                                                        {
+                                                                            /* Coverage column with color coding */
+                                                                        }
+                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
+                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
+                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm" onClick={(e) => e.stopPropagation()}>
+                                                                            <Switch
+                                                                                checked={requiredByProp[p.name] ?? false}
+                                                                                onCheckedChange={(checked) => setRequiredByProp(prev => ({ ...prev, [p.name]: checked }))}
+                                                                                aria-label={`Toggle required for ${p.name}`}
+                                                                                className="!h-5 !w-10 data-[state=checked]:!bg-green-500"
+                                                                            />
+                                                                        </td>
+                                                                        {(() => {
+                                                                            const coveragePool = [100, 95, 90, 85, 80, 70, 60, 50]
+                                                                            const cov = coveragePool[i % coveragePool.length]
+                                                                            const colorClass = cov >= 90
+                                                                                ? "text-green-700 bg-green-50 ring-green-200"
+                                                                                : cov >= 60
+                                                                                    ? "text-orange-700 bg-orange-50 ring-orange-200"
+                                                                                    : "text-red-700 bg-red-50 ring-red-200"
+                                                                            return (
+                                                                                <td className="align-top whitespace-nowrap px-3 py-4 text-sm">
+                                                                                    <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorClass}`}>{cov}%</span>
+                                                                                </td>
+                                                                            )
+                                                                        })()}
+                                                                        <td className="align-top whitespace-nowrap py-4 pl-3 pr-4 text-sm sm:pr-6">
+                                                                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">{p.status}</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

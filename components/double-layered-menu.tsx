@@ -7,7 +7,7 @@ import { ChevronRight, Settings, BarChart3, Plus } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { LogOut } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SearchChatsModal } from "@/components/search-chats-modal"
 
 interface DoubleLayeredMenuProps {
@@ -77,6 +77,17 @@ export default function DoubleLayeredMenu({
       href: "/docs",
     },
   ]
+
+  // Ensure the Events item always shows a red "11 Errors" badge unless explicitly provided
+  const itemsWithDefaultBadges = useMemo(() => {
+    return secondaryPanelItems.map((item) => {
+      const hasBadge = (typeof item.badgeCount === "number" && item.badgeCount > 0) || (typeof item.badgeLabel === "string" && item.badgeLabel.length > 0)
+      if (item.name === "Events" && !hasBadge) {
+        return { ...item, badgeCount: 11, badgeColor: "red" as const, badgeLabel: "11 Errors" }
+      }
+      return item
+    })
+  }, [secondaryPanelItems])
 
   return (
     <>
@@ -285,7 +296,7 @@ export default function DoubleLayeredMenu({
         <div className="flex-1 px-4 py-4">
           {!isSecondaryCollapsed ? (
             <nav className="space-y-2">
-              {secondaryPanelItems.map((item) => {
+              {itemsWithDefaultBadges.map((item) => {
                 const isActive = activeItem === item.name
                 const showBadge = (typeof item.badgeCount === "number" && item.badgeCount > 0) || (typeof item.badgeLabel === "string" && item.badgeLabel.length > 0)
                 const badgeClass =

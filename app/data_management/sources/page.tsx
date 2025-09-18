@@ -149,7 +149,7 @@ export default function SourcesPage() {
                 activeItem="Sources"
             />
 
-            <HeaderFilter showFilters={false} actionLabel="Add Source" forceNarrowLayout showMenu={false} useActionDialog={false} onActionClick={() => { setSelectedNewSource(null); setAddStep(1); setDrawerMode('add'); setAddDrawerOpen(true) }} />
+            <HeaderFilter title="Sources" showFilters={false} actionLabel="Add Source" forceNarrowLayout showMenu={false} useActionDialog={false} onActionClick={() => { setSelectedNewSource(null); setAddStep(1); setDrawerMode('add'); setAddDrawerOpen(true) }} />
 
             <div
                 className="px-6 pt-24 pb-6"
