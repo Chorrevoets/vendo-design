@@ -115,14 +115,13 @@ export default function DataManagementNavigation() {
         <div className="mb-6">
           <Button
             variant="ghost"
-            className={`w-full justify-start gap-3 h-12 px-3 ${
-              activeItem === "Overview"
+            className={`w-full justify-start gap-3 h-12 px-3 ${activeItem === "Overview"
                 ? "bg-purple-50 text-purple-700 hover:bg-purple-50"
                 : "text-gray-700 hover:bg-gray-50"
-            }`}
+              }`}
             onClick={() => {
               setActiveItem("Overview")
-              window.location.href = "/data_management"
+              window.location.href = "/data_management/sources"
             }}
           >
             <Image src="/data-management-icon.svg" alt="Overview" width={16} height={16} className="h-4 w-4" />
@@ -143,9 +142,8 @@ export default function DataManagementNavigation() {
                 <Button
                   key={item.name}
                   variant="ghost"
-                  className={`w-full justify-start gap-3 h-12 px-3 ${
-                    isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className={`w-full justify-start gap-3 h-12 px-3 ${isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
+                    }`}
                   onClick={() => {
                     setActiveItem(item.name)
                     window.location.href = item.href
@@ -172,9 +170,8 @@ export default function DataManagementNavigation() {
                 <Button
                   key={item.name}
                   variant="ghost"
-                  className={`w-full justify-start gap-3 h-12 px-3 ${
-                    isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className={`w-full justify-start gap-3 h-12 px-3 ${isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
+                    }`}
                   onClick={() => {
                     setActiveItem(item.name)
                     window.location.href = item.href
@@ -201,9 +198,8 @@ export default function DataManagementNavigation() {
                 <Button
                   key={item.name}
                   variant="ghost"
-                  className={`w-full justify-start gap-3 h-12 px-3 ${
-                    isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className={`w-full justify-start gap-3 h-12 px-3 ${isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-50" : "text-gray-700 hover:bg-gray-50"
+                    }`}
                   onClick={() => {
                     setActiveItem(item.name)
                     window.location.href = item.href

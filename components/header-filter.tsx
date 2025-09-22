@@ -35,6 +35,9 @@ type HeaderFilterProps = {
     title?: string
     showActionButton?: boolean
     showMenu?: boolean
+    secondaryActionLabel?: string
+    onSecondaryActionClick?: () => void
+    secondaryIconSrc?: string
 }
 
 export default function HeaderFilter({
@@ -58,6 +61,9 @@ export default function HeaderFilter({
     title,
     showActionButton = true,
     showMenu = true,
+    secondaryActionLabel,
+    onSecondaryActionClick,
+    secondaryIconSrc,
 }: HeaderFilterProps) {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(true)
     const [sidebarWidthPx, setSidebarWidthPx] = useState(0)
@@ -162,78 +168,90 @@ export default function HeaderFilter({
                 </div>
 
                 {/* Right-side controls */}
-                {showActionButton && (
-                    useActionDialog ? (
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="h-9 absolute right-16">
+                {(showActionButton || secondaryActionLabel) && (
+                    <div className="absolute right-16 flex items-center gap-2">
+                        {secondaryActionLabel && (
+                            <Button className="h-9" variant="outline" onClick={onSecondaryActionClick}>
+                                {secondaryIconSrc && (
+                                    <img src={secondaryIconSrc} alt="" className="h-4 w-4 mr-1.5" />
+                                )}
+                                {secondaryActionLabel}
+                            </Button>
+                        )}
+                        {showActionButton && (
+                            useActionDialog ? (
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button className="h-9">
+                                            <Plus className="h-4 w-4" />
+                                            {actionLabel}
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>{actionLabel}</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-2">
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="metric-name">Name</Label>
+                                                <Input id="metric-name" placeholder="Enter a name" />
+                                            </div>
+                                            <div className="grid gap-2 md:grid-cols-3 md:gap-4">
+                                                <div>
+                                                    <Label>Type</Label>
+                                                    <Select defaultValue="event">
+                                                        <SelectTrigger className="h-9 mt-1">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="event">Event</SelectItem>
+                                                            <SelectItem value="custom">Custom Metric</SelectItem>
+                                                            <SelectItem value="funnel">Funnel</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div>
+                                                    <Label>Source</Label>
+                                                    <Select defaultValue="shopify">
+                                                        <SelectTrigger className="h-9 mt-1">
+                                                            <SelectValue placeholder="Select source" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="shopify">Shopify</SelectItem>
+                                                            <SelectItem value="meta">Meta</SelectItem>
+                                                            <SelectItem value="google">Google</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div>
+                                                    <Label>Status</Label>
+                                                    <Select defaultValue="green">
+                                                        <SelectTrigger className="h-9 mt-1">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="green">Green</SelectItem>
+                                                            <SelectItem value="orange">Orange</SelectItem>
+                                                            <SelectItem value="red">Red</SelectItem>
+                                                            <SelectItem value="inactive">Inactive</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button type="button">Create</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            ) : (
+                                <Button className="h-9" onClick={onActionClick}>
                                     <Plus className="h-4 w-4" />
                                     {actionLabel}
                                 </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>{actionLabel}</DialogTitle>
-                                </DialogHeader>
-                                <div className="grid gap-4 py-2">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="metric-name">Name</Label>
-                                        <Input id="metric-name" placeholder="Enter a name" />
-                                    </div>
-                                    <div className="grid gap-2 md:grid-cols-3 md:gap-4">
-                                        <div>
-                                            <Label>Type</Label>
-                                            <Select defaultValue="event">
-                                                <SelectTrigger className="h-9 mt-1">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="event">Event</SelectItem>
-                                                    <SelectItem value="custom">Custom Metric</SelectItem>
-                                                    <SelectItem value="funnel">Funnel</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div>
-                                            <Label>Source</Label>
-                                            <Select defaultValue="shopify">
-                                                <SelectTrigger className="h-9 mt-1">
-                                                    <SelectValue placeholder="Select source" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="shopify">Shopify</SelectItem>
-                                                    <SelectItem value="meta">Meta</SelectItem>
-                                                    <SelectItem value="google">Google</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div>
-                                            <Label>Status</Label>
-                                            <Select defaultValue="green">
-                                                <SelectTrigger className="h-9 mt-1">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="green">Green</SelectItem>
-                                                    <SelectItem value="orange">Orange</SelectItem>
-                                                    <SelectItem value="red">Red</SelectItem>
-                                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="button">Create</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    ) : (
-                        <Button className="h-9 absolute right-16" onClick={onActionClick}>
-                            <Plus className="h-4 w-4" />
-                            {actionLabel}
-                        </Button>
-                    )
+                            )
+                        )}
+                    </div>
                 )}
 
                 {/* Three-dot menu at the far right */}

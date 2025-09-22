@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import { SearchChatsModal } from "@/components/search-chats-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -26,6 +26,7 @@ interface NarrowMenuItem {
 
 export default function SingleLayerMenu({ forceState, initialState, onToggleState }: SingleLayerMenuProps = {}) {
     const router = useRouter()
+    const pathname = usePathname()
     const [isOpen, setIsOpen] = useState(initialState === "open")
     const effectiveIsOpen = forceState ? forceState === "open" : isOpen
     const isHidden = forceState ? forceState === "hidden" : initialState === "hidden"
@@ -91,7 +92,7 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
         {
             name: "Data",
             icon: "/data-management-icon.svg",
-            href: "/data_management/quality",
+            href: "/data_management/sources",
         },
         {
             name: "Docs",
@@ -102,8 +103,8 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
 
     return (
         <>
-            {/* Toggle button outside the panel */}
-            {(() => {
+            {/* Toggle button outside the panel (hidden on Data Management pages to avoid duplicate icons) */}
+            {!pathname?.startsWith("/data_management") && (() => {
                 const toggleLeftPx = effectiveIsOpen ? 257 : (isHidden ? 52 : 72)
                 return (
                     <div className={`fixed top-[22px] z-[10011] group`} style={{ left: `${toggleLeftPx}px` }}>
@@ -159,7 +160,7 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
 
             {/* Panel with two states: narrow (64px) and open (320px) */}
             <div
-                className={`${effectiveIsOpen ? "w-[285px]" : (isHidden ? "w-[100px]" : "w-16")} fixed left-0 top-0 ${isHidden ? "h-[61px]" : "h-full"} ${(effectiveIsOpen || isHidden) ? "bg-white border-gray-200" : "bg-transparent border-transparent"} border-r ${isHidden ? "border-b" : ""} flex flex-col items-start ${isHidden ? "pt-0 pb-0" : "pt-4 pb-[2px]"} z-[10010]`}
+                className={`${effectiveIsOpen ? "w-[285px]" : (isHidden ? "w-[100px]" : "w-16")} fixed left-0 top-0 ${isHidden ? "h-[61px]" : "h-full"} bg-white border-gray-200 border-r ${isHidden ? "border-b" : ""} flex flex-col items-start ${isHidden ? "pt-0 pb-0" : "pt-4 pb-[2px]"} z-[10010]`}
             >
                 {effectiveIsOpen && (
                     <div id="shortcut-open-container" className="absolute inset-0 pointer-events-none" />
@@ -383,7 +384,7 @@ export function NarrowShortcutColumn({ onNavigate }: { onNavigate?: (href: strin
         { name: "Reports", icon: "/Key-result.svg", href: "/reports" },
         { name: "Pulse", icon: "/Pulse.svg", href: "/pulse" },
         { name: "Search Chats", icon: "/Magnifer.svg", href: "/search-chats" },
-        { name: "Data", icon: "/data-management-icon.svg", href: "/data_management/quality" },
+        { name: "Data", icon: "/data-management-icon.svg", href: "/data_management/sources" },
         { name: "Docs", icon: "/Question-Square.svg", href: "/docs" },
     ]
 

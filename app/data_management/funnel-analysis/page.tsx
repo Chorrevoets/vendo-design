@@ -1,6 +1,7 @@
 "use client"
 
 import { SideMenu } from "@/components/side-menu"
+import HeaderFilter from "@/components/header-filter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, ChevronRight } from "lucide-react"
@@ -15,8 +16,10 @@ export default function FunnelAnalysisPage() {
         <div className="min-h-screen bg-gray-50">
             <SideMenu />
 
+            <HeaderFilter title="Funnel Analysis" showFilters={false} showActionButton={false} showMenu={false} leftOffset="var(--sidebar-width, 0px)" />
+
             <div
-                className="px-6 pt-20 pb-6 mx-auto"
+                className="px-6 pt-24 pb-6 mx-auto"
                 style={{
                     marginLeft: "var(--sidebar-width, 0px)",
                     maxWidth: "calc(100vw - var(--sidebar-width, 0px))"
@@ -26,7 +29,7 @@ export default function FunnelAnalysisPage() {
                 <div className="mb-6">
                     <nav className="flex items-center space-x-2 text-sm text-gray-600">
                         <button
-                            onClick={() => router.push('/data_management')}
+                            onClick={() => router.push('/data_management/sources')}
                             className="hover:text-gray-900 transition-colors"
                         >
                             Data Management

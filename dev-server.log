@@ -1,0 +1,521 @@
+
+> my-v0-project@0.1.0 dev
+> next dev -p 3000 --hostname localhost
+
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling / ...
+ ✓ Compiled / in 3.6s (1024 modules)
+ GET / 200 in 4545ms
+ ✓ Compiled in 1062ms (495 modules)
+ HEAD / 200 in 91ms
+ ○ Compiling /data_management/quality ...
+ ✓ Compiled /data_management/quality in 4.8s (1108 modules)
+ GET /data_management/quality 200 in 5274ms
+ GET / 200 in 479ms
+ GET /data_management/quality 200 in 50ms
+ ○ Compiling /data_management/channel-grouping ...
+ ✓ Compiled /data_management/channel-grouping in 1867ms (1119 modules)
+ GET /data_management/channel-grouping 200 in 2112ms
+ ✓ Compiled in 3.3s (1133 modules)
+ GET /data_management/channel-grouping 200 in 497ms
+ GET /data_management/quality 200 in 497ms
+ ✓ Compiled in 932ms (522 modules)
+ GET /data_management/channel-grouping 200 in 517ms
+ GET /data_management/quality 200 in 526ms
+ ✓ Compiled in 754ms (522 modules)
+ GET /data_management/quality 200 in 165ms
+ GET /data_management/channel-grouping 200 in 165ms
+ ✓ Compiled in 1179ms (1133 modules)
+ GET /data_management/channel-grouping 200 in 286ms
+ GET /data_management/quality 200 in 288ms
+ ✓ Compiled in 551ms (522 modules)
+ GET /data_management/channel-grouping 200 in 136ms
+ GET /data_management/quality 200 in 159ms
+ ✓ Compiled in 267ms (522 modules)
+ GET /data_management/quality 200 in 99ms
+ GET /data_management/channel-grouping 200 in 101ms
+ ✓ Compiled in 350ms (522 modules)
+ GET /data_management/channel-grouping 200 in 78ms
+ GET /data_management/quality 200 in 79ms
+ ✓ Compiled in 255ms (522 modules)
+ GET /data_management/quality 200 in 73ms
+ GET /data_management/channel-grouping 200 in 81ms
+ ✓ Compiled in 263ms (522 modules)
+ GET /data_management/quality 200 in 286ms
+ GET /data_management/channel-grouping 200 in 289ms
+ ✓ Compiled in 360ms (522 modules)
+ GET /data_management/quality 200 in 58ms
+ GET /data_management/channel-grouping 200 in 58ms
+ ✓ Compiled in 4s (1133 modules)
+ GET /data_management/channel-grouping 200 in 293ms
+ GET /data_management/quality 200 in 296ms
+ ○ Compiling /data_management/metrics ...
+ ✓ Compiled /data_management/metrics in 2.6s (1144 modules)
+ GET /data_management/metrics 200 in 2808ms
+ GET /data_management/metrics 200 in 895ms
+ GET /data_management/quality 200 in 195ms
+ ✓ Compiled in 2.1s (1158 modules)
+ ✓ Compiled in 537ms (533 modules)
+ ✓ Compiled in 3.6s (1158 modules)
+ ✓ Compiled in 890ms (533 modules)
+ ✓ Compiled in 632ms (533 modules)
+ ✓ Compiled in 863ms (533 modules)
+ ✓ Compiled in 3.2s (1158 modules)
+ ✓ Compiled in 636ms (533 modules)
+ ✓ Compiled in 3.7s (1158 modules)
+ ✓ Compiled in 778ms (533 modules)
+ GET /data_management/metrics 200 in 153ms
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 4.1s
+ ○ Compiling /data_management/session-attribution-settings ...
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /data_management/session-attribution-settings ...
+ ✓ Compiled /data_management/session-attribution-settings in 9.1s (1123 modules)
+ GET /data_management/session-attribution-settings 200 in 9867ms
+ ✓ Compiled in 858ms (512 modules)
+ ✓ Compiled in 805ms (1111 modules)
+ GET /data_management/session-attribution-settings 200 in 92ms
+ ✓ Compiled in 379ms (1111 modules)
+ GET /data_management/session-attribution-settings 200 in 167ms
+ ✓ Compiled in 893ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 89ms
+ ✓ Compiled in 378ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 69ms
+ ✓ Compiled in 756ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 131ms
+ ✓ Compiled in 637ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 117ms
+ ✓ Compiled in 1807ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 494ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.4s (1095 modules)
+ GET /Definition.svg 404 in 2687ms
+ ✓ Compiled in 523ms (1109 modules)
+ GET /data_management/session-attribution-settings 200 in 47ms
+ ✓ Compiled in 345ms (1109 modules)
+ GET /data_management/session-attribution-settings 200 in 41ms
+ ✓ Compiled in 707ms (1109 modules)
+ GET /data_management/session-attribution-settings 200 in 103ms
+ ✓ Compiled in 723ms (512 modules)
+ GET /data_management/session-attribution-settings 200 in 95ms
+ ✓ Compiled in 469ms (512 modules)
+ GET /data_management/session-attribution-settings 200 in 48ms
+ ✓ Compiled in 530ms (512 modules)
+ GET /data_management/session-attribution-settings 200 in 66ms
+ ✓ Compiled in 965ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 198ms
+ ✓ Compiled in 958ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 162ms
+ GET /data_management/session-attribution-settings 200 in 282ms
+ ✓ Compiled in 542ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 88ms
+ ✓ Compiled in 876ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 163ms
+ ✓ Compiled in 1068ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 266ms
+ ✓ Compiled in 817ms (1105 modules)
+ GET /data_management/session-attribution-settings 200 in 116ms
+ ✓ Compiled in 1012ms (1105 modules)
+ ✓ Compiled in 830ms (1105 modules)
+ ○ Compiling /data_management/customer ...
+ ✓ Compiled /data_management/customer in 987ms (1098 modules)
+ GET /data_management/customer 200 in 1182ms
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 2.7s (1122 modules)
+ GET /data_management/event 200 in 2867ms
+ GET /data_management/event 200 in 64ms
+ GET /data_management/event 200 in 58ms
+ GET /data_management/event 200 in 37ms
+ ✓ Compiled in 2.1s (1120 modules)
+ ✓ Compiled in 925ms (527 modules)
+ ✓ Compiled in 1332ms (527 modules)
+ GET /data_management/session-attribution-settings 200 in 166ms
+ ✓ Compiled in 1104ms (527 modules)
+ ✓ Compiled in 758ms (527 modules)
+ ✓ Compiled in 321ms (527 modules)
+ ✓ Compiled in 445ms (527 modules)
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 801ms (609 modules)
+ GET /data_management/event 200 in 1015ms
+ ✓ Compiled in 2s (1120 modules)
+ ✓ Compiled in 1165ms (527 modules)
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 5.4s
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 9.1s (1127 modules)
+ GET /data_management/event 200 in 11542ms
+ ✓ Compiled in 2.7s (523 modules)
+ ✓ Compiled in 1294ms (1127 modules)
+ GET /data_management/event 200 in 193ms
+ ✓ Compiled in 494ms (1127 modules)
+ GET /data_management/event 200 in 75ms
+ ✓ Compiled in 1187ms (1127 modules)
+ GET /data_management/event 200 in 187ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ReferenceError: missingPropNames is not defined
+    at EventsPage (app/data_management/event/page.tsx:387:8)
+  385 |             setStatusTheme("red")
+  386 |         }
+> 387 |     }, [missingPropNames])
+      |        ^
+  388 |
+  389 |     const autosizeTextarea = (el: HTMLTextAreaElement | null) => {
+  390 |         if (!el) return {
+  digest: '1871441303'
+}
+ GET /data_management/event 500 in 368ms
+ ✓ Compiled in 1017ms (1127 modules)
+ ⨯ ReferenceError: missingPropNames is not defined
+    at EventsPage (app/data_management/event/page.tsx:387:8)
+  385 |             setStatusTheme("red")
+  386 |         }
+> 387 |     }, [missingPropNames])
+      |        ^
+  388 |
+  389 |     const autosizeTextarea = (el: HTMLTextAreaElement | null) => {
+  390 |         if (!el) return {
+  digest: '1871441303'
+}
+ GET /data_management/event 500 in 344ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 1061ms (1127 modules)
+ GET /data_management/event 200 in 751ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled /data_management/session-attribution-settings in 1532ms (1127 modules)
+ ✓ Compiled in 2.1s (525 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /data_management/session-attribution-settings 200 in 3296ms
+ GET /data_management/event 200 in 70ms
+ ✓ Compiled in 3.4s (1134 modules)
+ GET /data_management/event 200 in 279ms
+ ✓ Compiled in 2s (1134 modules)
+ GET /data_management/event 200 in 170ms
+ ✓ Compiled in 3.3s (1134 modules)
+ GET /data_management/event 200 in 426ms
+ GET /data_management/event 200 in 878ms
+ ✓ Compiled in 2.5s (1134 modules)
+ GET /data_management/event 200 in 264ms
+ ✓ Compiled in 1344ms (1134 modules)
+ GET /data_management/event 200 in 179ms
+ ✓ Compiled in 1365ms (1134 modules)
+ GET /data_management/event 200 in 119ms
+ GET /data_management/event 200 in 453ms
+ ✓ Compiled in 989ms (1134 modules)
+ GET /data_management/event 200 in 77ms
+ ✓ Compiled in 1071ms (1134 modules)
+ GET /data_management/event 200 in 66ms
+ ✓ Compiled in 605ms (1134 modules)
+ GET /data_management/event 200 in 55ms
+ GET /data_management/event 200 in 444ms
+ ✓ Compiled in 1148ms (1134 modules)
+ GET /data_management/event 200 in 132ms
+ ✓ Compiled in 2s (1134 modules)
+ GET /data_management/event 200 in 314ms
+ ✓ Compiled in 945ms (1134 modules)
+ GET /data_management/event 200 in 67ms
+ ✓ Compiled in 1052ms (1134 modules)
+ GET /data_management/event 200 in 91ms
+ ✓ Compiled in 1180ms (1134 modules)
+ GET /data_management/event 200 in 204ms
+ GET /data_management/session-attribution-settings 200 in 50ms
+ ✓ Compiled in 2.6s (1134 modules)
+ GET /data_management/session-attribution-settings 200 in 264ms
+ ✓ Compiled in 1897ms (1134 modules)
+ GET /data_management/session-attribution-settings 200 in 273ms
+ GET /data_management/session-attribution-settings 200 in 54ms
+ ✓ Compiled in 1155ms (1134 modules)
+ ✓ Compiled in 1122ms (1134 modules)
+ ✓ Compiled in 360ms (525 modules)
+ ✓ Compiled in 415ms (525 modules)
+ ✓ Compiled in 273ms (525 modules)
+ ✓ Compiled in 322ms (525 modules)
+ ✓ Compiled in 705ms (525 modules)
+ ✓ Compiled in 298ms (525 modules)
+ ✓ Compiled in 1748ms (1134 modules)
+ ✓ Compiled in 541ms (525 modules)
+ ✓ Compiled in 336ms (525 modules)
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1902ms
+ ○ Compiling / ...
+ ✓ Compiled / in 5.8s (1024 modules)
+ GET / 200 in 6510ms
+ GET / 200 in 565ms
+ ✓ Compiled in 1258ms (495 modules)
+ GET / 200 in 55ms
+ GET / 200 in 38ms
+ GET / 200 in 48ms
+ GET / 200 in 38ms
+ GET / 200 in 28ms
+ GET / 200 in 31ms
+ GET / 200 in 25ms
+ GET / 200 in 38ms
+ GET / 200 in 30ms
+ GET / 200 in 30ms
+ ○ Compiling /data_management/sources ...
+ ✓ Compiled /data_management/sources in 4.7s (1428 modules)
+ GET /data_management/sources 200 in 5050ms
+ ○ Compiling /data_management/settings ...
+ ✓ Compiled /data_management/settings in 920ms (1424 modules)
+ GET /data_management/settings 200 in 1139ms
+ ✓ Compiled in 523ms (680 modules)
+ ✓ Compiled in 342ms (680 modules)
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 2.1s (1297 modules)
+ GET /data_management/event 200 in 2326ms
+ ✓ Compiled /data_management/settings in 275ms (609 modules)
+ GET /data_management/settings 200 in 443ms
+ GET /data_management/event 200 in 54ms
+ ○ Compiling /data_management/metrics ...
+ ✓ Compiled /data_management/metrics in 1119ms (1290 modules)
+ GET /data_management/metrics 200 in 1347ms
+ GET /data_management/metrics 200 in 20ms
+ ✓ Compiled /data_management/settings in 223ms (607 modules)
+ GET /data_management/settings 200 in 359ms
+ GET /data_management/settings 200 in 389ms
+ GET /data_management/settings 200 in 147ms
+ GET /data_management/settings 200 in 49ms
+ ✓ Compiled in 647ms (1288 modules)
+ GET /data_management/settings 200 in 79ms
+ ✓ Compiled in 378ms (1288 modules)
+ GET /data_management/settings 200 in 62ms
+ ✓ Compiled in 1580ms (1288 modules)
+ GET /data_management/settings 200 in 227ms
+ ✓ Compiled in 1239ms (1288 modules)
+ GET /data_management/settings 200 in 294ms
+ ✓ Compiled in 796ms (1288 modules)
+ GET /data_management/settings 200 in 100ms
+ ✓ Compiled in 1535ms (1288 modules)
+ GET /data_management/settings 200 in 229ms
+ ✓ Compiled in 458ms (695 modules)
+ GET /data_management/settings 200 in 30ms
+ ✓ Compiled in 416ms (695 modules)
+ GET /data_management/settings 200 in 32ms
+ ✓ Compiled in 252ms (695 modules)
+ GET /data_management/settings 200 in 46ms
+ ✓ Compiled in 532ms (695 modules)
+ GET /data_management/settings 200 in 47ms
+ GET /data_management/settings 200 in 320ms
+ GET /data_management/settings 200 in 139ms
+ GET /data_management/settings 200 in 164ms
+ ○ Compiling /data_management/context ...
+ ✓ Compiled /data_management/context in 2.1s (1296 modules)
+ GET /data_management/context 200 in 2239ms
+ GET /data_management/settings 200 in 56ms
+ ✓ Compiled in 2s (1296 modules)
+ GET /data_management/settings 200 in 211ms
+ ✓ Compiled in 1616ms (1290 modules)
+ GET /data_management/settings 200 in 400ms
+ ✓ Compiled in 1664ms (1290 modules)
+ GET /data_management/settings 200 in 262ms
+ ✓ Compiled in 1654ms (1290 modules)
+ GET /data_management/settings 200 in 247ms
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 822ms (609 modules)
+ GET /data_management/event 200 in 1000ms
+ ✓ Compiled in 1143ms (1306 modules)
+ GET /data_management/event 200 in 150ms
+ ✓ Compiled in 1932ms (1306 modules)
+ GET /data_management/event 200 in 212ms
+ GET /data_management/settings 200 in 68ms
+ GET /data_management/event 200 in 42ms
+ ○ Compiling /data_management/customer ...
+ ✓ Compiled /data_management/customer in 1695ms (1313 modules)
+ GET /data_management/customer 200 in 1838ms
+ GET /data_management/settings 200 in 40ms
+ ✓ Compiled in 1575ms (1308 modules)
+ ✓ Compiled in 715ms (1308 modules)
+ ✓ Compiled in 1493ms (1308 modules)
+ ✓ Compiled in 1752ms (1308 modules)
+ ○ Compiling /workspace_settings/profile ...
+ ✓ Compiled /workspace_settings/profile in 1922ms (1304 modules)
+ GET /workspace_settings/profile 200 in 2050ms
+ GET /workspace_settings/profile 200 in 376ms
+ GET /workspace_settings/profile 200 in 151ms
+ ○ Compiling /workspace_settings/access ...
+ ✓ Compiled /workspace_settings/access in 944ms (1315 modules)
+ GET /workspace_settings/access 200 in 1174ms
+ GET /workspace_settings/access 200 in 58ms
+ ○ Compiling /workspace_settings/billing ...
+ ✓ Compiled /workspace_settings/billing in 679ms (1322 modules)
+ GET /workspace_settings/billing 200 in 765ms
+ GET /workspace_settings/billing 200 in 36ms
+ GET /workspace_settings/profile 200 in 40ms
+ GET /workspace_settings/profile 200 in 39ms
+ ✓ Compiled / in 403ms (638 modules)
+ GET / 200 in 739ms
+ ○ Compiling /data_management/sources ...
+ ✓ Compiled /data_management/sources in 1089ms (803 modules)
+ GET /data_management/sources 200 in 1228ms
+ GET /data_management/sources 200 in 33ms
+ GET /data_management/settings 200 in 101ms
+ GET /data_management/event 200 in 63ms
+ GET /data_management/event 200 in 28ms
+ GET /data_management/settings 200 in 31ms
+ ✓ Compiled in 1098ms (1489 modules)
+ GET /data_management/settings 200 in 107ms
+ ✓ Compiled in 576ms (1489 modules)
+ GET /data_management/settings 200 in 67ms
+ ✓ Compiled in 751ms (1489 modules)
+ GET /data_management/settings 200 in 50ms
+ ✓ Compiled in 503ms (1489 modules)
+ GET /data_management/settings 200 in 44ms
+ GET /data_management/event 200 in 47ms
+ ○ Compiling /data_management/metrics ...
+ ✓ Compiled /data_management/metrics in 607ms (786 modules)
+ GET /data_management/metrics 200 in 740ms
+ GET /data_management/settings 200 in 40ms
+ ✓ Compiled in 1698ms (1494 modules)
+ GET /data_management/settings 200 in 73ms
+ ✓ Compiled in 2.6s (1494 modules)
+ GET /data_management/settings 200 in 53ms
+ ✓ Compiled in 877ms (1494 modules)
+ GET /data_management/settings 200 in 69ms
+ ✓ Compiled in 1474ms (1494 modules)
+ GET /data_management/settings 200 in 62ms
+ ✓ Compiled in 752ms (1494 modules)
+ GET /data_management/settings 200 in 203ms
+ ✓ Compiled in 938ms (1494 modules)
+ GET /data_management/settings 200 in 190ms
+ ✓ Compiled in 975ms (1494 modules)
+ GET /data_management/settings 200 in 665ms
+ ✓ Compiled in 2.8s (1494 modules)
+ GET /data_management/settings 200 in 199ms
+ ✓ Compiled in 992ms (1494 modules)
+ GET /data_management/settings 200 in 62ms
+ GET /data_management/settings 200 in 415ms
+ ✓ Compiled in 1830ms (1494 modules)
+ GET /data_management/settings 200 in 110ms
+ ✓ Compiled in 1553ms (1494 modules)
+ GET /data_management/event 200 in 81ms
+ GET /data_management/event 200 in 41ms
+ GET /data_management/event 200 in 24ms
+ GET /data_management/event 200 in 40ms
+ GET /data_management/settings 200 in 60ms
+ GET /data_management/event 200 in 39ms
+ ○ Compiling /data_management/context ...
+ ✓ Compiled /data_management/context in 1277ms (791 modules)
+ GET /data_management/context 200 in 1832ms
+ GET /data_management/settings 200 in 1141ms
+ GET /data_management/settings 200 in 74ms
+ GET /data_management/event 200 in 55ms
+ ✓ Compiled in 1659ms (1494 modules)
+ GET /data_management/event 200 in 220ms
+ GET /data_management/settings 200 in 41ms
+ ✓ Compiled in 879ms (1494 modules)
+ GET /data_management/settings 200 in 71ms
+ ✓ Compiled in 1138ms (1494 modules)
+ GET /data_management/settings 200 in 85ms
+ ✓ Compiled in 681ms (1494 modules)
+ GET /data_management/settings 200 in 61ms
+ ✓ Compiled in 1677ms (1494 modules)
+ ✓ Compiled in 887ms (1494 modules)
+ GET /data_management/settings 200 in 123ms
+ GET /data_management/settings 200 in 19ms
+ ✓ Compiled in 1555ms (1494 modules)
+ GET /data_management/settings 200 in 109ms
+ ✓ Compiled in 1194ms (1494 modules)
+ GET /data_management/settings 200 in 244ms
+ ✓ Compiled in 1056ms (1494 modules)
+ GET /data_management/settings 200 in 98ms
+ ✓ Compiled in 1588ms (1494 modules)
+ GET /data_management/settings 200 in 443ms
+ GET /data_management/settings 200 in 656ms
+ ✓ Compiled in 2.3s (1494 modules)
+ GET /data_management/settings 200 in 204ms
+ ✓ Compiled in 948ms (1494 modules)
+ GET /data_management/settings 200 in 210ms
+ ✓ Compiled in 857ms (1494 modules)
+ ✓ Compiled in 479ms (1494 modules)
+ ✓ Compiled in 1468ms (1494 modules)
+ ✓ Compiled in 1994ms (1494 modules)
+ GET /data_management/settings 200 in 399ms
+ ✓ Compiled in 1488ms (1494 modules)
+ GET /data_management/settings 200 in 138ms
+ ✓ Compiled in 1201ms (1494 modules)
+ GET /data_management/settings 200 in 260ms
+ ✓ Compiled in 1753ms (1494 modules)
+ GET /data_management/settings 200 in 137ms
+ ✓ Compiled in 685ms (1494 modules)
+ GET /data_management/settings 200 in 66ms
+ ✓ Compiled in 1666ms (1494 modules)
+ GET /data_management/settings 200 in 143ms
+ ✓ Compiled in 964ms (1494 modules)
+ GET /data_management/settings 200 in 752ms
+ ✓ Compiled in 1647ms (1494 modules)
+ GET /data_management/settings 200 in 86ms
+ ✓ Compiled in 776ms (1494 modules)
+ GET /data_management/settings 200 in 241ms
+ ✓ Compiled in 783ms (708 modules)
+ GET /data_management/settings 200 in 45ms
+ ✓ Compiled in 897ms (708 modules)
+ GET /data_management/settings 200 in 84ms
+ ✓ Compiled in 3.2s (1494 modules)
+ GET /data_management/settings 200 in 299ms
+ ✓ Compiled in 2.7s (1494 modules)
+ GET /data_management/settings 200 in 156ms
+ ✓ Compiled in 1175ms (708 modules)
+ GET /data_management/settings 200 in 54ms
+ ✓ Compiled in 4.5s (1494 modules)
+ GET /data_management/settings 200 in 283ms
+ ○ Compiling /data_management/context ...
+ ✓ Compiled /data_management/context in 1272ms (791 modules)
+ GET /data_management/context 200 in 1626ms
+ ✓ Compiled in 461ms (708 modules)
+ GET /data_management/context 200 in 59ms
+ GET /data_management/settings 200 in 56ms
+ ✓ Compiled in 5.6s (1492 modules)
+ GET /data_management/settings 200 in 192ms
+ ✓ Compiled in 1235ms (1492 modules)
+ GET /data_management/settings 200 in 115ms
+ ✓ Compiled in 514ms (1492 modules)
+ GET /data_management/settings 200 in 70ms
+ ✓ Compiled in 1098ms (1492 modules)
+ GET /data_management/settings 200 in 68ms
+ ✓ Compiled in 725ms (1492 modules)
+ GET /data_management/settings 200 in 100ms
+ ✓ Compiled in 1651ms (1492 modules)
+ GET /data_management/settings 200 in 127ms
+ ✓ Compiled in 1524ms (1492 modules)
+ GET /data_management/settings 200 in 212ms
+ GET /data_management/settings 200 in 319ms
+ ○ Compiling /data_management/event ...
+ ✓ Compiled /data_management/event in 1458ms (791 modules)
+ GET /data_management/event 200 in 1595ms
+ GET /data_management/event 200 in 49ms
+ GET /data_management/settings 200 in 48ms
+ GET /data_management/sources 200 in 41ms
+ GET /data_management/sources 200 in 414ms
+ GET /data_management/settings 200 in 40ms

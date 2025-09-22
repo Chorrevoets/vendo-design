@@ -49,7 +49,7 @@ const mainMenuItems = [
   {
     name: "Data",
     icon: null,
-    href: "/data_management/quality",
+    href: "/data_management/sources",
     customIcon: "/data-management-icon.svg",
   },
 ]
@@ -342,7 +342,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
         <Header title="Settings" className="pl-24" />
       )}
 
-      {pathname === "/data_management/quality-control" && (
+      {pathname === "/data_management/quality" && (
         <Header title="Quality Control" className="pl-24" />
       )}
 
@@ -486,7 +486,7 @@ function SideMenu({ forceMinimalHeader }: { forceMinimalHeader?: boolean }) {
               {mainMenuItems
                 .filter(item => {
                   // On Data Management pages, Workspace Settings, and Profile Settings, hide all navigation shortcuts (when sidebar is closed)
-                  if (pathname === "/workspace_settings" || pathname === "/profile_settings" || pathname === "/data_management" || pathname === "/data_management/sources" || pathname === "/data_management/sources/settings" || pathname === "/data_management/destinations" || pathname === "/data_management/event" || pathname === "/data_management/customer" || pathname === "/data_management/advertising" || pathname === "/data_management/channel-grouping" || pathname === "/data_management/context" || pathname === "/data_management/funnel-analysis" || pathname === "/data_management/quality-control") {
+                  if (pathname === "/workspace_settings" || pathname === "/profile_settings" || pathname === "/data_management" || pathname === "/data_management/sources" || pathname === "/data_management/sources/settings" || pathname === "/data_management/destinations" || pathname === "/data_management/event" || pathname === "/data_management/customer" || pathname === "/data_management/advertising" || pathname === "/data_management/channel-grouping" || pathname === "/data_management/context" || pathname === "/data_management/funnel-analysis" || pathname === "/data_management/quality") {
                     return false
                   }
                   // On homepage, hide New Chat button

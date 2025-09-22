@@ -2,12 +2,12 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import HeaderFilter from "@/components/header-filter"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, ChevronRight, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-import TopDashboard from "@/components/top-dashboard"
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { Transition } from "@headlessui/react"
@@ -17,7 +17,6 @@ import { XMarkIcon } from "@heroicons/react/20/solid"
 
 export default function SourcesPage() {
     const router = useRouter()
-    const [showInfoPanel, setShowInfoPanel] = useState(true)
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [selectedSource, setSelectedSource] = useState<{ name: string; description: string } | null>(null)
@@ -88,6 +87,10 @@ export default function SourcesPage() {
             href: "/data_management/channel-grouping",
         },
         {
+            name: "Attribution Settings",
+            href: "/data_management/settings",
+        },
+        {
             name: "Context",
             href: "/data_management/context",
         },
@@ -141,6 +144,7 @@ export default function SourcesPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SingleLayerMenu forceState="narrow" />
             {/* Double Layered Menu Component */}
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
@@ -149,7 +153,16 @@ export default function SourcesPage() {
                 activeItem="Sources"
             />
 
-            <HeaderFilter title="Sources" showFilters={false} actionLabel="Add Source" forceNarrowLayout showMenu={false} useActionDialog={false} onActionClick={() => { setSelectedNewSource(null); setAddStep(1); setDrawerMode('add'); setAddDrawerOpen(true) }} />
+            <HeaderFilter
+                title="Sources"
+                showFilters={false}
+                actionLabel="Add Source"
+                forceNarrowLayout
+                showMenu={false}
+                useActionDialog={false}
+                leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"}
+                onActionClick={() => { setSelectedNewSource(null); setAddStep(1); setDrawerMode('add'); setAddDrawerOpen(true) }}
+            />
 
             <div
                 className="px-6 pt-24 pb-6"
@@ -161,43 +174,50 @@ export default function SourcesPage() {
 
                 {/* Page Content */}
                 <div className="space-y-6">
-                    {showInfoPanel && (
-                        <div className="px-4 sm:px-6 lg:px-8">
-                            <Card className="bg-white relative">
-                                <button
-                                    onClick={() => setShowInfoPanel(false)}
-                                    className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-                                    aria-label="Close"
-                                >
-                                    <X className="h-5 w-5" />
-                                </button>
-                                <CardHeader>
-                                    <CardTitle className="text-xl font-semibold text-gray-900">Info copy comes here</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                        {/* Text Content */}
-                                        <div className="lg:col-span-2 space-y-6">
-                                            <p className="text-gray-600">
-                                                Info copy comes here
-                                            </p>
-                                        </div>
 
-                                        {/* Image Placeholder */}
-                                        <div className="space-y-4">
-                                            <div className="bg-gray-100 rounded-lg p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-                                                <img src="/Vendo Data Monkey.png" alt="Vendo Data Monkey" className="w-full h-auto rounded-md" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    )}
 
-                    {/* Dashboard */}
+                    {/* Dashboard strip (copied from Events) */}
                     <div className="px-4 sm:px-6 lg:px-8">
-                        <TopDashboard />
+                        <div>
+                            <dl className="mt-0 grid grid-cols-1 divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-4 md:divide-x md:divide-y-0">
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Last Synced Volume</dt>
+                                    <dd className="mt-1">
+                                        <div className="flex items-baseline gap-2">
+                                            <div className="text-2xl font-semibold text-gray-900">434</div>
+                                            <span className="text-sm font-medium text-gray-500">Sep 16, 2025</span>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Total Events</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Since Sep 16, 2025</span>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Last 30 Days</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Recent activity</span>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div className="px-4 py-5 sm:p-6">
+                                    <dt className="text-base font-normal text-gray-900">Active Events</dt>
+                                    <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                        <div className="flex items-baseline text-2xl font-semibold text-gray-900">
+                                            0
+                                            <span className="ml-2 text-sm font-medium text-gray-500">Event types currently tracking</span>
+                                        </div>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
 
                     {/* Data Sources Table - Simple in card */}
@@ -210,7 +230,7 @@ export default function SourcesPage() {
                                             <thead className="bg-gray-50">
                                                 <tr>
                                                     <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                                        Name
+                                                        Source
                                                     </th>
                                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                         Description

@@ -1,0 +1,175 @@
+
+> my-v0-project@0.1.0 dev
+> next dev -p 3000
+
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.5:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.9s
+ ○ Compiling / ...
+ ✓ Compiled / in 3.9s (1024 modules)
+ GET / 200 in 4939ms
+ ✓ Compiled in 1169ms (495 modules)
+ ○ Compiling /data_management/quality ...
+ ✓ Compiled /data_management/quality in 2.7s (1108 modules)
+ GET /data_management/quality 200 in 3018ms
+ GET /data_management/quality 200 in 35ms
+ ○ Compiling /data_management/sources ...
+ ✓ Compiled /data_management/sources in 10.3s (1443 modules)
+ GET /data_management/sources 200 in 12793ms
+ GET /data_management/sources 200 in 1508ms
+ GET /data_management/sources 200 in 189ms
+ GET /data_management/sources 200 in 127ms
+ ○ Compiling /data_management/metrics ...
+ ✓ Compiled /data_management/event in 15.8s (1479 modules)
+ GET /data_management/event 200 in 11141ms
+ GET /data_management/metrics 200 in 16413ms
+ GET /data_management/event 200 in 306ms
+ GET /data_management/event 200 in 2223ms
+ GET /data_management/event 200 in 600ms
+ GET /data_management/metrics 200 in 85ms
+ ○ Compiling /data_management/customer ...
+ ✓ Compiled /data_management/customer in 5s (1486 modules)
+ GET /data_management/customer 200 in 5576ms
+ GET /data_management/metrics 200 in 71ms
+ GET /data_management/event 200 in 57ms
+ GET /data_management/event 200 in 118ms
+ ✓ Compiled in 6.1s (1490 modules)
+ GET /data_management/event 200 in 351ms
+ GET /data_management/event 200 in 670ms
+ ✓ Compiled in 1819ms (1490 modules)
+ GET /data_management/event 200 in 155ms
+ ✓ Compiled in 3.8s (1490 modules)
+ GET /data_management/event 200 in 282ms
+ GET /data_management/event 200 in 992ms
+ ✓ Compiled in 1624ms (1490 modules)
+ GET /data_management/event 200 in 252ms
+ ⨯ ./app/data_management/event/page.tsx
+Module parse failed: Identifier 'propertiesTableRef' has already been declared (410:10)
+|     const [propDescriptionOverrideByName, setPropDescriptionOverrideByName] = useState({});
+|     const propDescriptionTextareaRefs = useRef({});
+>     const propertiesTableRef = useRef(null);
+|     const autosizeTextarea = (el)=>{
+|         if (!el) return;
+
+Import trace for requested module:
+./app/data_management/event/page.tsx
+ ⨯ ./app/data_management/event/page.tsx
+Module parse failed: Identifier 'propertiesTableRef' has already been declared (410:10)
+|     const [propDescriptionOverrideByName, setPropDescriptionOverrideByName] = useState({});
+|     const propDescriptionTextareaRefs = useRef({});
+>     const propertiesTableRef = useRef(null);
+|     const autosizeTextarea = (el)=>{
+|         if (!el) return;
+
+Import trace for requested module:
+./app/data_management/event/page.tsx
+ ⨯ ./app/data_management/event/page.tsx
+Module parse failed: Identifier 'propertiesTableRef' has already been declared (410:10)
+|     const [propDescriptionOverrideByName, setPropDescriptionOverrideByName] = useState({});
+|     const propDescriptionTextareaRefs = useRef({});
+>     const propertiesTableRef = useRef(null);
+|     const autosizeTextarea = (el)=>{
+|         if (!el) return;
+
+Import trace for requested module:
+./app/data_management/event/page.tsx
+ ✓ Compiled in 2.6s (1490 modules)
+ GET /data_management/event 200 in 298ms
+ GET /data_management/event 200 in 676ms
+ ✓ Compiled in 1944ms (1490 modules)
+ GET /data_management/event 200 in 184ms
+ ✓ Compiled in 3.4s (1490 modules)
+ GET /data_management/event 200 in 397ms
+ ✓ Compiled in 1970ms (1490 modules)
+ GET /data_management/event 200 in 206ms
+ ✓ Compiled in 2.3s (1490 modules)
+ GET /data_management/event 200 in 172ms
+ GET /data_management/event 200 in 358ms
+ ✓ Compiled in 1042ms (1490 modules)
+ GET /data_management/event 200 in 105ms
+ GET /data_management/event 200 in 374ms
+ ✓ Compiled in 3.9s (1490 modules)
+ GET /data_management/event 200 in 331ms
+ GET /data_management/event 200 in 398ms
+ ✓ Compiled in 2.3s (1490 modules)
+ GET /data_management/event 200 in 152ms
+ ✓ Compiled in 2.4s (1490 modules)
+ GET /data_management/event 200 in 290ms
+ GET /data_management/event 200 in 890ms
+ GET /data_management/event 200 in 285ms
+ ✓ Compiled in 1610ms (1490 modules)
+ ✓ Compiled in 6s (1490 modules)
+ GET /data_management/event 200 in 294ms
+ ✓ Compiled in 2.4s (1490 modules)
+ GET /data_management/event 200 in 247ms
+ GET /data_management/metrics 200 in 73ms
+ GET /data_management/event 200 in 57ms
+ ✓ Compiled in 6.4s (1490 modules)
+ GET /data_management/event 200 in 556ms
+ ✓ Compiled in 2.1s (1490 modules)
+ GET /data_management/event 200 in 368ms
+ ✓ Compiled in 3.5s (1490 modules)
+ GET /data_management/event 200 in 319ms
+ ✓ Compiled in 1421ms (1490 modules)
+ GET /data_management/event 200 in 251ms
+ ✓ Compiled in 3.8s (1490 modules)
+ GET /data_management/event 200 in 152ms
+ ✓ Compiled in 931ms (1490 modules)
+ GET /data_management/event 200 in 137ms
+ GET /data_management/event 200 in 585ms
+ ✓ Compiled in 5.5s (1490 modules)
+ GET /data_management/event 200 in 422ms
+ ✓ Compiled in 1895ms (1490 modules)
+ GET /data_management/event 200 in 465ms
+ ✓ Compiled in 1891ms (1490 modules)
+ GET /data_management/event 200 in 163ms
+ ✓ Compiled in 2.4s (1490 modules)
+ GET /data_management/event 200 in 153ms
+ GET /data_management/sources 200 in 126ms
+ GET /data_management/sources 200 in 57ms
+ ✓ Compiled in 2.4s (701 modules)
+ GET /data_management/sources 200 in 157ms
+ ✓ Compiled in 1531ms (701 modules)
+ GET /data_management/sources 200 in 103ms
+ ✓ Compiled in 5.9s (1490 modules)
+ GET /data_management/sources 200 in 517ms
+ ✓ Compiled in 6.5s (1489 modules)
+ ✓ Compiled in 2.3s (1489 modules)
+ ✓ Compiled in 1881ms (1489 modules)
+ GET /data_management/sources 200 in 448ms
+ GET /data_management/sources 200 in 65ms
+ GET /data_management/sources 200 in 95ms
+ GET /data_management/metrics 200 in 166ms
+ GET /data_management/event 200 in 72ms
+ GET /data_management/event 200 in 829ms
+ GET /data_management/event 200 in 312ms
+ ✓ Compiled in 8.5s (1489 modules)
+ GET /data_management/event 200 in 429ms
+ ✓ Compiled in 4.2s (1489 modules)
+ GET /data_management/event 200 in 341ms
+ ✓ Compiled in 3s (1489 modules)
+ GET /data_management/event 200 in 176ms
+ ✓ Compiled in 5.1s (1489 modules)
+ GET /data_management/event 200 in 469ms
+ ✓ Compiled in 1566ms (1489 modules)
+ GET /data_management/event 200 in 287ms
+ ✓ Compiled in 4.3s (1489 modules)
+ GET /data_management/event 200 in 336ms
+ ✓ Compiled in 5.1s (1489 modules)
+ GET /data_management/event 200 in 540ms
+ ✓ Compiled in 4.8s (1489 modules)
+ GET /data_management/event 200 in 671ms
+ ✓ Compiled in 10s (1489 modules)
+ GET /data_management/event 200 in 313ms
+ ✓ Compiled in 2.9s (1489 modules)
+ GET /data_management/event 200 in 545ms
+ ✓ Compiled in 772ms (1489 modules)
+ GET /data_management/event 200 in 61ms
+ GET /data_management/metrics 200 in 55ms
+ ✓ Compiled in 3.3s (1489 modules)
+ GET /data_management/metrics 200 in 147ms
+ ✓ Compiled in 721ms (1489 modules)
+ GET /data_management/metrics 200 in 85ms

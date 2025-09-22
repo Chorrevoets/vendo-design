@@ -1,13 +1,16 @@
 "use client"
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import TopDashboard from "@/components/top-dashboard"
 import type { Metric } from "@/types/metric"
 import HeaderFilter from "@/components/header-filter"
 import { useState, useEffect, useMemo, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Checkbox } from "@/components/ui/checkbox"
 import { X, AlertTriangle, Sparkles, CheckCircle, ArrowUp, ArrowDown } from "lucide-react"
@@ -19,6 +22,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 type SecondaryItem = { name: string; href: string; badgeCount?: number; badgeColor?: "red" | "green" | "orange" | "gray" | "blue"; badgeLabel?: string }
 
 export default function EventsPage() {
+    const router = useRouter()
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
     const [selectedMetric, setSelectedMetric] = useState<Metric | null>(null)
     const [enabledByName, setEnabledByName] = useState<Record<string, boolean>>({})
@@ -82,7 +86,7 @@ export default function EventsPage() {
     const secondaryPanelItems: SecondaryItem[] = [
         {
             name: "Quality",
-            href: "/data_management/quality-control",
+            href: "/data_management/quality",
         },
         {
             name: "Sources",
@@ -106,6 +110,10 @@ export default function EventsPage() {
         {
             name: "Channel Grouping",
             href: "/data_management/channel-grouping",
+        },
+        {
+            name: "Attribution Settings",
+            href: "/data_management/settings",
         },
         {
             name: "Context",
@@ -359,6 +367,43 @@ export default function EventsPage() {
     const [propSelectedStatusesDraft, setPropSelectedStatusesDraft] = useState<Set<string>>(new Set())
     const [propAppliedStatuses, setPropAppliedStatuses] = useState<string[]>([])
 
+    // Drawer: Inline editing state for property descriptions
+    const [isEditingPropDescription, setIsEditingPropDescription] = useState<Record<string, boolean>>({})
+    const [propDescriptionDraftByName, setPropDescriptionDraftByName] = useState<Record<string, string>>({})
+    const [propDescriptionOverrideByName, setPropDescriptionOverrideByName] = useState<Record<string, string>>({})
+    const [autoTypingByProp, setAutoTypingByProp] = useState<Record<string, boolean>>({})
+    const propDescriptionTextareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({})
+    const propRowRefs = useRef<Record<string, HTMLTableRowElement | null>>({})
+    const initialMissingPropNames = useMemo(() => eventProperties.slice(0, 3).map(p => p.name), [eventProperties])
+    const [missingPropNames, setMissingPropNames] = useState<string[]>(initialMissingPropNames)
+    const isPropMissing = (name: string) => missingPropNames.includes(name)
+
+    // If there are missing descriptions, surface the alert strip and CTA
+    useEffect(() => {
+        // Do not show red state until user triggers generation; keep green by default
+        setStatusTheme("green")
+    }, [])
+
+    useEffect(() => {
+        // When all missing descriptions are filled, return to green and hide alert
+        if (missingPropNames.length === 0) {
+            setStatusTheme("green")
+        }
+    }, [missingPropNames])
+
+    const autosizeTextarea = (el: HTMLTextAreaElement | null) => {
+        if (!el) return
+        el.style.height = "0px"
+        el.style.height = `${el.scrollHeight}px`
+    }
+
+    // Event Description inline editing state
+    const defaultEventDescription = "The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis."
+    const [eventDescriptionOverride, setEventDescriptionOverride] = useState<string | null>(null)
+    const [isEditingEventDescription, setIsEditingEventDescription] = useState(false)
+    const [eventDescriptionDraft, setEventDescriptionDraft] = useState("")
+    const eventDescriptionRef = useRef<HTMLTextAreaElement | null>(null)
+
     const filteredProps = useMemo(() => {
         // Start with original list paired with index for deterministic type calc
         let rows = eventProperties.map((p, i) => ({ p, i }))
@@ -468,6 +513,7 @@ export default function EventsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SingleLayerMenu forceState="narrow" />
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
@@ -481,6 +527,7 @@ export default function EventsPage() {
                 showActionButton={false}
                 showMenu={false}
                 title="Events"
+                leftOffset={isMainSidebarOpen ? "calc(340px + 230px)" : "calc(64px + 230px)"}
             />
 
             <div
@@ -954,21 +1001,58 @@ export default function EventsPage() {
                                             <h2 className="text-lg font-semibold text-gray-900">{selectedMetric?.name ?? "Event"}</h2>
                                         </div>
                                         <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
-                                            {(statusTheme === "red" || statusTheme === "orange") && (
-                                                <div className={`border-l-4 p-4 ${statusTheme === "orange" ? "border-yellow-400 bg-yellow-50" : "border-red-400 bg-red-50"}`}>
+                                            {statusTheme === "red" && (
+                                                <div className="border-l-4 p-4 border-red-400 bg-red-50">
                                                     <div className="flex items-center">
                                                         <div className="shrink-0">
-                                                            <img src={statusTheme === "orange" ? "/Orange.svg" : "/Red.svg"} alt="" className="h-5 w-5" />
+                                                            <img src="/Red.svg" alt="" className="h-5 w-5" />
                                                         </div>
                                                         <div className="ml-3 flex-1">
-                                                            <p className={`text-sm ${statusTheme === "orange" ? "text-yellow-700" : "text-red-700"}`}>
-                                                                {statusTheme === "orange" ?
-                                                                    "2 properties miss descriptions, reducing AI accuracy and recommendations." :
-                                                                    "5 properties miss descriptions, reducing AI accuracy and recommendations."}
+                                                            <p className="text-sm text-red-700">
+                                                                5 properties miss descriptions, reducing AI accuracy and recommendations.
                                                             </p>
                                                         </div>
                                                         <div className="ml-3">
-                                                            <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
+                                                                onClick={async () => {
+                                                                    // Prototype: no API calls. Generate locally and animate edits.
+                                                                    // Initialize the three rows as missing only when user triggers
+                                                                    setMissingPropNames(initialMissingPropNames)
+                                                                    setStatusTheme("red")
+                                                                    const propsNeeding = initialMissingPropNames
+                                                                    if (propsNeeding.length === 0) return
+
+                                                                    for (const name of propsNeeding) {
+                                                                        const row = propRowRefs.current[name]
+                                                                        if (row) {
+                                                                            row.scrollIntoView({ behavior: "smooth", block: "center" })
+                                                                        }
+                                                                        const fullText = `This ${name} property captures important context for the ${selectedMetric?.name ?? "event"}. It improves analysis and recommendations by clarifying its meaning and usage in reporting.`
+                                                                        setIsEditingPropDescription(prev => ({ ...prev, [name]: true }))
+                                                                        setPropDescriptionDraftByName(prev => ({ ...prev, [name]: "" }))
+                                                                        setAutoTypingByProp(prev => ({ ...prev, [name]: true }))
+                                                                        // typewriter effect
+                                                                        for (let i = 1; i <= fullText.length; i++) {
+                                                                            const slice = fullText.slice(0, i)
+                                                                            setPropDescriptionDraftByName(prev => ({ ...prev, [name]: slice }))
+                                                                            await new Promise(r => setTimeout(r, 12))
+                                                                        }
+                                                                        setPropDescriptionOverrideByName(prev => ({ ...prev, [name]: fullText }))
+                                                                        setIsEditingPropDescription(prev => ({ ...prev, [name]: false }))
+                                                                        setAutoTypingByProp(prev => ({ ...prev, [name]: false }))
+                                                                        // Mark as not missing anymore
+                                                                        setMissingPropNames(prev => prev.filter(n => n !== name))
+                                                                        // Scroll a tad to acknowledge completion
+                                                                        const rowDone = propRowRefs.current[name]
+                                                                        if (rowDone) {
+                                                                            rowDone.scrollIntoView({ behavior: "smooth", block: "center" })
+                                                                        }
+                                                                        await new Promise(r => setTimeout(r, 250))
+                                                                    }
+                                                                }}
+                                                            >
                                                                 <img src="/AI.svg" alt="" className="h-3.5 w-3.5" />
                                                                 Generate missing descriptions
                                                             </button>
@@ -1014,10 +1098,11 @@ export default function EventsPage() {
                                                     <div className="px-4 py-5 sm:p-6">
                                                         <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
                                                             <span>{statusTheme === "red" ? "Data Incomplete" : statusTheme === "orange" ? "Some Data Missing" : "All data is complete"}</span>
-                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
-                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
-                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
-                                                            </svg>
+                                                            <img
+                                                                src={statusTheme === "red" ? "/Red.svg" : statusTheme === "orange" ? "/Orange.svg" : "/Green.svg"}
+                                                                alt=""
+                                                                className="absolute top-0 right-0 h-[55px] w-[55px]"
+                                                            />
                                                         </dt>
                                                         <dd className="mt-1">
                                                             <div className="flex items-baseline gap-2">
@@ -1030,10 +1115,10 @@ export default function EventsPage() {
                                                                 <button
                                                                     type="button"
                                                                     className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
-                                                                    onClick={() => { setPropCoverageSort("asc"); propertiesTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }}
+                                                                    onClick={() => router.push("/")}
                                                                 >
-                                                                    <img src="/Sort.svg" alt="" className="h-3.5 w-3.5" />
-                                                                    Show Low Coverage Properties
+                                                                    <img src="/New-chat.svg" alt="" className="h-3.5 w-3.5" />
+                                                                    Troubleshoot in Chat
                                                                 </button>
                                                             </dd>
                                                         )}
@@ -1041,10 +1126,11 @@ export default function EventsPage() {
                                                     <div className="px-4 py-5 sm:p-6">
                                                         <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
                                                             <span>{statusTheme === "red" ? "Data outside normal range" : statusTheme === "orange" ? "Above normal range" : "Data within normal range"}</span>
-                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
-                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
-                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
-                                                            </svg>
+                                                            <img
+                                                                src={statusTheme === "red" ? "/Red.svg" : statusTheme === "orange" ? "/Orange.svg" : "/Green.svg"}
+                                                                alt=""
+                                                                className="absolute top-0 right-0 h-[55px] w-[55px]"
+                                                            />
                                                         </dt>
                                                         <dd className="mt-1">
                                                             <div className="flex items-baseline gap-2">
@@ -1071,15 +1157,16 @@ export default function EventsPage() {
                                                     <div className="px-4 py-5 sm:p-6">
                                                         <dt className={`text-base font-semibold relative pr-16 ${statusThemeClasses.title}`}>
                                                             <span>{statusTheme === "red" ? "Insufficient Coverage" : statusTheme === "orange" ? "Moderate Coverage" : "Healthy Coverage"}</span>
-                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 right-0 h-[55px] w-[55px] ${statusThemeClasses.icon}`}>
-                                                                <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
-                                                                <path d="m8.5 12.5 2 2 5 -5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"></path>
-                                                            </svg>
+                                                            <img
+                                                                src={statusTheme === "red" ? "/Red.svg" : statusTheme === "orange" ? "/Orange.svg" : "/Green.svg"}
+                                                                alt=""
+                                                                className="absolute top-0 right-0 h-[55px] w-[55px]"
+                                                            />
                                                         </dt>
                                                         <dd className="mt-1">
                                                             <div className="flex items-baseline gap-2">
                                                                 <div className={`text-2xl font-semibold ${statusThemeClasses.value}`}>{statusTheme === "red" ? 66 : statusTheme === "orange" ? 2 : 0}</div>
-                                                                <span className={`text-sm font-medium ${statusThemeClasses.sub}`}>properties with low coverage</span>
+                                                                <span className={`text-sm font-medium ${statusThemeClasses.sub}`}>low coverage properties</span>
                                                             </div>
                                                         </dd>
                                                         {(statusTheme === "red" || statusTheme === "orange") && (
@@ -1115,28 +1202,28 @@ export default function EventsPage() {
                                                         </div>
                                                     </div>
                                                     <div className="px-4 py-5 sm:p-6 space-y-4">
-                                                        <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4">
-                                                            <div className="flex items-center">
-                                                                <div className="shrink-0">
-                                                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-500">
-                                                                        <path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0 -20 0" stroke="currentColor" strokeWidth="1.5"></path>
-                                                                        <path d="M12 7v6" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"></path>
-                                                                        <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
-                                                                    </svg>
-                                                                </div>
-                                                                <div className="ml-3 flex-1">
-                                                                    <p className="text-sm text-yellow-700">
-                                                                        1 anomalies detected in the last 30 days (0 high severity and 1 medium severity)
-                                                                    </p>
-                                                                </div>
-                                                                <div className="ml-3">
-                                                                    <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50" onClick={() => { setPropCoverageSort("asc"); propertiesTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) }}>
-                                                                        <img src="/Sort.svg" alt="" className="h-3.5 w-3.5" />
-                                                                        Show Low Coverage Properties
-                                                                    </button>
+                                                        {statusTheme !== "green" && (
+                                                            <div className={`border-l-4 p-4 ${statusTheme === "red" ? "border-red-400 bg-red-50" : "border-yellow-400 bg-yellow-50"}`}>
+                                                                <div className="flex items-center">
+                                                                    <div className="shrink-0">
+                                                                        <img src={statusTheme === "red" ? "/Red.svg" : "/Orange.svg"} alt="" className="h-5 w-5" />
+                                                                    </div>
+                                                                    <div className="ml-3 flex-1">
+                                                                        <p className={`text-sm ${statusTheme === "red" ? "text-red-700" : "text-yellow-700"}`}>
+                                                                            {statusTheme === "red"
+                                                                                ? "3 anomalies detected in the last 30 days (2 high severity and 1 medium severity)"
+                                                                                : "1 anomalies detected in the last 30 days (0 high severity and 1 medium severity)"}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div className="ml-3">
+                                                                        <button type="button" className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50" onClick={() => router.push("/")}>
+                                                                            <img src="/New-chat.svg" alt="" className="h-3.5 w-3.5" />
+                                                                            Troubleshoot in Chat
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        )}
 
                                                         <p className="text-xs text-gray-600">Gray band indicates the normal range (±2.5 SD)</p>
 
@@ -1162,13 +1249,72 @@ export default function EventsPage() {
                                                                     type="button"
                                                                     className="text-gray-400 hover:text-gray-600"
                                                                     aria-label="Edit event name and description"
+                                                                    onClick={() => {
+                                                                        setIsEditingEventDescription(true)
+                                                                        setEventDescriptionDraft(eventDescriptionOverride ?? defaultEventDescription)
+                                                                        setTimeout(() => { if (eventDescriptionRef.current) autosizeTextarea(eventDescriptionRef.current) }, 0)
+                                                                    }}
                                                                 >
                                                                     <img src="/New-chat.svg" alt="" className="h-4 w-4" />
                                                                 </button>
                                                             </div>
-                                                            <p className="text-sm text-gray-700 leading-6">
-                                                                The $mp_session_record (Mixpanel) event captures data related to user session recordings within Mixpanel. It tracks the start and duration of a user's session, along with details about their environment (browser, device, region) and the recording itself (start URL, environment). This event provides insights into user behavior during a session, enabling analysis of user flows, identifying friction points, and improving the overall user experience through session replay analysis.
-                                                            </p>
+                                                            {isEditingEventDescription ? (
+                                                                <div className="space-y-2">
+                                                                    <Textarea
+                                                                        ref={eventDescriptionRef}
+                                                                        value={eventDescriptionDraft}
+                                                                        onChange={(e) => { setEventDescriptionDraft(e.target.value); autosizeTextarea(eventDescriptionRef.current) }}
+                                                                        onInput={(e) => autosizeTextarea(e.currentTarget)}
+                                                                        className="w-full resize-none overflow-hidden text-sm leading-6"
+                                                                    />
+                                                                    <div className="flex items-center gap-3">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            className="h-8 pl-2 pr-4"
+                                                                            onClick={() => {
+                                                                                // Placeholder action for AI generation
+                                                                                console.log("AI Generate event description")
+                                                                            }}
+                                                                        >
+                                                                            <span className="inline-flex items-center gap-1">
+                                                                                <img src="/AI.svg" alt="AI" className="h-4 w-4" />
+                                                                                <span>AI Generate</span>
+                                                                            </span>
+                                                                        </Button>
+                                                                        <Button
+                                                                            className="h-8 px-3"
+                                                                            onClick={() => {
+                                                                                setEventDescriptionOverride(eventDescriptionDraft)
+                                                                                setIsEditingEventDescription(false)
+                                                                            }}
+                                                                        >
+                                                                            Save
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="link"
+                                                                            className="h-8 px-0"
+                                                                            onClick={() => {
+                                                                                setIsEditingEventDescription(false)
+                                                                                setEventDescriptionDraft(eventDescriptionOverride ?? defaultEventDescription)
+                                                                            }}
+                                                                        >
+                                                                            Cancel
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <div
+                                                                    role="button"
+                                                                    className="text-sm text-gray-700 leading-6 cursor-text"
+                                                                    onClick={() => {
+                                                                        setIsEditingEventDescription(true)
+                                                                        setEventDescriptionDraft(eventDescriptionOverride ?? defaultEventDescription)
+                                                                        setTimeout(() => { if (eventDescriptionRef.current) autosizeTextarea(eventDescriptionRef.current) }, 0)
+                                                                    }}
+                                                                >
+                                                                    {eventDescriptionOverride ?? defaultEventDescription}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     {/* Alert moved above Tabs; removed duplicate here */}
@@ -1430,44 +1576,185 @@ export default function EventsPage() {
                                                                     </th>
                                                                 </tr>
                                                             </thead>
+                                                            {propsHasAnyActive && (
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colSpan={7} className="px-4 pt-3 pb-2 sm:px-6 bg-white">
+                                                                            <div className="flex flex-wrap items-center gap-1">
+                                                                                {propSearchQuery.trim() !== "" && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => setPropSearchQuery("")}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Search: {propSearchQuery}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                )}
+                                                                                {appliedPropTypes.map((t) => (
+                                                                                    <button
+                                                                                        key={`ptype-${t}`}
+                                                                                        type="button"
+                                                                                        onClick={() => setAppliedPropTypes(prev => prev.filter(v => v !== t))}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Type: {t}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                ))}
+                                                                                {appliedRequired.map((r) => (
+                                                                                    <button
+                                                                                        key={`preq-${r}`}
+                                                                                        type="button"
+                                                                                        onClick={() => setAppliedRequired(prev => prev.filter(v => v !== r))}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Required: {r}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                ))}
+                                                                                {propAppliedStatuses.map((s) => (
+                                                                                    <button
+                                                                                        key={`pstat-${s}`}
+                                                                                        type="button"
+                                                                                        onClick={() => setPropAppliedStatuses(prev => prev.filter(v => v !== s))}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Status: {s}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                ))}
+                                                                                {propLastSeenSort && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => setPropLastSeenSort(null)}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Last Seen: {propLastSeenSort === "asc" ? "Asc" : "Desc"}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                )}
+                                                                                {propCoverageSort && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => setPropCoverageSort(null)}
+                                                                                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-200 hover:bg-blue-100"
+                                                                                    >
+                                                                                        <span>Coverage: {propCoverageSort === "asc" ? "Asc" : "Desc"}</span>
+                                                                                        <X className="h-3 w-3" />
+                                                                                    </button>
+                                                                                )}
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            )}
                                                             <tbody className="divide-y divide-gray-200 bg-white">
                                                                 {filteredProps.map(({ p, i }) => (
-                                                                    <tr key={p.name}>
+                                                                    <tr key={p.name} ref={(node) => { propRowRefs.current[p.name] = node }}>
                                                                         <td className="align-top py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                                             <div className="flex items-center gap-2">
                                                                                 <span className="font-medium text-gray-900">{p.name}</span>
                                                                                 <button
                                                                                     type="button"
                                                                                     className="text-gray-400 hover:text-gray-600"
-                                                                                    aria-label={`Edit ${p.name} name and description`}
+                                                                                    aria-label={`Edit ${p.name} description`}
+                                                                                    onClick={() => {
+                                                                                        setIsEditingPropDescription(prev => ({ ...prev, [p.name]: true }))
+                                                                                        setPropDescriptionDraftByName(prev => ({ ...prev, [p.name]: propDescriptionOverrideByName[p.name] ?? p.description }))
+                                                                                    }}
                                                                                 >
-                                                                                    <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                                    <img src="/New-chat.svg" alt="Edit" className="h-4 w-4" />
                                                                                 </button>
                                                                             </div>
                                                                             <div className="mt-1 text-gray-600">
-                                                                                {expandedByProp[p.name]
-                                                                                    ? p.description
-                                                                                    : (p.description.length > 240 ? p.description.slice(0, 240) + "…" : p.description)
-                                                                                }
-                                                                                {p.description.length > 240 && (
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        className="ml-2 text-gray-500 hover:text-gray-700"
-                                                                                        onClick={() => setExpandedByProp(prev => ({ ...prev, [p.name]: !prev[p.name] }))}
+                                                                                {isEditingPropDescription[p.name] ? (
+                                                                                    <div className="space-y-2">
+                                                                                        <Textarea
+                                                                                            ref={(node) => { propDescriptionTextareaRefs.current[p.name] = node; autosizeTextarea(node) }}
+                                                                                            value={propDescriptionDraftByName[p.name] ?? ""}
+                                                                                            onChange={(e) => {
+                                                                                                setPropDescriptionDraftByName(prev => ({ ...prev, [p.name]: e.target.value }))
+                                                                                                autosizeTextarea(propDescriptionTextareaRefs.current[p.name] || null)
+                                                                                            }}
+                                                                                            onInput={(e) => autosizeTextarea(e.currentTarget)}
+                                                                                            className="w-full resize-none overflow-hidden"
+                                                                                        />
+                                                                                        {!autoTypingByProp[p.name] && (
+                                                                                            <div className="flex items-center gap-3">
+                                                                                                <Button
+                                                                                                    variant="outline"
+                                                                                                    className="h-8 pl-2 pr-4"
+                                                                                                    onClick={() => {
+                                                                                                        // Placeholder action for AI generation
+                                                                                                        console.log("Generate with AI clicked for", p.name)
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <span className="inline-flex items-center gap-1">
+                                                                                                        <img src="/AI.svg" alt="AI" className="h-4 w-4" />
+                                                                                                        <span>AI Generate</span>
+                                                                                                    </span>
+                                                                                                </Button>
+                                                                                                <Button
+                                                                                                    className="h-8 px-3"
+                                                                                                    onClick={() => {
+                                                                                                        const next = propDescriptionDraftByName[p.name] ?? ""
+                                                                                                        setPropDescriptionOverrideByName(prev => ({ ...prev, [p.name]: next }))
+                                                                                                        setIsEditingPropDescription(prev => ({ ...prev, [p.name]: false }))
+                                                                                                    }}
+                                                                                                >
+                                                                                                    Save
+                                                                                                </Button>
+                                                                                                <Button
+                                                                                                    variant="link"
+                                                                                                    className="h-8 px-0"
+                                                                                                    onClick={() => {
+                                                                                                        setIsEditingPropDescription(prev => ({ ...prev, [p.name]: false }))
+                                                                                                        setPropDescriptionDraftByName(prev => ({ ...prev, [p.name]: propDescriptionOverrideByName[p.name] ?? p.description }))
+                                                                                                    }}
+                                                                                                >
+                                                                                                    Cancel
+                                                                                                </Button>
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div
+                                                                                        role="button"
+                                                                                        className="cursor-text"
+                                                                                        onClick={() => {
+                                                                                            setIsEditingPropDescription(prev => ({ ...prev, [p.name]: true }))
+                                                                                            setPropDescriptionDraftByName(prev => ({ ...prev, [p.name]: propDescriptionOverrideByName[p.name] ?? p.description }))
+                                                                                        }}
                                                                                     >
-                                                                                        {expandedByProp[p.name] ? "Less" : "More"}
-                                                                                    </button>
+                                                                                        {isPropMissing(p.name)
+                                                                                            ? null
+                                                                                            : expandedByProp[p.name]
+                                                                                                ? (propDescriptionOverrideByName[p.name] ?? p.description)
+                                                                                                : ((propDescriptionOverrideByName[p.name] ?? p.description).length > 240
+                                                                                                    ? (propDescriptionOverrideByName[p.name] ?? p.description).slice(0, 240) + "…"
+                                                                                                    : (propDescriptionOverrideByName[p.name] ?? p.description))}
+                                                                                        {!isPropMissing(p.name) && (propDescriptionOverrideByName[p.name] ?? p.description).length > 240 && (
+                                                                                            <button
+                                                                                                type="button"
+                                                                                                className="ml-2 text-gray-500 hover:text-gray-700"
+                                                                                                onClick={(e) => { e.stopPropagation(); setExpandedByProp(prev => ({ ...prev, [p.name]: !prev[p.name] })) }}
+                                                                                            >
+                                                                                                {expandedByProp[p.name] ? "Less" : "More"}
+                                                                                            </button>
+                                                                                        )}
+                                                                                    </div>
                                                                                 )}
                                                                             </div>
                                                                         </td>
+                                                                        {/* Sample Values */}
+                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
+                                                                        {/* Type */}
                                                                         <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-700">
                                                                             {p.type === "unknown" ? (i % 2 === 0 ? "String" : "Integer") : p.type}
                                                                         </td>
-                                                                        {
-                                                                            /* Coverage column with color coding */
-                                                                        }
+                                                                        {/* Last Seen */}
                                                                         <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.last}</td>
-                                                                        <td className="align-top whitespace-nowrap px-3 py-4 text-sm text-gray-500">{p.sample}</td>
                                                                         <td className="align-top whitespace-nowrap px-3 py-4 text-sm" onClick={(e) => e.stopPropagation()}>
                                                                             <Switch
                                                                                 checked={requiredByProp[p.name] ?? false}
@@ -1491,7 +1778,11 @@ export default function EventsPage() {
                                                                             )
                                                                         })()}
                                                                         <td className="align-top whitespace-nowrap py-4 pl-3 pr-4 text-sm sm:pr-6">
-                                                                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">{p.status}</span>
+                                                                            {isPropMissing(p.name) ? (
+                                                                                <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-inset ring-red-200">Missing Description</span>
+                                                                            ) : (
+                                                                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-200">Live</span>
+                                                                            )}
                                                                         </td>
                                                                     </tr>
                                                                 ))}

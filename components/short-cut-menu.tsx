@@ -65,7 +65,7 @@ export default function ShortCutMenu() {
         {
             name: "Data",
             icon: "/data-management-icon.svg",
-            href: "/data_management/quality",
+            href: "/data_management/sources",
         },
         {
             name: "Docs",

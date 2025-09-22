@@ -2,12 +2,13 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import HeaderFilter from "@/components/header-filter"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import { useState, useEffect } from "react"
 
 export default function QualityControlPage() {
     const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(false)
 
-    // Force narrow layout on this page
+    // Force narrow layout and keep CSS variables in sync via SingleLayerMenu
     useEffect(() => {
         setIsMainSidebarOpen(false)
     }, [])
@@ -41,10 +42,16 @@ export default function QualityControlPage() {
             name: "Context",
             href: "/data_management/context",
         },
+        {
+            name: "Settings",
+            href: "/data_management/settings",
+        },
     ]
 
     return (
         <div className="min-h-screen bg-gray-50">
+            {/* Always show the narrow sidebar for consistent layout on this page */}
+            <SingleLayerMenu forceState="narrow" />
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
@@ -52,7 +59,7 @@ export default function QualityControlPage() {
                 activeItem="Quality"
             />
 
-            <HeaderFilter showFilters={false} title="Quality" forceNarrowLayout showActionButton={false} showMenu={false} />
+            <HeaderFilter showFilters={false} title="Quality" forceNarrowLayout showActionButton={false} showMenu={false} leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"

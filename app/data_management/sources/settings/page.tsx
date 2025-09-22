@@ -26,7 +26,7 @@ export default function SourceSettingsPage() {
                 <div className="mb-6">
                     <nav className="flex items-center space-x-2 text-sm text-gray-600">
                         <button
-                            onClick={() => router.push('/data_management')}
+                            onClick={() => router.push('/data_management/sources')}
                             className="hover:text-gray-900 transition-colors"
                         >
                             Data Management

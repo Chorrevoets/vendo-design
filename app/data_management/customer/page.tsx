@@ -2,6 +2,7 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import HeaderFilter from "@/components/header-filter"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import { useEffect, useState } from "react"
 
 export default function CustomerPage() {
@@ -15,7 +16,7 @@ export default function CustomerPage() {
     const secondaryPanelItems = [
         {
             name: "Quality",
-            href: "/data_management/quality-control",
+            href: "/data_management/quality",
         },
         {
             name: "Sources",
@@ -38,6 +39,10 @@ export default function CustomerPage() {
             href: "/data_management/channel-grouping",
         },
         {
+            name: "Attribution Settings",
+            href: "/data_management/settings",
+        },
+        {
             name: "Context",
             href: "/data_management/context",
         },
@@ -45,6 +50,7 @@ export default function CustomerPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SingleLayerMenu forceState="narrow" />
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
@@ -52,7 +58,7 @@ export default function CustomerPage() {
                 activeItem="Customer Properties"
             />
 
-            <HeaderFilter showFilters={false} title="Customer Properties" forceNarrowLayout />
+            <HeaderFilter showFilters={false} title="Customer Properties" forceNarrowLayout leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"

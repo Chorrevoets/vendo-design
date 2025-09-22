@@ -2,6 +2,7 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import HeaderFilter from "@/components/header-filter"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import { useEffect, useState } from "react"
 
 export default function PropertiesPage() {
@@ -14,8 +15,8 @@ export default function PropertiesPage() {
 
     const secondaryPanelItems = [
         {
-            name: "Data Quality",
-            href: "/data_management/quality-control",
+            name: "Quality",
+            href: "/data_management/quality",
         },
         {
             name: "Sources",
@@ -41,11 +42,16 @@ export default function PropertiesPage() {
             name: "Context",
             href: "/data_management/context",
         },
+        {
+            name: "Settings",
+            href: "/data_management/settings",
+        },
 
     ]
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SingleLayerMenu forceState="narrow" />
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}

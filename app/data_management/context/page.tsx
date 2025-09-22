@@ -2,6 +2,7 @@
 
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import HeaderFilter from "@/components/header-filter"
+import SingleLayerMenu from "@/components/single-layer-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, ChevronRight } from "lucide-react"
@@ -21,7 +22,7 @@ export default function ContextPage() {
     const secondaryPanelItems = [
         {
             name: "Quality",
-            href: "/data_management/quality-control",
+            href: "/data_management/quality",
         },
         {
             name: "Sources",
@@ -44,6 +45,10 @@ export default function ContextPage() {
             href: "/data_management/channel-grouping",
         },
         {
+            name: "Attribution Settings",
+            href: "/data_management/settings",
+        },
+        {
             name: "Context",
             href: "/data_management/context",
         },
@@ -52,6 +57,7 @@ export default function ContextPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SingleLayerMenu forceState="narrow" />
             <DoubleLayeredMenu
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
@@ -59,7 +65,7 @@ export default function ContextPage() {
                 activeItem="Context"
             />
 
-            <HeaderFilter showFilters={false} actionLabel="Add Context" title="Context" forceNarrowLayout />
+            <HeaderFilter showFilters={false} actionLabel="Add Context" title="Context" forceNarrowLayout leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"

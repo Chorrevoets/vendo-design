@@ -3,8 +3,10 @@
 import { SideMenu } from "@/components/side-menu"
 import DoubleLayeredMenu from "@/components/double-layered-menu"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function DataManagementPage() {
+  const router = useRouter()
   const [isMainSidebarOpen, setIsMainSidebarOpen] = useState(true)
 
   // Listen for sidebar state changes
@@ -22,6 +24,11 @@ export default function DataManagementPage() {
 
     return () => clearInterval(interval)
   }, [])
+
+  // Redirect root Data Management to Sources by default
+  useEffect(() => {
+    router.replace("/data_management/sources")
+  }, [router])
 
   const secondaryPanelItems = [
     {
@@ -51,6 +58,10 @@ export default function DataManagementPage() {
     {
       name: "Context",
       href: "/data_management/context",
+    },
+    {
+      name: "Settings",
+      href: "/data_management/settings",
     },
 
   ]
