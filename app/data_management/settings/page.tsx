@@ -8,8 +8,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
 
 export default function DataManagementSettingsPage() {
@@ -23,19 +24,9 @@ export default function DataManagementSettingsPage() {
     const [appliedSources, setAppliedSources] = useState<string[]>([])
     const [selectedRowIds, setSelectedRowIds] = useState<Set<number>>(new Set())
 
-    // Context table state
-    const [contextSearchOpen, setContextSearchOpen] = useState(false)
-    const [contextSearchDraft, setContextSearchDraft] = useState("")
-    const [contextSearchQuery, setContextSearchQuery] = useState("")
-    const [contextCategoryFilterOpen, setContextCategoryFilterOpen] = useState(false)
-    const [selectedContextCategoriesDraft, setSelectedContextCategoriesDraft] = useState<Set<string>>(new Set())
-    const [appliedContextCategories, setAppliedContextCategories] = useState<string[]>([])
+    // Selected touchpoints state
+    const [selectedTouchpoints, setSelectedTouchpoints] = useState<Set<string>>(new Set())
 
-    // Drawer state
-    const [drawerOpen, setDrawerOpen] = useState(false)
-    const [selectedContextItem, setSelectedContextItem] = useState<{ id: number, title: string, category: string, lastUpdated: string, content: string } | null>(null)
-    const [isEditMode, setIsEditMode] = useState(false)
-    const [formData, setFormData] = useState({ title: "", category: "", content: "" })
 
     // Time period settings state
     const [timePeriodSettings, setTimePeriodSettings] = useState({
@@ -44,9 +35,36 @@ export default function DataManagementSettingsPage() {
         startOfFinancialYear: "January"
     })
 
+    // General settings state
+    const [timezone, setTimezone] = useState("Australia/Sydney")
+    const [reportingCurrency, setReportingCurrency] = useState("AUD")
+    const [originalGeneralValues, setOriginalGeneralValues] = useState({
+        timezone: "Australia/Sydney",
+        reportingCurrency: "AUD"
+    })
+    const [hasGeneralChanges, setHasGeneralChanges] = useState(false)
+
     useEffect(() => {
         setIsMainSidebarOpen(false)
     }, [])
+
+    // Check for general settings changes
+    useEffect(() => {
+        const changed = timezone !== originalGeneralValues.timezone || reportingCurrency !== originalGeneralValues.reportingCurrency
+        setHasGeneralChanges(changed)
+    }, [timezone, reportingCurrency, originalGeneralValues])
+
+    // Save general settings handler
+    const handleGeneralSave = () => {
+        // Update original values to reflect saved state
+        setOriginalGeneralValues({
+            timezone,
+            reportingCurrency
+        })
+        setHasGeneralChanges(false)
+        // Here you would typically make an API call to save the settings
+        console.log("Saving general settings:", { timezone, reportingCurrency })
+    }
 
     const lookbackPercent = (lookbackDays / 90) * 100
 
@@ -59,15 +77,8 @@ export default function DataManagementSettingsPage() {
         { id: 6, event: "Time to first order", source: "Shopify" },
     ]), [])
 
-    const [contextItems, setContextItems] = useState([
-        { id: 1, title: "Australia National Public Holidays (2025-2027)", category: "General", lastUpdated: "Jun 6, 2025", content: "🗓️ 2025 Date Holiday\n- Wed, 1 Jan New Year's Day\n- Mon, 27 Jan Australia Day (observed)\n- Fri, 18 Apr Good Friday\n- Mon, 21 Apr Easter Monday\n- Fri, 25 Apr Anzac Day\n- Mon, 9 Jun King's Birthday (except QLD & WA)\n- Thu, 25 Dec Christmas Day\n- Fri, 26 Dec Boxing Day\n\n🗓️ 2026 - Date Holiday\n- Thu, 1 Jan New Year's Day\n- Mon, 26 Jan Australia Day\n- Fri, 3 Apr Good Friday\n- Mon, 6 Apr Easter Monday\n- Sat, 25 Apr Anzac Day\n- Mon, 8 Jun King's Birthday (except QLD & WA)\n- Fri, 25 Dec Christmas Day\n- Sat, 26 Dec Boxing Day" },
-        { id: 2, title: "Sales targets for 2026", category: "Sales", lastUpdated: "Jul 7, 2025", content: "Looking to get $15M in sales in 2026." },
-        { id: 3, title: "Company Mission Statement", category: "General", lastUpdated: "Aug 15, 2025", content: "Our mission is to empower businesses with data-driven insights that drive growth and innovation. We believe in making complex analytics accessible and actionable for teams of all sizes." },
-        { id: 4, title: "Q4 Marketing Campaign Goals", category: "Marketing", lastUpdated: "Sep 1, 2025", content: "Q4 Marketing Goals:\n- Increase brand awareness by 25%\n- Generate 500 qualified leads\n- Launch holiday campaign\n- Optimize conversion funnel\n- Expand social media presence" },
-    ])
 
     const uniqueSources = useMemo(() => Array.from(new Set(excludedTouchpoints.map(r => r.source))), [excludedTouchpoints])
-    const uniqueContextCategories = useMemo(() => Array.from(new Set(contextItems.map(r => r.category))), [contextItems])
 
     const filteredRows = useMemo(() => {
         return excludedTouchpoints.filter(r => {
@@ -77,50 +88,21 @@ export default function DataManagementSettingsPage() {
         })
     }, [excludedTouchpoints, tpSearchQuery, appliedSources])
 
-    const filteredContextRows = useMemo(() => {
-        return contextItems.filter(r => {
-            const matchesSearch = contextSearchQuery.trim() === "" || r.title.toLowerCase().includes(contextSearchQuery.trim().toLowerCase())
-            const matchesCategory = appliedContextCategories.length === 0 || appliedContextCategories.includes(r.category)
-            return matchesSearch && matchesCategory
+    // Touchpoint helpers
+    const availableTouchpoints = useMemo(() => {
+        return excludedTouchpoints.filter(tp => !selectedTouchpoints.has(tp.event))
+    }, [excludedTouchpoints, selectedTouchpoints])
+
+    const handleSelectTouchpoint = (event: string) => {
+        setSelectedTouchpoints(prev => new Set([...prev, event]))
+    }
+
+    const handleRemoveTouchpoint = (event: string) => {
+        setSelectedTouchpoints(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(event)
+            return newSet
         })
-    }, [contextItems, contextSearchQuery, appliedContextCategories])
-
-    // Drawer functions
-    const openNewContextDrawer = () => {
-        setIsEditMode(false)
-        setFormData({ title: "", category: "", content: "" })
-        setSelectedContextItem(null)
-        setDrawerOpen(true)
-    }
-
-    const openEditContextDrawer = (item: typeof contextItems[0]) => {
-        setIsEditMode(true)
-        setFormData({ title: item.title, category: item.category, content: item.content })
-        setSelectedContextItem(item)
-        setDrawerOpen(true)
-    }
-
-    const handleSave = () => {
-        if (isEditMode && selectedContextItem) {
-            // Update existing item
-            setContextItems(prev => prev.map(item =>
-                item.id === selectedContextItem.id
-                    ? { ...item, title: formData.title, category: formData.category, content: formData.content, lastUpdated: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }
-                    : item
-            ))
-        } else {
-            // Create new item
-            const newId = Math.max(...contextItems.map(item => item.id)) + 1
-            const newItem = {
-                id: newId,
-                title: formData.title,
-                category: formData.category,
-                content: formData.content,
-                lastUpdated: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-            }
-            setContextItems(prev => [...prev, newItem])
-        }
-        setDrawerOpen(false)
     }
 
     const secondaryPanelItems = [
@@ -130,7 +112,7 @@ export default function DataManagementSettingsPage() {
         { name: "Events", href: "/data_management/event" },
         { name: "Customer Properties", href: "/data_management/customer" },
         { name: "Channel Grouping", href: "/data_management/channel-grouping" },
-        { name: "Attribution Settings", href: "/data_management/settings" },
+        { name: "Reporting Settings", href: "/data_management/settings" },
         { name: "Context", href: "/data_management/context" },
     ]
 
@@ -141,11 +123,11 @@ export default function DataManagementSettingsPage() {
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
                 panelTitle="Data"
-                activeItem="Attribution Settings"
+                activeItem="Reporting Settings"
             />
 
             <HeaderFilter
-                title="Attribution Settings"
+                title="Reporting Settings"
                 showFilters={false}
                 forceNarrowLayout
                 showMenu={false}
@@ -181,7 +163,7 @@ export default function DataManagementSettingsPage() {
                                             name="attribution"
                                             type="radio"
                                             aria-describedby={`last_click-description`}
-                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-black checked:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
                                         />
                                     </div>
                                     <div className="ml-3 text-sm/6">
@@ -201,7 +183,7 @@ export default function DataManagementSettingsPage() {
                                             name="attribution"
                                             type="radio"
                                             aria-describedby={`first_click-description`}
-                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-black checked:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
                                         />
                                     </div>
                                     <div className="ml-3 text-sm/6">
@@ -221,7 +203,7 @@ export default function DataManagementSettingsPage() {
                                             name="attribution"
                                             type="radio"
                                             aria-describedby={`linear-description`}
-                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-black checked:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
                                         />
                                     </div>
                                     <div className="ml-3 text-sm/6">
@@ -241,7 +223,7 @@ export default function DataManagementSettingsPage() {
                                             name="attribution"
                                             type="radio"
                                             aria-describedby={`participation-description`}
-                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-black checked:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
                                         />
                                     </div>
                                     <div className="ml-3 text-sm/6">
@@ -261,7 +243,7 @@ export default function DataManagementSettingsPage() {
                 {/* Lookback window */}
                 <div className="mt-6 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
                     <div className="px-4 py-5 sm:px-6">
-                        <div className="text-gray-900 text-lg font-semibold">Lookback window</div>
+                        <div className="text-gray-900 text-lg font-semibold">Lookback Window</div>
                         <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
                             <img src="/Definition.svg" alt="" className="h-4 w-4" />
                             <span className="font-normal">Set longer windows when decisions take time, shorter ones for quick buys.</span>
@@ -273,7 +255,7 @@ export default function DataManagementSettingsPage() {
                                 <label htmlFor="lookback_days" className="block text-sm/6 font-medium text-gray-900 whitespace-nowrap">Days to attribute conversions post-interaction</label>
                                 <div className="relative pt-6">
                                     <div
-                                        className="absolute -top-3 -translate-x-1/2 select-none"
+                                        className="absolute -top-1 -translate-x-1/2 select-none"
                                         style={{ left: `${lookbackPercent}%` }}
                                     >
                                         <div className="px-1 text-sm font-semibold text-gray-800 whitespace-nowrap">
@@ -287,7 +269,7 @@ export default function DataManagementSettingsPage() {
                                         max={90}
                                         value={lookbackDays}
                                         onChange={(e) => setLookbackDays(parseInt((e.target as HTMLInputElement).value, 10))}
-                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-black [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0"
                                     />
                                 </div>
                                 <div className="flex justify-between text-xs text-gray-500">
@@ -299,147 +281,54 @@ export default function DataManagementSettingsPage() {
                     </div>
                 </div>
                 <div className="mt-6">
-                    <div className="flow-root">
-                        <div className="overflow-x-auto">
-                            <div className="inline-block min-w-full py-2 align-middle">
-                                <div className="overflow-hidden rounded-lg bg-white shadow outline outline-1 outline-black/5">
-                                    <table className="relative min-w-full divide-y divide-gray-300 table-fixed">
-                                        <colgroup>
-                                            <col className="w-[5%]" />
-                                            <col className="w-[65%]" />
-                                            <col className="w-[30%]" />
-                                        </colgroup>
-                                        <thead className="bg-white">
-                                            <tr>
-                                                <th colSpan={3} className="h-[70px] py-3 pl-4 pr-3 text-left sm:pl-6 border-b border-gray-200">
-                                                    <div className="text-gray-900 text-lg font-semibold">Excluded touch points</div>
-                                                    <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
-                                                        <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                                                        <span className="font-normal">Improve accuracy by focusing only on meaningful user interactions.</span>
+                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                        <div className="px-4 py-5 sm:px-6">
+                            <div className="text-gray-900 text-lg font-semibold">Excluded Touch Points</div>
+                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
+                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
+                                <span className="font-normal">Improve accuracy by focusing only on meaningful user interactions.</span>
+                            </div>
+                        </div>
+                        <div className="px-4 py-5 sm:p-6">
+                            <div className="space-y-6">
+                                {/* Select Dropdown */}
+                                <div>
+                                    <Select value="" onValueChange={(value) => handleSelectTouchpoint(value)}>
+                                        <SelectTrigger className="w-80">
+                                            <SelectValue placeholder="Select Touchpoints to Exclude" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {availableTouchpoints.map((tp) => (
+                                                <SelectItem key={tp.id} value={tp.event}>
+                                                    <div className="flex flex-col items-start">
+                                                        <span className="font-medium">{tp.event}</span>
+                                                        <span className="text-xs text-gray-500">{tp.source}</span>
                                                     </div>
-                                                </th>
-                                            </tr>
-                                            <tr className="bg-white">
-                                                <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    <Popover open={tpSearchOpen} onOpenChange={setTpSearchOpen}>
-                                                        <PopoverTrigger asChild>
-                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                <span>Event</span>
-                                                                <img src={tpSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
-                                                            </button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent align="start" className="w-72 p-3">
-                                                            <div className="space-y-2">
-                                                                <div className="relative">
-                                                                    <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
-                                                                    <Input
-                                                                        value={tpSearchDraft}
-                                                                        onChange={(e) => setTpSearchDraft(e.target.value)}
-                                                                        placeholder="Search events..."
-                                                                        className="h-9 pl-8"
-                                                                    />
-                                                                </div>
-                                                                <div className="pt-1 flex items-center gap-2">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => { setTpSearchQuery(""); setTpSearchDraft(""); setTpSearchOpen(false) }}
-                                                                    >
-                                                                        Clear
-                                                                    </Button>
-                                                                    <Button
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => { setTpSearchQuery(tpSearchDraft); setTpSearchOpen(false) }}
-                                                                    >
-                                                                        Search
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </th>
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    <Popover open={sourceFilterOpen} onOpenChange={setSourceFilterOpen}>
-                                                        <PopoverTrigger asChild>
-                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                <span>Source</span>
-                                                                <img src={appliedSources.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
-                                                            </button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent align="start" className="w-64 p-3">
-                                                            <div className="space-y-2">
-                                                                {uniqueSources.map((label) => {
-                                                                    const checked = selectedSourcesDraft.has(label)
-                                                                    return (
-                                                                        <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
-                                                                            <Checkbox
-                                                                                checked={checked}
-                                                                                onCheckedChange={(v) => {
-                                                                                    setSelectedSourcesDraft(prev => {
-                                                                                        const next = new Set(prev)
-                                                                                        if (v) next.add(label); else next.delete(label)
-                                                                                        return next
-                                                                                    })
-                                                                                }}
-                                                                            />
-                                                                            <span>{label}</span>
-                                                                        </label>
-                                                                    )
-                                                                })}
-                                                                <div className="pt-2 flex items-center gap-2">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => {
-                                                                            setAppliedSources([])
-                                                                            setSelectedSourcesDraft(new Set())
-                                                                            setSourceFilterOpen(false)
-                                                                        }}
-                                                                    >
-                                                                        Clear filters
-                                                                    </Button>
-                                                                    <Button
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => {
-                                                                            setAppliedSources(Array.from(selectedSourcesDraft))
-                                                                            setSourceFilterOpen(false)
-                                                                        }}
-                                                                    >
-                                                                        Filter
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-200 bg-white">
-                                            {filteredRows.map((row) => {
-                                                const isSelected = selectedRowIds.has(row.id)
-                                                return (
-                                                    <tr key={row.id}>
-                                                        <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                                            <Checkbox
-                                                                checked={isSelected}
-                                                                onCheckedChange={(v) => {
-                                                                    setSelectedRowIds(prev => {
-                                                                        const next = new Set(prev)
-                                                                        if (v) next.add(row.id); else next.delete(row.id)
-                                                                        return next
-                                                                    })
-                                                                }}
-                                                            />
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">{row.event}</td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.source}</td>
-                                                    </tr>
-                                                )
-                                            })}
-                                        </tbody>
-                                    </table>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+
+                                {/* Selected touchpoints chips */}
+                                {selectedTouchpoints.size > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {Array.from(selectedTouchpoints).map((event) => {
+                                            const touchpoint = excludedTouchpoints.find(tp => tp.event === event)
+                                            return (
+                                                <Badge key={event} className="flex items-center gap-2 px-3 py-1 bg-black text-white hover:bg-gray-800">
+                                                    <span>{touchpoint?.event} - {touchpoint?.source}</span>
+                                                    <button
+                                                        onClick={() => handleRemoveTouchpoint(event)}
+                                                        className="hover:bg-gray-600 rounded-full p-0.5"
+                                                    >
+                                                        <X className="h-3 w-3 text-white" />
+                                                    </button>
+                                                </Badge>
+                                            )
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -543,248 +432,69 @@ export default function DataManagementSettingsPage() {
                     </div>
                 </div>
 
-                {/* Context Table */}
+                {/* General Settings */}
                 <div className="mt-6">
-                    <div className="flow-root">
-                        <div className="overflow-x-auto">
-                            <div className="inline-block min-w-full py-2 align-middle">
-                                <div className="overflow-hidden rounded-lg bg-white shadow outline outline-1 outline-black/5">
-                                    <table className="relative min-w-full divide-y divide-gray-300 table-fixed">
-                                        <colgroup>
-                                            <col className="w-[50%]" />
-                                            <col className="w-[25%]" />
-                                            <col className="w-[25%]" />
-                                        </colgroup>
-                                        <thead className="bg-white">
-                                            <tr>
-                                                <th colSpan={3} className="h-[70px] py-3 pl-4 pr-3 text-left sm:pl-6 border-b border-gray-200">
-                                                    <div className="flex items-center justify-between">
-                                                        <div>
-                                                            <div className="text-gray-900 text-lg font-semibold">Context</div>
-                                                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
-                                                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                                                                <span className="font-normal">Richer context means better, more accurate insights from AI.</span>
-                                                            </div>
-                                                        </div>
-                                                        <button className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors" onClick={openNewContextDrawer}>
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                            </svg>
-                                                            Add Context
-                                                        </button>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            <tr className="bg-white">
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    <Popover open={contextSearchOpen} onOpenChange={setContextSearchOpen}>
-                                                        <PopoverTrigger asChild>
-                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                <span>Title</span>
-                                                                <img src={contextSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
-                                                            </button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent align="start" className="w-72 p-3">
-                                                            <div className="space-y-2">
-                                                                <div className="relative">
-                                                                    <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
-                                                                    <Input
-                                                                        value={contextSearchDraft}
-                                                                        onChange={(e) => setContextSearchDraft(e.target.value)}
-                                                                        placeholder="Search titles..."
-                                                                        className="h-9 pl-8"
-                                                                    />
-                                                                </div>
-                                                                <div className="pt-1 flex items-center gap-2">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => { setContextSearchQuery(""); setContextSearchDraft(""); setContextSearchOpen(false) }}
-                                                                    >
-                                                                        Clear
-                                                                    </Button>
-                                                                    <Button
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => { setContextSearchQuery(contextSearchDraft); setContextSearchOpen(false) }}
-                                                                    >
-                                                                        Search
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </th>
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    <Popover open={contextCategoryFilterOpen} onOpenChange={setContextCategoryFilterOpen}>
-                                                        <PopoverTrigger asChild>
-                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                <span>Category</span>
-                                                                <img src={appliedContextCategories.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
-                                                            </button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent align="start" className="w-64 p-3">
-                                                            <div className="space-y-2">
-                                                                {uniqueContextCategories.map((label) => {
-                                                                    const checked = selectedContextCategoriesDraft.has(label)
-                                                                    return (
-                                                                        <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
-                                                                            <Checkbox
-                                                                                checked={checked}
-                                                                                onCheckedChange={(v) => {
-                                                                                    setSelectedContextCategoriesDraft(prev => {
-                                                                                        const next = new Set(prev)
-                                                                                        if (v) next.add(label); else next.delete(label)
-                                                                                        return next
-                                                                                    })
-                                                                                }}
-                                                                            />
-                                                                            <span>{label}</span>
-                                                                        </label>
-                                                                    )
-                                                                })}
-                                                                <div className="pt-2 flex items-center gap-2">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => {
-                                                                            setAppliedContextCategories([])
-                                                                            setSelectedContextCategoriesDraft(new Set())
-                                                                            setContextCategoryFilterOpen(false)
-                                                                        }}
-                                                                    >
-                                                                        Clear filters
-                                                                    </Button>
-                                                                    <Button
-                                                                        className="h-9 flex-1"
-                                                                        onClick={() => {
-                                                                            setAppliedContextCategories(Array.from(selectedContextCategoriesDraft))
-                                                                            setContextCategoryFilterOpen(false)
-                                                                        }}
-                                                                    >
-                                                                        Filter
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </th>
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Last Updated
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-200 bg-white">
-                                            {filteredContextRows.map((row) => {
-                                                return (
-                                                    <tr key={row.id} className="cursor-pointer hover:bg-gray-50" onClick={() => openEditContextDrawer(row)}>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">{row.title}</td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.category}</td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.lastUpdated}</td>
-                                                    </tr>
-                                                )
-                                            })}
-                                        </tbody>
-                                    </table>
+                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                        <div className="px-4 py-5 sm:px-6">
+                            <div className="text-gray-900 text-lg font-semibold">Time and Currency</div>
+                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
+                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
+                                <span className="font-normal">Align reporting with your local timezone and currency for accurate insights.</span>
+                            </div>
+                        </div>
+                        <div className="px-4 py-5 sm:p-6">
+                            <div className="space-y-6">
+                                {/* Timezone Field */}
+                                <div>
+                                    <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Timezone
+                                    </label>
+                                    <Select value={timezone} onValueChange={setTimezone}>
+                                        <SelectTrigger className="w-full max-w-md">
+                                            <SelectValue placeholder="Select timezone" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Australia/Sydney">Australia/Sydney</SelectItem>
+                                            <SelectItem value="America/New_York">America/New_York</SelectItem>
+                                            <SelectItem value="America/Los_Angeles">America/Los_Angeles</SelectItem>
+                                            <SelectItem value="Europe/London">Europe/London</SelectItem>
+                                            <SelectItem value="Europe/Paris">Europe/Paris</SelectItem>
+                                            <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
+                                            <SelectItem value="Asia/Shanghai">Asia/Shanghai</SelectItem>
+                                            <SelectItem value="UTC">UTC</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
+
+                                {/* Reporting Currency Field */}
+                                <div>
+                                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Reporting Currency
+                                    </label>
+                                    <Select value={reportingCurrency} onValueChange={setReportingCurrency}>
+                                        <SelectTrigger className="w-full max-w-md">
+                                            <SelectValue placeholder="Select currency" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="AUD">AUD (Australian Dollar)</SelectItem>
+                                            <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                                            <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                                            <SelectItem value="GBP">GBP (British Pound)</SelectItem>
+                                            <SelectItem value="JPY">JPY (Japanese Yen)</SelectItem>
+                                            <SelectItem value="CAD">CAD (Canadian Dollar)</SelectItem>
+                                            <SelectItem value="CHF">CHF (Swiss Franc)</SelectItem>
+                                            <SelectItem value="CNY">CNY (Chinese Yuan)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            {/* Right-side Drawer with backdrop */}
-            {drawerOpen && (
-                <div className="relative z-[10000001]">
-                    {/* Backdrop */}
-                    <div className="fixed inset-0 z-[10000000] bg-gray-500/75 cursor-pointer" onClick={() => setDrawerOpen(false)} />
-
-                    <div className="fixed inset-0 z-[10000002] overflow-hidden">
-                        <div className="absolute inset-0 overflow-hidden">
-                            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                                <div className="pointer-events-auto relative w-screen max-w-lg sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl transform transition duration-500 ease-in-out translate-x-0">
-                                    {/* Outside close button */}
-                                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => setDrawerOpen(false)}
-                                            className="relative rounded-md text-gray-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        >
-                                            <span className="absolute -inset-2.5" />
-                                            <span className="sr-only">Close panel</span>
-                                            <X className="h-6 w-6" />
-                                        </button>
-                                    </div>
-                                    <div className="relative flex h-full flex-col bg-white shadow-xl">
-                                        <div className="sticky top-0 z-10 bg-white px-4 sm:px-6 h-[61px] border-b flex items-center">
-                                            <h2 className="text-lg font-semibold text-gray-900">{isEditMode ? "Edit Context" : "New Context"}</h2>
-                                        </div>
-                                        <div className="relative flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6">
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Title
-                                                    </label>
-                                                    <Input
-                                                        id="title"
-                                                        value={formData.title}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                                                        className="w-full"
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Category
-                                                    </label>
-                                                    <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
-                                                        <SelectTrigger className="w-full">
-                                                            <SelectValue placeholder="Select category" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="Company">Company</SelectItem>
-                                                            <SelectItem value="Product">Product</SelectItem>
-                                                            <SelectItem value="Marketing">Marketing</SelectItem>
-                                                            <SelectItem value="Sales">Sales</SelectItem>
-                                                            <SelectItem value="Operations">Operations</SelectItem>
-                                                            <SelectItem value="Culture">Culture</SelectItem>
-                                                            <SelectItem value="Strategy">Strategy</SelectItem>
-                                                            <SelectItem value="General">General</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-
-                                                <div>
-                                                    <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Content
-                                                    </label>
-                                                    <Textarea
-                                                        id="content"
-                                                        value={formData.content}
-                                                        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                                                        className="w-full min-h-[200px]"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="flex justify-end space-x-3 pt-6">
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => setDrawerOpen(false)}
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button className="bg-black text-white hover:bg-gray-800" onClick={handleSave}>
-                                                    Save Changes
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

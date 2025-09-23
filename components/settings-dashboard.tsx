@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useEffect } from "react"
 import {
   Building2,
   Users,
@@ -97,12 +99,39 @@ function SettingsCard({ title, description, items, helpLink }: SettingsCardProps
 }
 
 export default function SettingsDashboard() {
+  // Form state
+  const [timezone, setTimezone] = useState("Australia/Sydney")
+  const [reportingCurrency, setReportingCurrency] = useState("AUD")
+  const [originalValues, setOriginalValues] = useState({
+    timezone: "Australia/Sydney",
+    reportingCurrency: "AUD"
+  })
+  const [hasChanges, setHasChanges] = useState(false)
+
+  // Check for changes
+  useEffect(() => {
+    const changed = timezone !== originalValues.timezone || reportingCurrency !== originalValues.reportingCurrency
+    setHasChanges(changed)
+  }, [timezone, reportingCurrency, originalValues])
+
+  // Save handler
+  const handleSave = () => {
+    // Update original values to reflect saved state
+    setOriginalValues({
+      timezone,
+      reportingCurrency
+    })
+    setHasChanges(false)
+    // Here you would typically make an API call to save the settings
+    console.log("Saving settings:", { timezone, reportingCurrency })
+  }
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-        
+
       </div>
 
       {/* Account Settings */}
@@ -132,6 +161,71 @@ export default function SettingsDashboard() {
             items={dataConnectionsSettings}
           />
         </div>
+      </div>
+
+      {/* General Settings */}
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">GENERAL SETTINGS</h2>
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              {/* Timezone Field */}
+              <div>
+                <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Timezone
+                </label>
+                <Select value={timezone} onValueChange={setTimezone}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select timezone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Australia/Sydney">Australia/Sydney</SelectItem>
+                    <SelectItem value="America/New_York">America/New_York</SelectItem>
+                    <SelectItem value="America/Los_Angeles">America/Los_Angeles</SelectItem>
+                    <SelectItem value="Europe/London">Europe/London</SelectItem>
+                    <SelectItem value="Europe/Paris">Europe/Paris</SelectItem>
+                    <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
+                    <SelectItem value="Asia/Shanghai">Asia/Shanghai</SelectItem>
+                    <SelectItem value="UTC">UTC</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Reporting Currency Field */}
+              <div>
+                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                  Reporting Currency
+                </label>
+                <Select value={reportingCurrency} onValueChange={setReportingCurrency}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AUD">AUD (Australian Dollar)</SelectItem>
+                    <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                    <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                    <SelectItem value="GBP">GBP (British Pound)</SelectItem>
+                    <SelectItem value="JPY">JPY (Japanese Yen)</SelectItem>
+                    <SelectItem value="CAD">CAD (Canadian Dollar)</SelectItem>
+                    <SelectItem value="CHF">CHF (Swiss Franc)</SelectItem>
+                    <SelectItem value="CNY">CNY (Chinese Yuan)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Save Button */}
+              <div className="flex justify-end">
+                <Button
+                  onClick={handleSave}
+                  disabled={!hasChanges}
+                  className={`px-6 ${hasChanges ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

@@ -60,7 +60,7 @@ export default function MetricsPage() {
             href: "/data_management/channel-grouping",
         },
         {
-            name: "Attribution Settings",
+            name: "Reporting Settings",
             href: "/data_management/settings",
         },
         {

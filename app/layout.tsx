@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
         <style>{`
 html {
@@ -27,7 +27,7 @@ html {
 }
         `}</style>
       </head>
-      <body suppressHydrationWarning>
+      <body>
         <ExtractedShaderBackground>{children}</ExtractedShaderBackground>
       </body>
     </html>

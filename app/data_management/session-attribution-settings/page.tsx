@@ -19,7 +19,7 @@ export default function SessionAttributionSettingsPage() {
         { name: "Events", href: "/data_management/event" },
         { name: "Customer Properties", href: "/data_management/customer" },
         { name: "Channel Grouping", href: "/data_management/channel-grouping" },
-        { name: "Attribution Settings", href: "/data_management/settings" },
+        { name: "Reporting Settings", href: "/data_management/settings" },
         { name: "Context", href: "/data_management/context" },
     ]
 
@@ -30,11 +30,11 @@ export default function SessionAttributionSettingsPage() {
                 isMainSidebarOpen={isMainSidebarOpen}
                 secondaryPanelItems={secondaryPanelItems}
                 panelTitle="Data"
-                activeItem="Attribution Settings"
+                activeItem="Reporting Settings"
             />
 
             <HeaderFilter
-                title="Attribution Settings"
+                title="Reporting Settings"
                 showFilters={false}
                 forceNarrowLayout
                 showMenu={false}
