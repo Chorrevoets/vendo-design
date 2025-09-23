@@ -121,7 +121,7 @@ export default function DataManagementNavigation() {
               }`}
             onClick={() => {
               setActiveItem("Overview")
-              window.location.href = "/data_management/sources"
+              window.location.href = "/data_management"
             }}
           >
             <Image src="/data-management-icon.svg" alt="Overview" width={16} height={16} className="h-4 w-4" />
