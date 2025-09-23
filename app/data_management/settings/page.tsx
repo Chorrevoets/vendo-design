@@ -48,7 +48,7 @@ export default function DataManagementSettingsPage() {
         setIsMainSidebarOpen(false)
     }, [])
 
-    const lookbackPercent = ((lookbackDays - 1) / 29) * 100
+    const lookbackPercent = (lookbackDays / 90) * 100
 
     const excludedTouchpoints = useMemo(() => ([
         { id: 1, event: "Check Out Conversion", source: "Shopify" },
@@ -283,16 +283,16 @@ export default function DataManagementSettingsPage() {
                                     <input
                                         id="lookback_days"
                                         type="range"
-                                        min={1}
-                                        max={30}
+                                        min={0}
+                                        max={90}
                                         value={lookbackDays}
                                         onChange={(e) => setLookbackDays(parseInt((e.target as HTMLInputElement).value, 10))}
                                         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                                     />
                                 </div>
                                 <div className="flex justify-between text-xs text-gray-500">
-                                    <span>1</span>
-                                    <span>30</span>
+                                    <span>0</span>
+                                    <span>90</span>
                                 </div>
                             </div>
                         </fieldset>

@@ -79,6 +79,9 @@ export default function ChannelGroupingPage() {
                 title="Channel Grouping"
                 forceNarrowLayout
                 actionLabel="Add Channel Grouping"
+                secondaryActionLabel="Settings"
+                secondaryIconSrc="/settings.svg"
+                onSecondaryActionClick={() => { }}
                 useActionDialog={false}
                 showMenu={false}
                 leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"}
