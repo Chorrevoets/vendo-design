@@ -40,6 +40,10 @@ export default function DataManagementPage() {
       href: "/data_management/sources",
     },
     {
+      name: "Context",
+      href: "/data_management/context",
+    },
+    {
       name: "Metrics",
       href: "/data_management/metrics",
     },
@@ -54,10 +58,6 @@ export default function DataManagementPage() {
     {
       name: "Channel Grouping",
       href: "/data_management/channel-grouping",
-    },
-    {
-      name: "Context",
-      href: "/data_management/context",
     },
     {
       name: "Settings",

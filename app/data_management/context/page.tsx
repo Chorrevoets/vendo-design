@@ -99,6 +99,10 @@ export default function ContextPage() {
             href: "/data_management/sources",
         },
         {
+            name: "Context",
+            href: "/data_management/context",
+        },
+        {
             name: "Metrics",
             href: "/data_management/metrics",
         },
@@ -118,10 +122,6 @@ export default function ContextPage() {
             name: "Reporting Settings",
             href: "/data_management/settings",
         },
-        {
-            name: "Context",
-            href: "/data_management/context",
-        },
 
     ]
 
@@ -135,7 +135,7 @@ export default function ContextPage() {
                 activeItem="Context"
             />
 
-            <HeaderFilter showFilters={false} title="Context" forceNarrowLayout leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
+            <HeaderFilter showFilters={false} title="Context" forceNarrowLayout showActionButton={false} showMenu={false} leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"

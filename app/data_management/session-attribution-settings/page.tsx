@@ -15,12 +15,12 @@ export default function SessionAttributionSettingsPage() {
     const secondaryPanelItems = [
         { name: "Quality", href: "/data_management/quality" },
         { name: "Sources", href: "/data_management/sources" },
+        { name: "Context", href: "/data_management/context" },
         { name: "Metrics", href: "/data_management/metrics" },
         { name: "Events", href: "/data_management/event" },
         { name: "Customer Properties", href: "/data_management/customer" },
         { name: "Channel Grouping", href: "/data_management/channel-grouping" },
         { name: "Reporting Settings", href: "/data_management/settings" },
-        { name: "Context", href: "/data_management/context" },
     ]
 
     return (

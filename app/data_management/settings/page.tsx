@@ -108,12 +108,12 @@ export default function DataManagementSettingsPage() {
     const secondaryPanelItems = [
         { name: "Quality", href: "/data_management/quality" },
         { name: "Sources", href: "/data_management/sources" },
+        { name: "Context", href: "/data_management/context" },
         { name: "Metrics", href: "/data_management/metrics" },
         { name: "Events", href: "/data_management/event" },
         { name: "Customer Properties", href: "/data_management/customer" },
         { name: "Channel Grouping", href: "/data_management/channel-grouping" },
         { name: "Reporting Settings", href: "/data_management/settings" },
-        { name: "Context", href: "/data_management/context" },
     ]
 
     return (
@@ -143,8 +143,165 @@ export default function DataManagementSettingsPage() {
                     maxWidth: isMainSidebarOpen ? "calc(100vw - 340px - 220px)" : "calc(100vw - 64px - 220px)",
                 }}
             >
-                {/* Attribution Model */}
+                {/* Time Period Settings */}
                 <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                    <div className="px-4 py-5 sm:px-6">
+                        <div className="text-gray-900 text-lg font-semibold">Time Period Settings</div>
+                        <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
+                            <img src="/Definition.svg" alt="" className="h-4 w-4" />
+                            <span className="font-normal">Align week, quarter, and year settings so AI follows your company's reporting cadence</span>
+                        </div>
+                    </div>
+                    <div className="px-4 py-5 sm:p-6">
+                        <div className="space-y-6">
+                            {/* Start of Week */}
+                            <div className="flex items-center gap-3">
+                                <label htmlFor="start-of-week" className="text-sm font-medium text-gray-700 w-40">
+                                    Start of Week
+                                </label>
+                                <Select
+                                    value={timePeriodSettings.startOfWeek}
+                                    onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfWeek: value }))}
+                                >
+                                    <SelectTrigger className="w-32">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Monday">Monday</SelectItem>
+                                        <SelectItem value="Tuesday">Tuesday</SelectItem>
+                                        <SelectItem value="Wednesday">Wednesday</SelectItem>
+                                        <SelectItem value="Thursday">Thursday</SelectItem>
+                                        <SelectItem value="Friday">Friday</SelectItem>
+                                        <SelectItem value="Saturday">Saturday</SelectItem>
+                                        <SelectItem value="Sunday">Sunday</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Start of Quarter */}
+                            <div className="flex items-center gap-3">
+                                <label htmlFor="start-of-quarter" className="text-sm font-medium text-gray-700 w-40">
+                                    Start of Quarter
+                                </label>
+                                <Select
+                                    value={timePeriodSettings.startOfQuarter}
+                                    onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfQuarter: value }))}
+                                >
+                                    <SelectTrigger className="w-32">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="January">January</SelectItem>
+                                        <SelectItem value="February">February</SelectItem>
+                                        <SelectItem value="March">March</SelectItem>
+                                        <SelectItem value="April">April</SelectItem>
+                                        <SelectItem value="May">May</SelectItem>
+                                        <SelectItem value="June">June</SelectItem>
+                                        <SelectItem value="July">July</SelectItem>
+                                        <SelectItem value="August">August</SelectItem>
+                                        <SelectItem value="September">September</SelectItem>
+                                        <SelectItem value="October">October</SelectItem>
+                                        <SelectItem value="November">November</SelectItem>
+                                        <SelectItem value="December">December</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Start of Financial Year */}
+                            <div className="flex items-center gap-3">
+                                <label htmlFor="start-of-financial-year" className="text-sm font-medium text-gray-700 w-40">
+                                    Start of Financial Year
+                                </label>
+                                <Select
+                                    value={timePeriodSettings.startOfFinancialYear}
+                                    onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfFinancialYear: value }))}
+                                >
+                                    <SelectTrigger className="w-32">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="January">January</SelectItem>
+                                        <SelectItem value="February">February</SelectItem>
+                                        <SelectItem value="March">March</SelectItem>
+                                        <SelectItem value="April">April</SelectItem>
+                                        <SelectItem value="May">May</SelectItem>
+                                        <SelectItem value="June">June</SelectItem>
+                                        <SelectItem value="July">July</SelectItem>
+                                        <SelectItem value="August">August</SelectItem>
+                                        <SelectItem value="September">September</SelectItem>
+                                        <SelectItem value="October">October</SelectItem>
+                                        <SelectItem value="November">November</SelectItem>
+                                        <SelectItem value="December">December</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* General Settings */}
+                <div className="mt-6">
+                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+                        <div className="px-4 py-5 sm:px-6">
+                            <div className="text-gray-900 text-lg font-semibold">Time and Currency</div>
+                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
+                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
+                                <span className="font-normal">Align reporting with your local timezone and currency for accurate insights.</span>
+                            </div>
+                        </div>
+                        <div className="px-4 py-5 sm:p-6">
+                            <div className="space-y-6">
+                                {/* Timezone Field */}
+                                <div>
+                                    <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Timezone
+                                    </label>
+                                    <Select value={timezone} onValueChange={setTimezone}>
+                                        <SelectTrigger className="w-full max-w-md">
+                                            <SelectValue placeholder="Select timezone" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Australia/Sydney">Australia/Sydney</SelectItem>
+                                            <SelectItem value="America/New_York">America/New_York</SelectItem>
+                                            <SelectItem value="America/Los_Angeles">America/Los_Angeles</SelectItem>
+                                            <SelectItem value="Europe/London">Europe/London</SelectItem>
+                                            <SelectItem value="Europe/Paris">Europe/Paris</SelectItem>
+                                            <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
+                                            <SelectItem value="Asia/Shanghai">Asia/Shanghai</SelectItem>
+                                            <SelectItem value="UTC">UTC</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                {/* Reporting Currency Field */}
+                                <div>
+                                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Reporting Currency
+                                    </label>
+                                    <Select value={reportingCurrency} onValueChange={setReportingCurrency}>
+                                        <SelectTrigger className="w-full max-w-md">
+                                            <SelectValue placeholder="Select currency" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="AUD">AUD (Australian Dollar)</SelectItem>
+                                            <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                                            <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                                            <SelectItem value="GBP">GBP (British Pound)</SelectItem>
+                                            <SelectItem value="JPY">JPY (Japanese Yen)</SelectItem>
+                                            <SelectItem value="CAD">CAD (Canadian Dollar)</SelectItem>
+                                            <SelectItem value="CHF">CHF (Swiss Franc)</SelectItem>
+                                            <SelectItem value="CNY">CNY (Chinese Yuan)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Attribution Model */}
+                <div className="mt-6 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
                     <div className="px-4 py-5 sm:px-6">
                         <div className="text-gray-900 text-lg font-semibold">Attribution Model</div>
                         <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
@@ -246,7 +403,7 @@ export default function DataManagementSettingsPage() {
                         <div className="text-gray-900 text-lg font-semibold">Lookback Window</div>
                         <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
                             <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                            <span className="font-normal">Set longer windows when decisions take time, shorter ones for quick buys.</span>
+                            <span className="font-normal">Use shorter windows for everyday purchases, longer ones when decisions take more time.</span>
                         </div>
                     </div>
                     <div className="px-4 py-5 sm:p-6">
@@ -334,164 +491,6 @@ export default function DataManagementSettingsPage() {
                     </div>
                 </div>
 
-                {/* Time Period Settings */}
-                <div className="mt-6">
-                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
-                        <div className="px-4 py-5 sm:px-6">
-                            <div className="text-gray-900 text-lg font-semibold">Time Period Settings</div>
-                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
-                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                                <span className="font-normal">Align week, quarter, and year settings so AI follows your company's reporting cadence</span>
-                            </div>
-                        </div>
-                        <div className="px-4 py-5 sm:p-6">
-                            <div className="space-y-6">
-                                {/* Start of Week */}
-                                <div className="flex items-center gap-3">
-                                    <label htmlFor="start-of-week" className="text-sm font-medium text-gray-700 w-40">
-                                        Start of Week
-                                    </label>
-                                    <Select
-                                        value={timePeriodSettings.startOfWeek}
-                                        onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfWeek: value }))}
-                                    >
-                                        <SelectTrigger className="w-32">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Monday">Monday</SelectItem>
-                                            <SelectItem value="Tuesday">Tuesday</SelectItem>
-                                            <SelectItem value="Wednesday">Wednesday</SelectItem>
-                                            <SelectItem value="Thursday">Thursday</SelectItem>
-                                            <SelectItem value="Friday">Friday</SelectItem>
-                                            <SelectItem value="Saturday">Saturday</SelectItem>
-                                            <SelectItem value="Sunday">Sunday</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Start of Quarter */}
-                                <div className="flex items-center gap-3">
-                                    <label htmlFor="start-of-quarter" className="text-sm font-medium text-gray-700 w-40">
-                                        Start of Quarter
-                                    </label>
-                                    <Select
-                                        value={timePeriodSettings.startOfQuarter}
-                                        onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfQuarter: value }))}
-                                    >
-                                        <SelectTrigger className="w-32">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="January">January</SelectItem>
-                                            <SelectItem value="February">February</SelectItem>
-                                            <SelectItem value="March">March</SelectItem>
-                                            <SelectItem value="April">April</SelectItem>
-                                            <SelectItem value="May">May</SelectItem>
-                                            <SelectItem value="June">June</SelectItem>
-                                            <SelectItem value="July">July</SelectItem>
-                                            <SelectItem value="August">August</SelectItem>
-                                            <SelectItem value="September">September</SelectItem>
-                                            <SelectItem value="October">October</SelectItem>
-                                            <SelectItem value="November">November</SelectItem>
-                                            <SelectItem value="December">December</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Start of Financial Year */}
-                                <div className="flex items-center gap-3">
-                                    <label htmlFor="start-of-financial-year" className="text-sm font-medium text-gray-700 w-40">
-                                        Start of Financial Year
-                                    </label>
-                                    <Select
-                                        value={timePeriodSettings.startOfFinancialYear}
-                                        onValueChange={(value) => setTimePeriodSettings(prev => ({ ...prev, startOfFinancialYear: value }))}
-                                    >
-                                        <SelectTrigger className="w-32">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="January">January</SelectItem>
-                                            <SelectItem value="February">February</SelectItem>
-                                            <SelectItem value="March">March</SelectItem>
-                                            <SelectItem value="April">April</SelectItem>
-                                            <SelectItem value="May">May</SelectItem>
-                                            <SelectItem value="June">June</SelectItem>
-                                            <SelectItem value="July">July</SelectItem>
-                                            <SelectItem value="August">August</SelectItem>
-                                            <SelectItem value="September">September</SelectItem>
-                                            <SelectItem value="October">October</SelectItem>
-                                            <SelectItem value="November">November</SelectItem>
-                                            <SelectItem value="December">December</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* General Settings */}
-                <div className="mt-6">
-                    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
-                        <div className="px-4 py-5 sm:px-6">
-                            <div className="text-gray-900 text-lg font-semibold">Time and Currency</div>
-                            <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
-                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                                <span className="font-normal">Align reporting with your local timezone and currency for accurate insights.</span>
-                            </div>
-                        </div>
-                        <div className="px-4 py-5 sm:p-6">
-                            <div className="space-y-6">
-                                {/* Timezone Field */}
-                                <div>
-                                    <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Timezone
-                                    </label>
-                                    <Select value={timezone} onValueChange={setTimezone}>
-                                        <SelectTrigger className="w-full max-w-md">
-                                            <SelectValue placeholder="Select timezone" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Australia/Sydney">Australia/Sydney</SelectItem>
-                                            <SelectItem value="America/New_York">America/New_York</SelectItem>
-                                            <SelectItem value="America/Los_Angeles">America/Los_Angeles</SelectItem>
-                                            <SelectItem value="Europe/London">Europe/London</SelectItem>
-                                            <SelectItem value="Europe/Paris">Europe/Paris</SelectItem>
-                                            <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
-                                            <SelectItem value="Asia/Shanghai">Asia/Shanghai</SelectItem>
-                                            <SelectItem value="UTC">UTC</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Reporting Currency Field */}
-                                <div>
-                                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Reporting Currency
-                                    </label>
-                                    <Select value={reportingCurrency} onValueChange={setReportingCurrency}>
-                                        <SelectTrigger className="w-full max-w-md">
-                                            <SelectValue placeholder="Select currency" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="AUD">AUD (Australian Dollar)</SelectItem>
-                                            <SelectItem value="USD">USD (US Dollar)</SelectItem>
-                                            <SelectItem value="EUR">EUR (Euro)</SelectItem>
-                                            <SelectItem value="GBP">GBP (British Pound)</SelectItem>
-                                            <SelectItem value="JPY">JPY (Japanese Yen)</SelectItem>
-                                            <SelectItem value="CAD">CAD (Canadian Dollar)</SelectItem>
-                                            <SelectItem value="CHF">CHF (Swiss Franc)</SelectItem>
-                                            <SelectItem value="CNY">CNY (Chinese Yuan)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 

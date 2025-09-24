@@ -44,6 +44,10 @@ export default function MetricsPage() {
             href: "/data_management/sources",
         },
         {
+            name: "Context",
+            href: "/data_management/context",
+        },
+        {
             name: "Metrics",
             href: "/data_management/metrics",
         },
@@ -62,10 +66,6 @@ export default function MetricsPage() {
         {
             name: "Reporting Settings",
             href: "/data_management/settings",
-        },
-        {
-            name: "Context",
-            href: "/data_management/context",
         },
 
     ]

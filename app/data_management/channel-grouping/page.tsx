@@ -25,6 +25,10 @@ export default function ChannelGroupingPage() {
             href: "/data_management/sources",
         },
         {
+            name: "Context",
+            href: "/data_management/context",
+        },
+        {
             name: "Metrics",
             href: "/data_management/metrics",
         },
@@ -43,10 +47,6 @@ export default function ChannelGroupingPage() {
         {
             name: "Reporting Settings",
             href: "/data_management/settings",
-        },
-        {
-            name: "Context",
-            href: "/data_management/context",
         },
     ]
 
