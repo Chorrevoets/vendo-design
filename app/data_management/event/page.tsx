@@ -1009,7 +1009,7 @@ export default function EventsPage() {
                                                         </div>
                                                         <div className="ml-3 flex-1">
                                                             <p className="text-sm text-red-700">
-                                                                5 properties miss descriptions, reducing AI accuracy and recommendations.
+                                                                No event description. AI accuracy and recommendations are affected.
                                                             </p>
                                                         </div>
                                                         <div className="ml-3">
@@ -1021,6 +1021,66 @@ export default function EventsPage() {
                                                                     // Initialize the three rows as missing only when user triggers
                                                                     setMissingPropNames(initialMissingPropNames)
                                                                     setStatusTheme("red")
+                                                                    const propsNeeding = initialMissingPropNames
+                                                                    if (propsNeeding.length === 0) return
+
+                                                                    for (const name of propsNeeding) {
+                                                                        const row = propRowRefs.current[name]
+                                                                        if (row) {
+                                                                            row.scrollIntoView({ behavior: "smooth", block: "center" })
+                                                                        }
+                                                                        const fullText = `This ${name} property captures important context for the ${selectedMetric?.name ?? "event"}. It improves analysis and recommendations by clarifying its meaning and usage in reporting.`
+                                                                        setIsEditingPropDescription(prev => ({ ...prev, [name]: true }))
+                                                                        setPropDescriptionDraftByName(prev => ({ ...prev, [name]: "" }))
+                                                                        setAutoTypingByProp(prev => ({ ...prev, [name]: true }))
+                                                                        // typewriter effect
+                                                                        for (let i = 1; i <= fullText.length; i++) {
+                                                                            const slice = fullText.slice(0, i)
+                                                                            setPropDescriptionDraftByName(prev => ({ ...prev, [name]: slice }))
+                                                                            await new Promise(r => setTimeout(r, 12))
+                                                                        }
+                                                                        setPropDescriptionOverrideByName(prev => ({ ...prev, [name]: fullText }))
+                                                                        setIsEditingPropDescription(prev => ({ ...prev, [name]: false }))
+                                                                        setAutoTypingByProp(prev => ({ ...prev, [name]: false }))
+                                                                        // Mark as not missing anymore
+                                                                        setMissingPropNames(prev => prev.filter(n => n !== name))
+                                                                        // Scroll a tad to acknowledge completion
+                                                                        const rowDone = propRowRefs.current[name]
+                                                                        if (rowDone) {
+                                                                            rowDone.scrollIntoView({ behavior: "smooth", block: "center" })
+                                                                        }
+                                                                        await new Promise(r => setTimeout(r, 250))
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <img src="/AI.svg" alt="" className="h-3.5 w-3.5" />
+                                                                Generate missing descriptions
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {statusTheme === "orange" && (
+                                                <div className="border-l-4 p-4 border-orange-400 bg-orange-50">
+                                                    <div className="flex items-center">
+                                                        <div className="shrink-0">
+                                                            <img src="/Orange.svg" alt="" className="h-5 w-5" />
+                                                        </div>
+                                                        <div className="ml-3 flex-1">
+                                                            <p className="text-sm text-orange-700">
+                                                                3 properties miss descriptions, reducing AI accuracy and recommendations.
+                                                            </p>
+                                                        </div>
+                                                        <div className="ml-3">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-black hover:bg-gray-50"
+                                                                onClick={async () => {
+                                                                    // Prototype: no API calls. Generate locally and animate edits.
+                                                                    // Initialize the three rows as missing only when user triggers
+                                                                    setMissingPropNames(initialMissingPropNames)
+                                                                    setStatusTheme("orange")
                                                                     const propsNeeding = initialMissingPropNames
                                                                     if (propsNeeding.length === 0) return
 
