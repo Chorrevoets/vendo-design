@@ -25,6 +25,16 @@ type HeaderFilterProps = {
     statusValue?: "all" | "green" | "orange" | "red" | "inactive"
     onStatusChange?: (value: "all" | "green" | "orange" | "red" | "inactive") => void
 
+    // Pulse-specific filters
+    showPulseFilters?: boolean
+    pulseSearchValue?: string
+    onPulseSearchChange?: (value: string) => void
+    dateFromValue?: string
+    onDateFromChange?: (value: string) => void
+    dateToValue?: string
+    onDateToChange?: (value: string) => void
+    onClearFilters?: () => void
+
     // Presentation
     showFilters?: boolean
     actionLabel?: string
@@ -52,6 +62,14 @@ export default function HeaderFilter({
     sourceOptions = [],
     statusValue = "all",
     onStatusChange,
+    showPulseFilters = false,
+    pulseSearchValue = "",
+    onPulseSearchChange,
+    dateFromValue = "",
+    onDateFromChange,
+    dateToValue = "",
+    onDateToChange,
+    onClearFilters,
     showFilters = true,
     actionLabel = "Add Metric",
     useActionDialog = true,
@@ -107,7 +125,53 @@ export default function HeaderFilter({
                 ) : null}
 
                 <div className={`flex items-center gap-3 flex-wrap flex-1 pr-28`}>
-                    {showFilters ? (
+                    {showPulseFilters ? (
+                        <>
+                            {/* Pulse Search */}
+                            <div className="w-80">
+                                <div className="relative">
+                                    <svg className="h-4 w-4 text-gray-400 pointer-events-none absolute left-2 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <Input
+                                        value={pulseSearchValue}
+                                        onChange={(e) => onPulseSearchChange && onPulseSearchChange(e.target.value)}
+                                        placeholder="Search annotations..."
+                                        className="h-9 pl-8"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Date Range */}
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    type="date"
+                                    value={dateFromValue}
+                                    onChange={(e) => onDateFromChange && onDateFromChange(e.target.value)}
+                                    className="h-9 w-40"
+                                />
+                                <span className="text-gray-500 text-sm">to</span>
+                                <Input
+                                    type="date"
+                                    value={dateToValue}
+                                    onChange={(e) => onDateToChange && onDateToChange(e.target.value)}
+                                    className="h-9 w-40"
+                                />
+                            </div>
+
+                            {/* Clear Filters */}
+                            {(pulseSearchValue || dateFromValue || dateToValue) && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={onClearFilters}
+                                    className="h-9"
+                                >
+                                    Clear
+                                </Button>
+                            )}
+                        </>
+                    ) : showFilters ? (
                         <>
                             <div className="w-56">
                                 {showTypeAsSearch ? (

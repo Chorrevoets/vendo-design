@@ -22,11 +22,11 @@ export default function ProfileSettingsPage() {
         console.log("Profile updated:", profileData)
     }
 
-    const [menuState, setMenuState] = useState<"open" | "hidden">("open")
+    const [menuState, setMenuState] = useState<"open" | "narrow" | "hidden">("open")
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <SingleLayerMenu forceState={menuState} onToggleState={(next) => setMenuState(next === "narrow" ? "open" : (next as "open" | "hidden"))} />
+            <SingleLayerMenu forceState={menuState} onToggleState={(next) => setMenuState(next as "open" | "narrow" | "hidden")} />
             <HeaderFilter showFilters={false} title="Profile" showActionButton={false} showMenu={false} />
 
             <div

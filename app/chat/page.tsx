@@ -9,14 +9,14 @@ import { CopilotChat } from "@/components/copilot-chat"
 export default function ChatPage() {
   const searchParams = useSearchParams()
   const initialPrompt = searchParams.get("prompt")
-  const [menuState, setMenuState] = useState<"hidden" | "open">("hidden")
+  const [menuState, setMenuState] = useState<"hidden" | "narrow" | "open">("hidden")
 
   return (
     <div className="relative min-h-screen">
       <ExtractedShaderBackground>
         <SingleLayerMenu
           forceState={menuState}
-          onToggleState={(next) => setMenuState(next === "narrow" ? "open" : next)}
+          onToggleState={(next) => setMenuState(next as "hidden" | "narrow" | "open")}
         />
         <div className="relative z-10">
           <CopilotChat initialPrompt={initialPrompt} />

@@ -1069,7 +1069,7 @@ export default function EventsPage() {
                                                         </div>
                                                         <div className="ml-3 flex-1">
                                                             <p className="text-sm text-orange-700">
-                                                                3 properties miss descriptions, reducing AI accuracy and recommendations.
+                                                                The event description, blocking AI accuracy and recommendations.
                                                             </p>
                                                         </div>
                                                         <div className="ml-3">
