@@ -4,6 +4,7 @@ import PulseFeed from "@/components/pulse-feed"
 import { useState, useEffect, useRef } from "react"
 import HeaderFilter from "@/components/header-filter"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import {
   FaceFrownIcon,
@@ -25,6 +26,7 @@ export default function PulsePage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
+  const [selectedPlatform, setSelectedPlatform] = useState('All Platforms')
 
   // Sample activity data adapted from annotations (oldest first, newest at bottom)
   const activity = [
@@ -75,7 +77,7 @@ export default function PulsePage() {
       id: 4,
       type: 'annotation',
       person: { name: 'Suraj' },
-      comment: 'Google Ads: Daily campaign budget raised by $1...',
+      comment: 'Google Ads: Daily campaign budget raised by $100 for Therapy Mask product line to increase visibility during peak shopping season and improve competitive positioning against existing market players',
       date: 'Oct 17, 2024',
       dateTime: '2024-10-17T15:56',
     },
@@ -161,6 +163,87 @@ export default function PulsePage() {
       date: 'Apr 1, 2025',
       dateTime: '2025-04-01T11:24'
     },
+    {
+      id: 7,
+      type: 'annotation',
+      person: { name: 'Meta' },
+      campaign: 'Video Campaign EU',
+      comment: 'daily_budget_micros: $500 > $750',
+      date: 'Jan 15, 2025',
+      dateTime: '2025-01-15T14:32'
+    },
+    {
+      id: 8,
+      type: 'annotation',
+      person: { name: 'Google' },
+      campaign: 'Search Campaign UK',
+      comment: 'target_cpa_micros: $25 > $30',
+      date: 'Jan 20, 2025',
+      dateTime: '2025-01-20T09:45'
+    },
+    {
+      id: 9,
+      type: 'annotation',
+      person: { name: 'TikTok' },
+      campaign: 'Brand Campaign CA',
+      comment: 'frequency_cap: 2 > 3',
+      date: 'Jan 25, 2025',
+      dateTime: '2025-01-25T16:18'
+    },
+    {
+      id: 10,
+      type: 'annotation',
+      person: { name: 'Meta' },
+      campaign: 'Retargeting Campaign AU',
+      comment: 'conversion_optimization_goal: PURCHASE > LEAD',
+      date: 'Jan 28, 2025',
+      dateTime: '2025-01-28T11:07'
+    },
+    {
+      id: 11,
+      type: 'annotation',
+      person: { name: 'Google' },
+      campaign: 'Display Campaign US',
+      comment: 'bid_strategy_type: CPC > CPA',
+      date: 'Feb 2, 2025',
+      dateTime: '2025-02-02T13:22'
+    },
+    {
+      id: 12,
+      type: 'annotation',
+      person: { name: 'TikTok' },
+      campaign: 'Conversion Campaign EU',
+      comment: 'daily_budget_micros: $300 > $450',
+      date: 'Feb 5, 2025',
+      dateTime: '2025-02-05T08:55'
+    },
+    {
+      id: 13,
+      type: 'annotation',
+      person: { name: 'Meta' },
+      campaign: 'App Install US',
+      comment: 'optimization_goal: INSTALLS > PURCHASES',
+      date: 'Feb 8, 2025',
+      dateTime: '2025-02-08T15:33'
+    },
+    {
+      id: 14,
+      type: 'annotation',
+      person: { name: 'Google' },
+      campaign: 'Shopping Campaign AU',
+      comment: 'enhanced_conversion_enabled: false > true',
+      date: 'Feb 12, 2025',
+      dateTime: '2025-02-12T10:18'
+    },
+    {
+      id: 15,
+      type: 'annotation',
+      person: { name: 'TikTok' },
+      campaign: 'Traffic Campaign UK',
+      comment: 'budget_mode: DAILY > LIFETIME',
+      date: 'Feb 15, 2025',
+      dateTime: '2025-02-15T12:41'
+    },
   ]
 
   const moods = [
@@ -180,6 +263,7 @@ export default function PulsePage() {
     setSearchTerm('')
     setDateFrom('')
     setDateTo('')
+    setSelectedPlatform('All Platforms')
   }
 
   return (
@@ -187,27 +271,81 @@ export default function PulsePage() {
       <SingleLayerMenu forceState={menuState} onToggleState={(next) => setMenuState(next as "open" | "narrow" | "hidden")} />
       <HeaderFilter
         showFilters={false}
-        showPulseFilters={true}
+        showPulseFilters={false}
         title="Pulse"
         showActionButton={false}
         showMenu={false}
-        pulseSearchValue={searchTerm}
-        onPulseSearchChange={setSearchTerm}
-        dateFromValue={dateFrom}
-        onDateFromChange={setDateFrom}
-        dateToValue={dateTo}
-        onDateToChange={setDateTo}
-        onClearFilters={clearFilters}
       />
       <main className="h-screen flex flex-col relative" style={{ marginLeft: "var(--content-left, var(--sidebar-width, 0px))" }}>
-        {/* Tab Navigation */}
-        <div className="pt-20 px-6 bg-white">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-60 grid-cols-2 bg-gray-100">
-              <TabsTrigger value="annotations" className="text-sm">Annotations</TabsTrigger>
-              <TabsTrigger value="change-history" className="text-sm">Change History</TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {/* Filter Panel with Tab Navigation */}
+        <div className="pt-20 px-6 pb-4 bg-white border-b border-gray-200">
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Tab Navigation - First Element */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-60">
+              <TabsList className="grid w-60 grid-cols-2 bg-gray-100">
+                <TabsTrigger value="annotations" className="text-sm">Annotations</TabsTrigger>
+                <TabsTrigger value="change-history" className="text-sm">Change History</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* Search Input */}
+            <div className="w-80">
+              <div className="relative">
+                <svg className="h-4 w-4 text-gray-400 pointer-events-none absolute left-2 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={activeTab === "change-history" ? "Search history..." : "Search annotations..."}
+                  className="h-9 pl-8 w-full rounded-md border border-gray-300 px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Platforms Filter - Only for Change History */}
+            {activeTab === "change-history" && (
+              <div className="w-40">
+                <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+                  <SelectTrigger className="h-9 w-full">
+                    <SelectValue placeholder="All Platforms" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All Platforms">All Platforms</SelectItem>
+                    <SelectItem value="Google">Google</SelectItem>
+                    <SelectItem value="Meta">Meta</SelectItem>
+                    <SelectItem value="TikTok">TikTok</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Date Range */}
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-9 w-40 rounded-md border border-gray-300 px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <span className="text-gray-500 text-sm">to</span>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-9 w-40 rounded-md border border-gray-300 px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              {/* Clear link next to dates */}
+              {(searchTerm || dateFrom || dateTo || (activeTab === "change-history" && selectedPlatform !== "All Platforms")) && (
+                <button
+                  onClick={clearFilters}
+                  className="ml-3 text-sm font-medium text-blue-600 hover:text-blue-800 underline focus:outline-none"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Tab Content */}
@@ -230,6 +368,7 @@ export default function PulsePage() {
                 searchTerm={searchTerm}
                 dateFrom={dateFrom}
                 dateTo={dateTo}
+                selectedPlatform={selectedPlatform}
               />
             </TabsContent>
           </Tabs>
@@ -363,7 +502,7 @@ function AnnotationsFeed({
         className="relative flex-auto"
         style={{ marginLeft: 'calc(2rem + 30px)' }}
       >
-        <div className="overflow-hidden rounded-lg pb-16 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+        <div className="overflow-hidden rounded-lg pb-16 outline outline-1 -outline-offset-1 outline-black focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
           <label htmlFor="annotation" className="sr-only">
             Add your annotation
           </label>
@@ -391,17 +530,15 @@ function AnnotationsFeed({
               />
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={!annotationText.trim()}
-            className={`rounded-md px-3 py-1.5 text-sm font-semibold shadow-sm flex items-center gap-1.5 ${annotationText.trim()
-              ? 'bg-black text-white hover:bg-gray-800'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-          >
-            <PlusIcon className="size-4" />
-            Add Annotation
-          </button>
+          {annotationText.trim() && (
+            <button
+              type="submit"
+              className="rounded-md px-3 py-1.5 text-sm font-semibold shadow-sm flex items-center gap-1.5 bg-black text-white hover:bg-gray-800"
+            >
+              <PlusIcon className="size-4" />
+              Add Annotation
+            </button>
+          )}
         </div>
       </form>
     </div>
@@ -424,12 +561,12 @@ function AnnotationsFeed({
               {activityItem.type === 'commented' ? (
                 <>
                   <time dateTime={activityItem.dateTime} className="flex-none py-0.5 text-xs/5 text-gray-500 w-20 text-right">
-                    {activityItem.date}
+                    {/* Empty space where date was */}
                   </time>
                   <div className="flex-auto rounded-md p-3 ring-1 ring-inset ring-gray-200" style={{ marginLeft: 'calc(2rem + 30px)' }}>
                     <div className="flex justify-between gap-x-4">
                       <div className="py-0.5 text-xs/5 text-gray-500">
-                        <span className="font-medium text-gray-900">{activityItem.person.name}</span> commented
+                        <span className="font-medium text-gray-900">{activityItem.person.name}</span> commented • {activityItem.date}
                       </div>
                     </div>
                     <p className="text-sm/6 text-gray-500">{activityItem.comment}</p>
@@ -450,16 +587,22 @@ function AnnotationsFeed({
                   <div className="flex-auto ml-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="py-0.5 text-xs/5 text-gray-500">
-                          <span className="font-medium text-gray-900">{activityItem.person.name}</span> {activityItem.comment}
-                        </p>
+                        <div className="py-0.5 text-xs/5 text-gray-500">
+                          <div className="font-medium text-gray-900">{activityItem.person.name}</div>
+                          <div className="text-sm text-gray-500 mt-1">{activityItem.comment}</div>
+                        </div>
                         <button
                           onClick={() => setShowCommentForm(showCommentForm === activityItem.id ? null : activityItem.id)}
-                          className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mt-1"
+                          className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mt-1 group"
                           title="Add comment"
                         >
-                          <img src="/Comment.svg" alt="Comment" className="size-4 stroke-gray-400" />
-                          <span className="text-xs">Comment</span>
+                          <img
+                            src="/Comment.svg"
+                            alt="Comment"
+                            className="size-4 opacity-60 group-hover:opacity-100 transition-opacity"
+                            style={{ filter: 'brightness(0) saturate(100%) invert(38%) sepia(10%) saturate(1555%) hue-rotate(198deg) brightness(89%) contrast(88%)' }}
+                          />
+                          <span className="text-xs group-hover:text-gray-600">Comment</span>
                         </button>
                       </div>
                     </div>
@@ -477,22 +620,24 @@ function AnnotationsFeed({
                               className="block w-full resize-none bg-transparent px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
                             />
                           </div>
-                          <div className="absolute inset-x-0 bottom-0 flex justify-end py-1 pr-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const commentText = commentTexts[activityItem.id]
-                                if (commentText && commentText.trim()) {
-                                  addComment(activityItem.id, commentText.trim())
-                                  setCommentTexts(prev => ({ ...prev, [activityItem.id]: '' }))
-                                  setShowCommentForm(null)
-                                }
-                              }}
-                              className="rounded-md bg-black px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-800"
-                            >
-                              Comment
-                            </button>
-                          </div>
+                          {(commentTexts[activityItem.id]?.trim()) && (
+                            <div className="absolute inset-x-0 bottom-0 flex justify-end py-1 pr-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const commentText = commentTexts[activityItem.id]
+                                  if (commentText && commentText.trim()) {
+                                    addComment(activityItem.id, commentText.trim())
+                                    setCommentTexts(prev => ({ ...prev, [activityItem.id]: '' }))
+                                    setShowCommentForm(null)
+                                  }
+                                }}
+                                className="rounded-md bg-black px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-800"
+                              >
+                                Comment
+                              </button>
+                            </div>
+                          )}
                         </form>
                       </div>
                     )}
@@ -518,13 +663,15 @@ function ChangeHistoryFeed({
   classNames,
   searchTerm,
   dateFrom,
-  dateTo
+  dateTo,
+  selectedPlatform
 }: {
   activity: any[],
   classNames: (...classes: string[]) => string,
   searchTerm: string,
   dateFrom: string,
-  dateTo: string
+  dateTo: string,
+  selectedPlatform: string
 }) {
   const [showCommentForm, setShowCommentForm] = useState<number | null>(null)
   const [commentTexts, setCommentTexts] = useState<Record<number, string>>({})
@@ -548,12 +695,16 @@ function ChangeHistoryFeed({
     scrollToBottom()
   }, [activity])
 
-  // Filter activity based on search term and date range
+  // Filter activity based on search term, date range, and platform
   const filteredActivity = activity.filter(item => {
     const matchesSearch = searchTerm === '' ||
       item.person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.comment.toLowerCase().includes(searchTerm.toLowerCase())
+
+    // Platform filtering
+    const matchesPlatform = selectedPlatform === 'All Platforms' ||
+      item.person.name.toLowerCase().includes(selectedPlatform.toLowerCase())
 
     // Date range filtering
     let matchesDateRange = true
@@ -566,7 +717,7 @@ function ChangeHistoryFeed({
       if (toDate && itemDate > toDate) matchesDateRange = false
     }
 
-    return matchesSearch && matchesDateRange
+    return matchesSearch && matchesPlatform && matchesDateRange
   })
 
   const addComment = (annotationId: number, commentText: string) => {
@@ -613,12 +764,12 @@ function ChangeHistoryFeed({
               {activityItem.type === 'commented' ? (
                 <>
                   <time dateTime={activityItem.dateTime} className="flex-none py-0.5 text-xs/5 text-gray-500 w-20 text-right">
-                    {activityItem.date}
+                    {/* Empty space where date was */}
                   </time>
                   <div className="flex-auto rounded-md p-3 ring-1 ring-inset ring-gray-200" style={{ marginLeft: 'calc(2rem + 30px)' }}>
                     <div className="flex justify-between gap-x-4">
                       <div className="py-0.5 text-xs/5 text-gray-500">
-                        <span className="font-medium text-gray-900">{activityItem.person.name}</span> commented
+                        <span className="font-medium text-gray-900">{activityItem.person.name}</span> commented • {activityItem.date}
                       </div>
                     </div>
                     <p className="text-sm/6 text-gray-500">{activityItem.comment}</p>
@@ -640,14 +791,19 @@ function ChangeHistoryFeed({
                     <div className="flex items-center justify-between">
                       <div className="py-0.5 text-xs/5 text-gray-500">
                         <div className="font-medium text-gray-900">{activityItem.person.name} <span className="text-xs text-gray-600 font-normal">{activityItem.campaign}</span></div>
-                        <div className="text-xs text-gray-500 mt-1">{activityItem.comment}</div>
+                        <div className="text-sm text-gray-500 mt-1">{activityItem.comment}</div>
                         <button
                           onClick={() => setShowCommentForm(showCommentForm === activityItem.id ? null : activityItem.id)}
-                          className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mt-1"
+                          className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mt-1 group"
                           title="Add comment"
                         >
-                          <img src="/Comment.svg" alt="Comment" className="size-4 stroke-gray-400" />
-                          <span className="text-xs">Comment</span>
+                          <img
+                            src="/Comment.svg"
+                            alt="Comment"
+                            className="size-4 opacity-60 group-hover:opacity-100 transition-opacity"
+                            style={{ filter: 'brightness(0) saturate(100%) invert(38%) sepia(10%) saturate(1555%) hue-rotate(198deg) brightness(89%) contrast(88%)' }}
+                          />
+                          <span className="text-xs group-hover:text-gray-600">Comment</span>
                         </button>
                       </div>
                     </div>
@@ -665,22 +821,24 @@ function ChangeHistoryFeed({
                               className="block w-full resize-none bg-transparent px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
                             />
                           </div>
-                          <div className="absolute inset-x-0 bottom-0 flex justify-end py-1 pr-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const commentText = commentTexts[activityItem.id]
-                                if (commentText && commentText.trim()) {
-                                  addComment(activityItem.id, commentText.trim())
-                                  setCommentTexts(prev => ({ ...prev, [activityItem.id]: '' }))
-                                  setShowCommentForm(null)
-                                }
-                              }}
-                              className="rounded-md bg-black px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-800"
-                            >
-                              Comment
-                            </button>
-                          </div>
+                          {(commentTexts[activityItem.id]?.trim()) && (
+                            <div className="absolute inset-x-0 bottom-0 flex justify-end py-1 pr-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const commentText = commentTexts[activityItem.id]
+                                  if (commentText && commentText.trim()) {
+                                    addComment(activityItem.id, commentText.trim())
+                                    setCommentTexts(prev => ({ ...prev, [activityItem.id]: '' }))
+                                    setShowCommentForm(null)
+                                  }
+                                }}
+                                className="rounded-md bg-black px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-800"
+                              >
+                                Comment
+                              </button>
+                            </div>
+                          )}
                         </form>
                       </div>
                     )}

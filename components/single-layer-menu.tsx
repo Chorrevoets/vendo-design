@@ -165,7 +165,8 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                 {/* Logo row */}
                 {effectiveState !== "hidden" && (
                     <div className="pl-[22px] pr-3 w-full">
-                        <div className="relative group">
+                        {/* Logo button area */}
+                        <div className="relative group" data-group="logo">
                             <button
                                 onClick={() => {
                                     if (effectiveState === "narrow") {
@@ -180,22 +181,20 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                         router.push("/")
                                     }
                                 }}
-                                className={`relative flex items-center rounded-lg transition-colors mb-2 ${effectiveState === "open" ? "h-10 w-[calc(100%-175px)] pl-0 pr-2 justify-start" : "h-10 w-10 justify-center hover:bg-gray-100"}`}
+                                className={`relative flex items-center rounded-lg transition-all mb-2 ${effectiveState === "open" ? "h-10 w-[calc(100%-175px)] pl-0 pr-2 justify-start" : "h-10 w-10 justify-center hover:bg-gray-100 group ml-[-5px]"} ${effectiveState === "narrow" ? "cursor-e-resize" : ""}`}
                                 aria-label={effectiveState === "narrow" ? "Open Sidebar" : "Vendo Home"}
                             >
-                                <span className={`${effectiveState === "open" ? "w-10 flex justify-center relative top-[-4px]" : ""}`}>
+                                {/* Vendo logo - hidden on hover in narrow state */}
+                                <span className={`${effectiveState === "open" ? "w-10 flex justify-center relative top-[-4px] ml-[-3px]" : ""} ${effectiveState === "narrow" ? "group-hover:opacity-0 transition-opacity duration-200" : ""}`}>
                                     <Image src="/vendo-logo-mark.png" alt="Vendo" width={24} height={24} className="block h-6 w-6" />
                                 </span>
-                                {effectiveState === "open" && (
-                                    <span className="text-[20px] font-semibold text-gray-900 ml-[-9px] relative top-[1px]">endo</span>
-                                )}
-                                {/* Toggle icon in narrow state - positioned close to logo, top-aligned */}
+                                {/* Menu icon - shown on hover in narrow state */}
                                 {effectiveState === "narrow" && !pathname?.startsWith("/data_management") && (
                                     <svg
                                         viewBox="0 0 24 24"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-[16px] w-[16px] ml-1 relative top-[-6px]"
+                                        className="h-[20px] w-[20px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                                     >
                                         <path d="M20 7 4 7" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
                                         <path d="M15 12 4 12" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
@@ -203,8 +202,21 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                     </svg>
                                 )}
                             </button>
-                            {/* Close button in open state */}
-                            {effectiveState === "open" && !pathname?.startsWith("/data_management") && (
+                            {effectiveState === "narrow" && (
+                                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[9999] shadow-lg">
+                                    Open Sidebar
+                                </div>
+                            )}
+                            {effectiveState === "open" && (
+                                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[9999] shadow-lg" style={{ transform: 'translateX(-220px) translateY(-50%)' }}>
+                                    Vendo Home
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Close button in open state - separate group */}
+                        {effectiveState === "open" && !pathname?.startsWith("/data_management") && (
+                            <div className="absolute right-0 top-2 group">
                                 <button
                                     onClick={() => {
                                         if (forceState) {
@@ -213,7 +225,7 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                             setIsOpen(false)
                                         }
                                     }}
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+                                    className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
                                     aria-label="Close Sidebar"
                                 >
                                     <svg
@@ -227,18 +239,11 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                         <path d="M9 17H4" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
                                     </svg>
                                 </button>
-                            )}
-                            {effectiveState === "narrow" && (
                                 <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[9999] shadow-lg">
-                                    Open Sidebar
+                                    Close Sidebar
                                 </div>
-                            )}
-                            {effectiveState === "open" && (
-                                <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[9999] shadow-lg">
-                                    Vendo Home
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -263,9 +268,6 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                                 />
                                                 {effectiveState === "open" && (
                                                     <span className="text-sm font-medium text-gray-900 ml-[8px]">{item.name}</span>
-                                                )}
-                                                {item.hasNotification && (
-                                                    <div className={`pointer-events-none absolute ${effectiveState === "open" ? "top-1.5 left-[17px]" : "top-0 right-0"} w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
                                                 )}
                                             </button>
                                         </DropdownMenuTrigger>
@@ -336,9 +338,6 @@ export default function SingleLayerMenu({ forceState, initialState, onToggleStat
                                         />
                                         {effectiveState === "open" && (
                                             <span className="text-sm font-medium text-gray-900 ml-[8px]">{item.name}</span>
-                                        )}
-                                        {item.hasNotification && (
-                                            <div className={`pointer-events-none absolute ${effectiveState === "open" ? "top-1.5 left-[17px]" : "top-0 right-0"} w-2 h-2 rounded-full ${item.notificationColor === "green" ? "bg-green-500" : "bg-orange-500"}`} />
                                         )}
                                     </button>
                                     {effectiveState === "narrow" && (

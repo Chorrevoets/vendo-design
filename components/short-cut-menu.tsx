@@ -7,6 +7,7 @@ import { SearchChatsModal } from "@/components/search-chats-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Settings, LogOut, BarChart3, Plus } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface NarrowMenuItem {
     name: string
@@ -19,6 +20,7 @@ interface NarrowMenuItem {
 
 export default function ShortCutMenu() {
     const router = useRouter()
+    const isMobile = useIsMobile()
     const [isOpen, setIsOpen] = useState(false)
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
@@ -76,31 +78,33 @@ export default function ShortCutMenu() {
 
     return (
         <div>
-            {/* Toggle button outside the panel */}
-            <div className={`fixed top-[22px] ${isOpen ? "left-[257px]" : "left-[72px]"} z-[10011] group`}>
-                <button
-                    onClick={() => setIsOpen((v) => !v)}
-                    className={`flex items-center p-0 bg-transparent text-black`}
-                    aria-label={isOpen ? "Close Sidebar" : "Open Sidebar"}
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-[18px] w-[18px] transition-transform ${isOpen ? "scale-x-[-1]" : ""}`}
+            {/* Toggle button outside the panel */} {/* Only show when sidebar is hidden on mobile */}
+            {isMobile && (
+                <div className={`fixed top-[22px] ${isOpen ? "left-[257px]" : "left-[72px]"} z-[10011] group`}>
+                    <button
+                        onClick={() => setIsOpen((v) => !v)}
+                        className={`flex items-center p-0 bg-transparent text-black`}
+                        aria-label={isOpen ? "Close Sidebar" : "Open Sidebar"}
                     >
-                        <path d="M20 7 4 7" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
-                        <path d="M15 12 4 12" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
-                        <path d="M9 17H4" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
-                    </svg>
-                </button>
-                {!isOpen && (
-                    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">Open Sidebar</div>
-                )}
-                {isOpen && (
-                    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">Close Sidebar</div>
-                )}
-            </div>
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-[18px] w-[18px] transition-transform ${isOpen ? "scale-x-[-1]" : ""}`}
+                        >
+                            <path d="M20 7 4 7" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                            <path d="M15 12 4 12" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                            <path d="M9 17H4" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                        </svg>
+                    </button>
+                    {!isOpen && (
+                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">Open Sidebar</div>
+                    )}
+                    {isOpen && (
+                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">Close Sidebar</div>
+                    )}
+                </div>
+            )}
 
             {/* Panel with two states: narrow (64px) and open (320px) */}
             <div
@@ -115,18 +119,34 @@ export default function ShortCutMenu() {
                     <div className="relative group">
                         <button
                             onClick={() => router.push("/")}
-                            className={`relative flex items-center rounded-lg transition-colors mb-2 ${isOpen ? "h-10 w-[calc(100%-175px)] pl-0 pr-2 justify-start" : "h-10 w-10 justify-center"}`}
+                            className={`relative flex items-center rounded-lg transition-all mb-2 ${isOpen ? "h-10 w-[calc(100%-175px)] pl-0 pr-2 justify-start" : "h-10 w-10 justify-center group"} ${!isOpen ? "cursor-e-resize" : ""}`}
                             aria-label="Vendo Home"
                         >
-                            <span className={`${isOpen ? "w-10 flex justify-center relative top-[-4px]" : "relative top-[-4px]"}`}>
+                            {/* Vendo logo - hidden on hover in narrow state */}
+                            <span className={`${isOpen ? "w-10 flex justify-center relative top-[-4px] ml-[-3px]" : "relative top-[-4px] group-hover:opacity-0 transition-opacity duration-200"}`}>
                                 <Image src="/vendo-logo-mark.png" alt="Vendo" width={24} height={24} className="h-6 w-6" />
                             </span>
-                            {isOpen && (
-                                <span className="text-[20px] font-semibold text-gray-900 ml-[-9px] relative top-[1px]">endo</span>
+                            {/* Menu icon - shown on hover in narrow state */}
+                            {!isOpen && (
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-[20px] w-[20px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                >
+                                    <path d="M20 7 4 7" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                                    <path d="M15 12 4 12" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                                    <path d="M9 17H4" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
+                                </svg>
                             )}
                         </button>
                         {!isOpen && (
                             <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-[999999]">
+                                Open Sidebar
+                            </div>
+                        )}
+                        {isOpen && (
+                            <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-black text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999999] shadow-lg" style={{ transform: 'translateX(-220px) translateY(-50%)' }}>
                                 Vendo Home
                             </div>
                         )}
