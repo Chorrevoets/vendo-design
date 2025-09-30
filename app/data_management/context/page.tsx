@@ -89,6 +89,10 @@ export default function ContextPage() {
         setDrawerOpen(false)
     }
 
+    const handleDeleteContext = (id: number) => {
+        setContextItems(prev => prev.filter(item => item.id !== id))
+    }
+
     const secondaryPanelItems = [
         {
             name: "Quality",
@@ -135,7 +139,17 @@ export default function ContextPage() {
                 activeItem="Context"
             />
 
-            <HeaderFilter showFilters={false} title="Context" forceNarrowLayout showActionButton={false} showMenu={false} leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"} />
+            <HeaderFilter
+                showFilters={false}
+                title="Context"
+                forceNarrowLayout
+                showActionButton={true}
+                actionLabel="Add Context"
+                useActionDialog={false}
+                onActionClick={openNewContextDrawer}
+                showMenu={false}
+                leftOffset={isMainSidebarOpen ? "calc(340px + 220px)" : "calc(64px + 220px)"}
+            />
 
             <div
                 className="px-6 pt-24 pb-6 mx-auto"
@@ -146,149 +160,189 @@ export default function ContextPage() {
             >
                 {/* Page Content */}
                 <div className="space-y-6">
+                    {/* Statistics Card */}
+                    <div className="bg-white rounded-lg shadow outline outline-1 outline-black/5">
+                        <dl className="grid grid-cols-1 divide-gray-200 overflow-hidden md:grid-cols-3 md:divide-x md:divide-y-0">
+                            <div className="px-4 py-5 sm:p-6">
+                                <dt className="text-base font-normal text-gray-900">Total Document</dt>
+                                <dd className="mt-1">
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="text-2xl font-semibold text-gray-900">2</div>
+                                        <span className="text-sm font-medium text-gray-500">Active document items</span>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div className="px-4 py-5 sm:p-6">
+                                <dt className="text-base font-normal text-gray-900">AI Ready</dt>
+                                <dd className="mt-1">
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="text-2xl font-semibold text-green-600">2</div>
+                                        <span className="text-sm font-medium text-gray-500">Documents processed</span>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div className="px-4 py-5 sm:p-6">
+                                <dt className="text-base font-normal text-gray-900">Content synchronized</dt>
+                                <dd className="mt-1">
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="text-2xl font-semibold text-blue-600">2</div>
+                                        <span className="text-sm font-medium text-gray-500">Up to date</span>
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
+                        <div className="px-4 py-4 sm:px-6 border-t border-gray-200">
+                            <div className="text-gray-500 text-sm/6 flex items-center gap-2">
+                                <img src="/Definition.svg" alt="" className="h-4 w-4" />
+                                <span className="font-normal">Add context like mission statements, sales calendars, product info, key dates, and targets. This helps the copilot align insights with your company's goals and rhythms.</span>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Context Table */}
-                    <div className="mt-6">
-                        <div className="flow-root">
-                            <div className="overflow-x-auto">
-                                <div className="inline-block min-w-full py-2 align-middle">
-                                    <div className="overflow-hidden rounded-lg bg-white shadow outline outline-1 outline-black/5">
-                                        <table className="relative min-w-full divide-y divide-gray-300 table-fixed">
-                                            <colgroup>
-                                                <col className="w-[50%]" />
-                                                <col className="w-[25%]" />
-                                                <col className="w-[25%]" />
-                                            </colgroup>
-                                            <thead className="bg-white">
-                                                <tr>
-                                                    <th colSpan={3} className="h-[70px] py-3 pl-4 pr-3 text-left sm:pl-6 border-b border-gray-200">
-                                                        <div className="flex items-center justify-between">
-                                                            <div>
-                                                                <div className="text-gray-900 text-lg font-semibold">Context</div>
-                                                                <div className="text-gray-500 text-sm/6 mt-1 flex items-center gap-2">
-                                                                    <img src="/Definition.svg" alt="" className="h-4 w-4" />
-                                                                    <span className="font-normal">Richer context means better, more accurate insights from AI.</span>
+                    <div className="flow-root">
+                        <div className="overflow-x-auto">
+                            <div className="inline-block min-w-full py-2 align-middle">
+                                <div className="overflow-hidden rounded-lg bg-white shadow outline outline-1 outline-black/5">
+                                    <table className="relative min-w-full divide-y divide-gray-300 table-fixed">
+                                        <colgroup>
+                                            <col className="w-[50%]" />
+                                            <col className="w-[25%]" />
+                                            <col className="w-[20%]" />
+                                            <col className="w-[5%]" />
+                                        </colgroup>
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                    <Popover open={contextSearchOpen} onOpenChange={setContextSearchOpen}>
+                                                        <PopoverTrigger asChild>
+                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                <span>Title</span>
+                                                                <img src={contextSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
+                                                            </button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent align="start" className="w-72 p-3">
+                                                            <div className="space-y-2">
+                                                                <div className="relative">
+                                                                    <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                                                                    <Input
+                                                                        value={contextSearchDraft}
+                                                                        onChange={(e) => setContextSearchDraft(e.target.value)}
+                                                                        placeholder="Search titles..."
+                                                                        className="h-9 pl-8"
+                                                                    />
+                                                                </div>
+                                                                <div className="pt-1 flex items-center gap-2">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        className="h-9 flex-1"
+                                                                        onClick={() => { setContextSearchQuery(""); setContextSearchDraft(""); setContextSearchOpen(false) }}
+                                                                    >
+                                                                        Clear
+                                                                    </Button>
+                                                                    <Button
+                                                                        className="h-9 flex-1"
+                                                                        onClick={() => { setContextSearchQuery(contextSearchDraft); setContextSearchOpen(false) }}
+                                                                    >
+                                                                        Search
+                                                                    </Button>
                                                                 </div>
                                                             </div>
-                                                            <button className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors" onClick={openNewContextDrawer}>
-                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                                </svg>
-                                                                Add Context
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </th>
+                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                    <Popover open={contextCategoryFilterOpen} onOpenChange={setContextCategoryFilterOpen}>
+                                                        <PopoverTrigger asChild>
+                                                            <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
+                                                                <span>Category</span>
+                                                                <img src={appliedContextCategories.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
                                                             </button>
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                                <tr className="bg-white">
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        <Popover open={contextSearchOpen} onOpenChange={setContextSearchOpen}>
-                                                            <PopoverTrigger asChild>
-                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                    <span>Title</span>
-                                                                    <img src={contextSearchQuery.trim() !== "" ? "/Sort.svg" : "/Magnifer.svg"} alt="Search" className="h-4 w-4" />
-                                                                </button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent align="start" className="w-72 p-3">
-                                                                <div className="space-y-2">
-                                                                    <div className="relative">
-                                                                        <img src="/Magnifer.svg" alt="" className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
-                                                                        <Input
-                                                                            value={contextSearchDraft}
-                                                                            onChange={(e) => setContextSearchDraft(e.target.value)}
-                                                                            placeholder="Search titles..."
-                                                                            className="h-9 pl-8"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="pt-1 flex items-center gap-2">
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            className="h-9 flex-1"
-                                                                            onClick={() => { setContextSearchQuery(""); setContextSearchDraft(""); setContextSearchOpen(false) }}
-                                                                        >
-                                                                            Clear
-                                                                        </Button>
-                                                                        <Button
-                                                                            className="h-9 flex-1"
-                                                                            onClick={() => { setContextSearchQuery(contextSearchDraft); setContextSearchOpen(false) }}
-                                                                        >
-                                                                            Search
-                                                                        </Button>
-                                                                    </div>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent align="start" className="w-64 p-3">
+                                                            <div className="space-y-2">
+                                                                {uniqueContextCategories.map((label) => {
+                                                                    const checked = selectedContextCategoriesDraft.has(label)
+                                                                    return (
+                                                                        <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
+                                                                            <Checkbox
+                                                                                checked={checked}
+                                                                                onCheckedChange={(v) => {
+                                                                                    setSelectedContextCategoriesDraft(prev => {
+                                                                                        const next = new Set(prev)
+                                                                                        if (v) next.add(label); else next.delete(label)
+                                                                                        return next
+                                                                                    })
+                                                                                }}
+                                                                            />
+                                                                            <span>{label}</span>
+                                                                        </label>
+                                                                    )
+                                                                })}
+                                                                <div className="pt-2 flex items-center gap-2">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        className="h-9 flex-1"
+                                                                        onClick={() => {
+                                                                            setAppliedContextCategories([])
+                                                                            setSelectedContextCategoriesDraft(new Set())
+                                                                            setContextCategoryFilterOpen(false)
+                                                                        }}
+                                                                    >
+                                                                        Clear filters
+                                                                    </Button>
+                                                                    <Button
+                                                                        className="h-9 flex-1"
+                                                                        onClick={() => {
+                                                                            setAppliedContextCategories(Array.from(selectedContextCategoriesDraft))
+                                                                            setContextCategoryFilterOpen(false)
+                                                                        }}
+                                                                    >
+                                                                        Filter
+                                                                    </Button>
                                                                 </div>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        <Popover open={contextCategoryFilterOpen} onOpenChange={setContextCategoryFilterOpen}>
-                                                            <PopoverTrigger asChild>
-                                                                <button type="button" className="inline-flex items-center gap-1.5 hover:text-gray-700">
-                                                                    <span>Category</span>
-                                                                    <img src={appliedContextCategories.length > 0 ? "/Sort.svg" : "/List.svg"} alt="" className="h-4 w-4" />
+                                                            </div>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </th>
+                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                    Last Updated
+                                                </th>
+                                                <th scope="col" className="py-3.5 pl-3 pr-4 sm:pr-6"><span className="sr-only">Actions</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200 bg-white">
+                                            {filteredContextRows.map((row) => {
+                                                return (
+                                                    <tr key={row.id} className="cursor-pointer hover:bg-gray-50" onClick={() => openEditContextDrawer(row)}>
+                                                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{row.title}</td>
+                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.category}</td>
+                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.lastUpdated}</td>
+                                                        <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                            <div className="flex items-center justify-end gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => { e.stopPropagation(); openEditContextDrawer(row) }}
+                                                                    className="inline-flex items-center text-gray-500 hover:text-gray-700"
+                                                                >
+                                                                    <img src="/New-chat.svg" alt="" className="h-4 w-4" />
+                                                                    <span className="sr-only">Edit {row.title}</span>
                                                                 </button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent align="start" className="w-64 p-3">
-                                                                <div className="space-y-2">
-                                                                    {uniqueContextCategories.map((label) => {
-                                                                        const checked = selectedContextCategoriesDraft.has(label)
-                                                                        return (
-                                                                            <label key={label} className="flex items-center gap-2 text-sm text-gray-900">
-                                                                                <Checkbox
-                                                                                    checked={checked}
-                                                                                    onCheckedChange={(v) => {
-                                                                                        setSelectedContextCategoriesDraft(prev => {
-                                                                                            const next = new Set(prev)
-                                                                                            if (v) next.add(label); else next.delete(label)
-                                                                                            return next
-                                                                                        })
-                                                                                    }}
-                                                                                />
-                                                                                <span>{label}</span>
-                                                                            </label>
-                                                                        )
-                                                                    })}
-                                                                    <div className="pt-2 flex items-center gap-2">
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            className="h-9 flex-1"
-                                                                            onClick={() => {
-                                                                                setAppliedContextCategories([])
-                                                                                setSelectedContextCategoriesDraft(new Set())
-                                                                                setContextCategoryFilterOpen(false)
-                                                                            }}
-                                                                        >
-                                                                            Clear filters
-                                                                        </Button>
-                                                                        <Button
-                                                                            className="h-9 flex-1"
-                                                                            onClick={() => {
-                                                                                setAppliedContextCategories(Array.from(selectedContextCategoriesDraft))
-                                                                                setContextCategoryFilterOpen(false)
-                                                                            }}
-                                                                        >
-                                                                            Filter
-                                                                        </Button>
-                                                                    </div>
-                                                                </div>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </th>
-                                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Last Updated
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-200 bg-white">
-                                                {filteredContextRows.map((row) => {
-                                                    return (
-                                                        <tr key={row.id} className="cursor-pointer hover:bg-gray-50" onClick={() => openEditContextDrawer(row)}>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">{row.title}</td>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.category}</td>
-                                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{row.lastUpdated}</td>
-                                                        </tr>
-                                                    )
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => { e.stopPropagation(); handleDeleteContext(row.id) }}
+                                                                    className="inline-flex items-center text-gray-500 hover:text-red-600"
+                                                                >
+                                                                    <img src="/Delete.svg" alt="" className="h-4 w-4" />
+                                                                    <span className="sr-only">Delete {row.title}</span>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -388,7 +442,8 @@ export default function ContextPage() {
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     )
 } 

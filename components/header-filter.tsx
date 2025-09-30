@@ -45,6 +45,7 @@ type HeaderFilterProps = {
     title?: string
     showActionButton?: boolean
     showMenu?: boolean
+    onMenuAction?: (action: string) => void
     secondaryActionLabel?: string
     onSecondaryActionClick?: () => void
     secondaryIconSrc?: string
@@ -79,6 +80,7 @@ export default function HeaderFilter({
     title,
     showActionButton = true,
     showMenu = true,
+    onMenuAction,
     secondaryActionLabel,
     onSecondaryActionClick,
     secondaryIconSrc,
@@ -327,9 +329,17 @@ export default function HeaderFilter({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem>Delete Workspace</DropdownMenuItem>
-                            <DropdownMenuItem>Request Workspace Data Export</DropdownMenuItem>
-                            <DropdownMenuItem>Contact Support</DropdownMenuItem>
+                            {onMenuAction ? (
+                                <DropdownMenuItem onClick={() => onMenuAction('change-sort-order')}>
+                                    Change sort order
+                                </DropdownMenuItem>
+                            ) : (
+                                <>
+                                    <DropdownMenuItem>Delete Workspace</DropdownMenuItem>
+                                    <DropdownMenuItem>Request Workspace Data Export</DropdownMenuItem>
+                                    <DropdownMenuItem>Contact Support</DropdownMenuItem>
+                                </>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )}

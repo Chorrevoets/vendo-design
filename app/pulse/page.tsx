@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import HeaderFilter from "@/components/header-filter"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { X } from "lucide-react"
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import {
   FaceFrownIcon,
@@ -21,6 +22,8 @@ import { CalendarIcon, PlusIcon } from '@heroicons/react/20/solid'
 export default function PulsePage() {
   const [menuState, setMenuState] = useState<"open" | "narrow" | "hidden">("open")
   const [activeTab, setActiveTab] = useState("annotations")
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("oldest")
+  const [showAnnotationDrawer, setShowAnnotationDrawer] = useState(false)
 
   // Global filter states
   const [searchTerm, setSearchTerm] = useState('')
@@ -266,6 +269,14 @@ export default function PulsePage() {
     setSelectedPlatform('All Platforms')
   }
 
+  const sortActivity = (items: any[]) => {
+    return [...items].sort((a, b) => {
+      const dateA = new Date(a.dateTime).getTime()
+      const dateB = new Date(b.dateTime).getTime()
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB
+    })
+  }
+
   return (
     <div className="h-screen bg-white">
       <SingleLayerMenu forceState={menuState} onToggleState={(next) => setMenuState(next as "open" | "narrow" | "hidden")} />
@@ -274,7 +285,12 @@ export default function PulsePage() {
         showPulseFilters={false}
         title="Pulse"
         showActionButton={false}
-        showMenu={false}
+        showMenu={true}
+        onMenuAction={(action) => {
+          if (action === 'change-sort-order') {
+            setSortOrder(sortOrder === 'oldest' ? 'newest' : 'oldest')
+          }
+        }}
       />
       <main className="h-screen flex flex-col relative" style={{ marginLeft: "var(--content-left, var(--sidebar-width, 0px))" }}>
         {/* Filter Panel with Tab Navigation */}
@@ -345,6 +361,17 @@ export default function PulsePage() {
                 </button>
               )}
             </div>
+
+            {/* Add Annotation Button - Only for Annotations tab and when newest is on top */}
+            {activeTab === "annotations" && sortOrder === "newest" && (
+              <button
+                onClick={() => setShowAnnotationDrawer(true)}
+                className="h-9 px-4 rounded-md bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+              >
+                <PlusIcon className="h-4 w-4" />
+                Add Annotation
+              </button>
+            )}
           </div>
         </div>
 
@@ -353,17 +380,23 @@ export default function PulsePage() {
           <Tabs value={activeTab} className="h-full">
             <TabsContent value="annotations" className="h-full m-0">
               <AnnotationsFeed
-                activity={activity}
+                activity={sortActivity(activity)}
                 moods={moods}
                 classNames={classNames}
                 searchTerm={searchTerm}
                 dateFrom={dateFrom}
                 dateTo={dateTo}
+                showAnnotationDrawer={showAnnotationDrawer}
+                setShowAnnotationDrawer={setShowAnnotationDrawer}
+                sortOrder={sortOrder}
+                onAddAnnotation={(text, date) => {
+                  // This will be handled by the AnnotationsFeed component
+                }}
               />
             </TabsContent>
             <TabsContent value="change-history" className="h-full m-0">
               <ChangeHistoryFeed
-                activity={changeHistory}
+                activity={sortActivity(changeHistory)}
                 classNames={classNames}
                 searchTerm={searchTerm}
                 dateFrom={dateFrom}
@@ -373,6 +406,63 @@ export default function PulsePage() {
             </TabsContent>
           </Tabs>
         </div>
+
+        {/* Right-side Annotation Drawer */}
+        {showAnnotationDrawer && (
+          <div className="relative z-[10000001]">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 z-[10000000] bg-gray-500/75 cursor-pointer"
+              onClick={() => setShowAnnotationDrawer(false)}
+            />
+
+            <div className="fixed inset-0 z-[10000002] overflow-hidden">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                  <div className="pointer-events-auto relative w-screen max-w-lg sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl transform transition duration-500 ease-in-out translate-x-0">
+                    {/* Outside close button */}
+                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                      <button
+                        type="button"
+                        onClick={() => setShowAnnotationDrawer(false)}
+                        className="relative rounded-md text-gray-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        <span className="absolute -inset-2.5" />
+                        <span className="sr-only">Close panel</span>
+                        <X className="h-6 w-6" />
+                      </button>
+                    </div>
+
+                    <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                      <div className="px-4 sm:px-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h2 className="text-base font-semibold leading-6 text-gray-900">
+                              Add Annotation
+                            </h2>
+                            <p className="mt-1 text-sm text-gray-500">
+                              Add a new annotation to the pulse feed
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                        <AnnotationDrawerForm
+                          onAddAnnotation={(text, date) => {
+                            // This will be handled by the AnnotationsFeed component
+                            // We need to pass this function down
+                          }}
+                          onClose={() => setShowAnnotationDrawer(false)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
@@ -385,14 +475,22 @@ function AnnotationsFeed({
   classNames,
   searchTerm,
   dateFrom,
-  dateTo
+  dateTo,
+  showAnnotationDrawer,
+  setShowAnnotationDrawer,
+  sortOrder,
+  onAddAnnotation
 }: {
   activity: any[],
   moods: any[],
   classNames: (...classes: string[]) => string,
   searchTerm: string,
   dateFrom: string,
-  dateTo: string
+  dateTo: string,
+  showAnnotationDrawer: boolean,
+  setShowAnnotationDrawer: (show: boolean) => void,
+  sortOrder: "newest" | "oldest",
+  onAddAnnotation: (text: string, date: string) => void
 }) {
   const [selected, setSelected] = useState(moods[5])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
@@ -482,6 +580,9 @@ function AnnotationsFeed({
 
     // Add to the end of the activity feed (newest at bottom)
     setActivity([...activity, newAnnotation])
+    setAnnotationText('')
+    setShowAnnotationDrawer(false)
+    onAddAnnotation(text, date)
     scrollToBottom()
   }
 
@@ -648,10 +749,12 @@ function AnnotationsFeed({
           ))}
         </ul>
 
-        {/* Add New Annotation form - scrollable with content */}
-        <div className="mt-6">
-          <AnnotationForm />
-        </div>
+        {/* Add New Annotation form - show inline when newest is at bottom */}
+        {sortOrder === "oldest" && (
+          <div className="mt-6">
+            <AnnotationForm />
+          </div>
+        )}
       </div>
     </div>
   )
@@ -850,5 +953,75 @@ function ChangeHistoryFeed({
         </ul>
       </div>
     </div>
+  )
+}
+
+// Annotation Drawer Form Component
+function AnnotationDrawerForm({
+  onAddAnnotation,
+  onClose
+}: {
+  onAddAnnotation: (text: string, date: string) => void,
+  onClose: () => void
+}) {
+  const [annotationText, setAnnotationText] = useState('')
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (annotationText.trim()) {
+      onAddAnnotation(annotationText.trim(), selectedDate)
+      setAnnotationText('')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="annotation" className="block text-sm font-medium text-gray-700 mb-2">
+          Annotation
+        </label>
+        <textarea
+          id="annotation"
+          name="annotation"
+          rows={4}
+          placeholder="Add your annotation..."
+          value={annotationText}
+          onChange={(e) => setAnnotationText(e.target.value)}
+          className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+          Date
+        </label>
+        <input
+          type="date"
+          id="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!annotationText.trim()}
+          className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Add Annotation
+        </button>
+      </div>
+    </form>
   )
 }
