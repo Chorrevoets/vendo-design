@@ -6,7 +6,8 @@ const CV_INFO_URL = `${BASE_URL}/CV/latest-cv-info.json`;
 
 export async function POST(request: Request) {
   try {
-    const { email, intentions } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const { email, intentions, pageUrl: pageUrlFromBody } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -46,12 +47,10 @@ export async function POST(request: Request) {
       console.warn("Error fetching latest-cv-info.json, using /CV/latest.pdf:", error);
     }
 
-    // Email to the user with the CV link using Resend template `cv-download`
-    // BCC to c.horrevoets@gmail.com for notification
+    // 1) Email to the user with the CV link using Resend template `cv-download`
     const { data: userData, error: userError } = await resend.emails.send({
       from: "Coen Horrevoets <coen@productclarity.work>",
       to: email,
-      bcc: "c.horrevoets@gmail.com",
       replyTo: "coen@productclarity.work",
       template: {
         id: "cv-download",
@@ -70,7 +69,38 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("CV link email sent to user successfully (BCC to owner)", userData);
+    console.log("CV link email sent to user successfully", userData);
+
+    // 2) Notification email to Coen using Resend template `cv-download-notification`
+    const referer = request.headers.get("referer");
+    const pageUrl = pageUrlFromBody || referer || "https://www.productclarity.work";
+
+    const submittedAt = new Date().toLocaleString("en-AU", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    const { data: ownerData, error: ownerError } = await resend.emails.send({
+      from: "Coen Horrevoets <coen@productclarity.work>",
+      to: "c.horrevoets@gmail.com",
+      replyTo: email,
+      template: {
+        id: "cv-download-notification",
+        variables: {
+          user_email: email,
+          submitted_at: submittedAt,
+          page_url: pageUrl,
+          user_message: intentions || "No message provided",
+        },
+      },
+    });
+
+    if (ownerError) {
+      console.error("Resend API error (owner notification):", JSON.stringify(ownerError, null, 2));
+      // Don't fail the request; user already got their CV email
+    } else {
+      console.log("CV download notification sent to owner", ownerData);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
