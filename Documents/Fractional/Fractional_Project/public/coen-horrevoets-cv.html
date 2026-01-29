@@ -103,17 +103,17 @@
         margin: 0 1.5cm 1.5cm 1.5cm;
       }
       
-      /* Pages 2-4 have increased left margin for timeline */
+      /* Pages 2-4 have no left margin for timeline */
       @page :left {
         margin-top: 1.5cm;
-        margin-left: 2cm; /* Reduced left margin for timeline */
+        margin-left: 0cm; /* No left margin */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
       
       @page :right {
         margin-top: 1.5cm;
-        margin-left: 2cm; /* Reduced left margin for timeline */
+        margin-left: 0cm; /* No left margin */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
@@ -523,12 +523,12 @@
     
     @media print {
       .experience-section {
-        padding-left: 1.2cm; /* Reduced space for timeline and dots */
+        padding-left: 1.2cm; /* Space for timeline and dots */
       }
       
       .timeline-line {
         display: block;
-        left: 0.3cm; /* Centered in the margin */
+        left: 0.3cm; /* Position from page edge (no margin now) */
         height: 3000px; /* Even taller for print */
         width: 1px; /* 1px thickness */
       }
