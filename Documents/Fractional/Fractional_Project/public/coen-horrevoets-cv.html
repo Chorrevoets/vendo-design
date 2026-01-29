@@ -98,12 +98,24 @@
         margin-top: 0;
       }
       
+      /* First page keeps original margins */
+      @page :first {
+        margin: 0 1.5cm 1.5cm 1.5cm;
+      }
+      
+      /* Pages 2-4 have increased left margin for timeline */
       @page :left {
         margin-top: 1.5cm;
+        margin-left: 2.5cm; /* Increased left margin for timeline */
+        margin-right: 1.5cm;
+        margin-bottom: 1.5cm;
       }
       
       @page :right {
         margin-top: 1.5cm;
+        margin-left: 2.5cm; /* Increased left margin for timeline */
+        margin-right: 1.5cm;
+        margin-bottom: 1.5cm;
       }
 
       body {
@@ -493,10 +505,52 @@
       padding-left: 1rem;
     }
 
-    /* Increased spacing for pages 2-4 (Experience section and beyond) */
+    /* Timeline styles for pages 2-4 */
     @media print {
+      .experience-section {
+        position: relative;
+        padding-left: 0;
+      }
+      
+      /* Vertical timeline line - positioned in the left margin */
+      .experience-section::before {
+        content: '';
+        position: absolute;
+        left: -1cm; /* Position in the increased left margin area */
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent); /* Red line */
+        z-index: 1;
+      }
+      
       .experience-section .experience-item {
         margin-bottom: 1.4rem;
+        position: relative;
+      }
+      
+      /* Red dot before each role title */
+      .experience-section .experience-header {
+        position: relative;
+        padding-left: 0;
+      }
+      
+      .experience-section .experience-title {
+        position: relative;
+      }
+      
+      .experience-section .experience-title::before {
+        content: '';
+        position: absolute;
+        left: -1.35cm; /* Align with timeline line, slightly to the left of the line center */
+        top: 0.5em;
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 50%;
+        z-index: 2;
+        transform: translateX(-50%); /* Center the dot on the line */
+        left: -1cm; /* Position exactly on the line */
       }
       
       .experience-section .achievements {
