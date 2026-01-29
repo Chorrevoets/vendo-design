@@ -69,6 +69,26 @@ async function generatePDF() {
       height: 1123, // A4 height in pixels at 96 DPI
     });
 
+    // Read favicon and convert to base64 data URI
+    const faviconPath = join(process.cwd(), 'public', 'Favicon_Coen.webp');
+    const faviconBuffer = readFileSync(faviconPath);
+    const faviconBase64 = faviconBuffer.toString('base64');
+    const faviconDataUri = `data:image/webp;base64,${faviconBase64}`;
+    
+    // Inject favicon into HTML content
+    if (!htmlContent.includes('link rel="icon"')) {
+      htmlContent = htmlContent.replace(
+        '<head>',
+        `<head>\n  <link rel="icon" href="${faviconDataUri}" type="image/webp">\n  <link rel="apple-touch-icon" href="${faviconDataUri}">`
+      );
+    } else {
+      // Replace existing favicon links with data URI
+      htmlContent = htmlContent.replace(
+        /href="[^"]*Favicon_Coen\.webp"/g,
+        `href="${faviconDataUri}"`
+      );
+    }
+
     // Emulate print media for proper CSS application
     await page.emulateMediaType('print');
 
@@ -76,6 +96,24 @@ async function generatePDF() {
     await page.setContent(htmlContent, {
       waitUntil: 'networkidle0',
     });
+    
+    // Set favicon on the page (for browsers that support it)
+    await page.evaluate((faviconDataUri) => {
+      // Remove existing favicon links
+      document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]').forEach(link => link.remove());
+      
+      // Add favicon links
+      const faviconLink = document.createElement('link');
+      faviconLink.rel = 'icon';
+      faviconLink.href = faviconDataUri;
+      faviconLink.type = 'image/webp';
+      document.head.appendChild(faviconLink);
+      
+      const appleIconLink = document.createElement('link');
+      appleIconLink.rel = 'apple-touch-icon';
+      appleIconLink.href = faviconDataUri;
+      document.head.appendChild(appleIconLink);
+    }, faviconDataUri);
 
     // Wait for fonts to load
     await page.evaluate(async () => {
