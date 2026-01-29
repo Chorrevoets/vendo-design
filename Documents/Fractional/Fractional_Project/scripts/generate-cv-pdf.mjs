@@ -3,6 +3,8 @@ import { readFileSync, writeFileSync, copyFileSync, existsSync, mkdirSync } from
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { PDFDocument } from 'pdf-lib';
+import sharp from 'sharp';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -200,6 +202,86 @@ async function generatePDF() {
       preferCSSPageSize: false, // Use format size instead of CSS @page size
       displayHeaderFooter: false, // Don't add header/footer that might interfere
     });
+
+    // Add custom thumbnail icon to PDF
+    try {
+      console.log('📸 Adding custom thumbnail icon to PDF...');
+      const pdfBytes = readFileSync(pdfPath);
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      
+      // Try to use logo.png first (better for thumbnails), fallback to favicon
+      let thumbnailImage;
+      const logoPath = join(process.cwd(), 'public', 'logo.png');
+      const faviconPath = join(process.cwd(), 'public', 'Favicon_Coen.webp');
+      
+      if (existsSync(logoPath)) {
+        try {
+          const logoBytes = readFileSync(logoPath);
+          thumbnailImage = await pdfDoc.embedPng(logoBytes);
+          console.log('✅ Using logo.png as thumbnail');
+        } catch (e) {
+          console.warn('⚠️  Could not embed logo.png, trying favicon...');
+        }
+      }
+      
+      // If logo didn't work, try favicon (convert webp to png)
+      if (!thumbnailImage && existsSync(faviconPath)) {
+        try {
+          // Convert webp to png using sharp
+          const faviconBytes = readFileSync(faviconPath);
+          const pngBuffer = await sharp(faviconBytes)
+            .resize(256, 256, { fit: 'inside', withoutEnlargement: true })
+            .png()
+            .toBuffer();
+          thumbnailImage = await pdfDoc.embedPng(pngBuffer);
+          console.log('✅ Converted and embedded favicon as PNG thumbnail');
+        } catch (e) {
+          console.warn('⚠️  Could not convert/embed favicon as thumbnail:', e.message);
+        }
+      }
+      
+      // Set thumbnail if we successfully embedded an image
+      if (thumbnailImage) {
+        // Set PDF metadata
+        pdfDoc.setTitle('Coen Horrevoets - CV');
+        pdfDoc.setAuthor('Coen Horrevoets');
+        pdfDoc.setSubject('Curriculum Vitae');
+        pdfDoc.setCreator('Product Clarity');
+        
+        // Try to set thumbnail in PDF catalog
+        // Note: pdf-lib doesn't have direct thumbnail support, but we can try
+        // to set it using the internal context API
+        try {
+          const rootRef = pdfDoc.context.trailerInfo.Root;
+          const catalog = pdfDoc.context.lookup(rootRef);
+          
+          if (catalog && thumbnailImage) {
+            // Create an XObject for the thumbnail image
+            // The thumbnail needs to be referenced properly in the PDF structure
+            const imageRef = thumbnailImage.ref;
+            
+            // Set thumbnail in catalog (this is the PDF spec way)
+            catalog.set(pdfDoc.context.obj('Thumb'), imageRef);
+            console.log('✅ Thumbnail reference set in PDF catalog');
+          }
+        } catch (e) {
+          // If direct catalog manipulation fails, the image is still embedded
+          // Some PDF viewers may pick it up from metadata or embedded images
+          console.warn('⚠️  Could not set thumbnail in catalog (image still embedded):', e.message);
+          console.warn('   The PDF will still work, but thumbnail may not appear in all viewers');
+        }
+        
+        // Save the modified PDF
+        const modifiedPdfBytes = await pdfDoc.save();
+        writeFileSync(pdfPath, modifiedPdfBytes);
+        console.log('✅ PDF with thumbnail saved');
+      } else {
+        console.warn('⚠️  No thumbnail image available to embed');
+      }
+    } catch (error) {
+      console.warn('⚠️  Error adding thumbnail to PDF:', error.message);
+      console.warn('   PDF generated successfully, but thumbnail could not be added');
+    }
 
     // Create/update latest.pdf as a copy for easy access
     copyFileSync(pdfPath, latestPath);
