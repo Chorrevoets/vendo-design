@@ -103,17 +103,17 @@
         margin: 0 1.5cm 1.5cm 1.5cm;
       }
       
-      /* Pages 2-4 have no left margin for timeline */
+      /* Pages 2-4 have increased left margin for timeline */
       @page :left {
         margin-top: 1.5cm;
-        margin-left: 0cm; /* No left margin */
+        margin-left: 1cm; /* Reduced left margin for timeline */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
       
       @page :right {
         margin-top: 1.5cm;
-        margin-left: 0cm; /* No left margin */
+        margin-left: 1cm; /* Reduced left margin for timeline */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
@@ -512,7 +512,7 @@
     
     .timeline-line {
       position: absolute;
-      left: 0.3cm;
+      left: 0.2cm;
       top: 0;
       width: 1px; /* Reduced to 1px */
       height: 2000px; /* Tall enough to span multiple pages */
@@ -523,12 +523,12 @@
     
     @media print {
       .experience-section {
-        padding-left: 1.2cm; /* Space for timeline and dots */
+        padding-left: 0.8cm; /* Reduced space for timeline and dots */
       }
       
       .timeline-line {
         display: block;
-        left: 0.3cm; /* Position from page edge (no margin now) */
+        left: 0.2cm; /* Positioned in the reduced margin */
         height: 3000px; /* Even taller for print */
         width: 1px; /* 1px thickness */
       }
@@ -552,7 +552,7 @@
         content: '';
         display: inline-block;
         position: absolute;
-        left: -1.2cm; /* Position to center dot on line (0.3cm line position - 0.5cm dot radius) */
+        left: -1cm; /* Position to center dot on line (0.2cm line position adjusted) */
         top: 0.3em;
         width: 10px;
         height: 10px;
@@ -561,7 +561,7 @@
         z-index: 2;
         border: 2px solid white;
         box-sizing: border-box;
-        margin-left: 0.3cm; /* Align center of dot with center of line */
+        margin-left: 0.2cm; /* Align center of dot with center of line */
       }
     }
       
