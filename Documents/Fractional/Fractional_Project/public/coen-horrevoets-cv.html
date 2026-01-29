@@ -529,7 +529,7 @@
       .timeline-line {
         display: block;
         left: 0.2cm; /* Positioned in the reduced margin */
-        height: 3000px; /* Even taller for print */
+        height: 3000px; /* Tall enough for print */
         width: 1px; /* 1px thickness */
       }
       
@@ -561,6 +561,27 @@
         z-index: 2;
         border: 2px solid white;
         box-sizing: border-box;
+      }
+      
+      /* Hide dots for Volunteering items */
+      .volunteering-divider ~ .experience-item .experience-title::before {
+        display: none !important;
+      }
+      
+      /* Stop timeline line at Volunteering divider - cover it with white */
+      .volunteering-divider {
+        position: relative;
+      }
+      
+      .volunteering-divider::before {
+        content: '';
+        position: absolute;
+        left: -1cm;
+        top: -3000px;
+        width: 3px;
+        height: 3000px;
+        background: white;
+        z-index: 10;
       }
     }
       
@@ -1183,7 +1204,7 @@
         </div>
       </div>
 
-      <div class="experience-item no-break">
+      <div class="experience-item no-break last-experience-item">
         <div class="experience-header">
           <div>
             <span class="experience-title">Product Manager</span>
@@ -1196,7 +1217,7 @@
         </div>
       </div>
 
-      <div class="experience-divider"><span>Volunteering</span></div>
+      <div class="experience-divider volunteering-divider"><span>Volunteering</span></div>
 
       <div class="experience-item no-break">
         <div class="experience-header">
