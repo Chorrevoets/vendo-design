@@ -510,18 +510,9 @@
       .experience-section {
         position: relative;
         padding-left: 0;
-      }
-      
-      /* Vertical timeline line - positioned in the left margin */
-      .experience-section::before {
-        content: '';
-        position: absolute;
-        left: -1cm; /* Position in the increased left margin area */
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: var(--accent); /* Red line */
-        z-index: 1;
+        border-left: 2px solid #ff0303; /* Red vertical line */
+        padding-left: 0.8cm; /* Space between line and content */
+        margin-left: -0.8cm; /* Offset to position line in margin */
       }
       
       .experience-section .experience-item {
@@ -537,20 +528,26 @@
       
       .experience-section .experience-title {
         position: relative;
+        padding-left: 0;
       }
       
       .experience-section .experience-title::before {
-        content: '';
+        content: '●';
         position: absolute;
-        left: -1.35cm; /* Align with timeline line, slightly to the left of the line center */
-        top: 0.5em;
-        width: 8px;
-        height: 8px;
-        background: var(--accent);
-        border-radius: 50%;
+        left: -1cm; /* Position on the timeline line */
+        top: 0.1em;
+        color: #ff0303; /* Red dot */
+        font-size: 12px;
+        line-height: 1;
         z-index: 2;
-        transform: translateX(-50%); /* Center the dot on the line */
-        left: -1cm; /* Position exactly on the line */
+        font-weight: bold;
+        background: white; /* White background to cover the line */
+        padding: 0 2px;
+      }
+      
+      /* Hide timeline line element if it exists */
+      .timeline-line {
+        display: none;
       }
       
       .experience-section .achievements {
@@ -972,6 +969,7 @@
     </section>
 
     <section class="experience-section page-break">
+      <div class="timeline-line"></div>
       <h2><span>Experience</span></h2>
 
       <div class="experience-item no-break">
