@@ -584,15 +584,20 @@
         content: '';
         display: inline-block;
         position: absolute;
-        left: -0.73cm; /* Position to center dot on line (line at 0.2cm, dot center = line center) */
+        /* Timeline is at -0.585cm from wrapper left edge */
+        /* Section has 0.8cm padding, so timeline is at 0.8cm - 0.585cm = 0.215cm from section left */
+        /* Title starts at 0.8cm (section padding), so dot center should be at -0.585cm from title */
+        left: -0.585cm; /* Position dot center to align with timeline center */
         top: 0.3em;
         width: 10px;
         height: 10px;
         background: #ff0303;
         border-radius: 50%;
         z-index: 2;
-        border: 2px solid white;
+        /* Remove white border to eliminate gaps - line will show through dot */
         box-sizing: border-box;
+        /* Center the dot on the line using transform */
+        transform: translateX(-50%);
       }
     }
       
