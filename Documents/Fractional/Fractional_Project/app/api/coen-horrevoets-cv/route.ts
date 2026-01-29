@@ -1,11 +1,20 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const htmlPath = join(process.cwd(), 'public', 'coen-horrevoets-cv.html');
-    const htmlContent = readFileSync(htmlPath, 'utf-8');
+    let htmlContent = readFileSync(htmlPath, 'utf-8');
+    
+    // Get the base URL from the request
+    const baseUrl = request.nextUrl.origin;
+    
+    // Replace relative favicon paths with absolute URLs
+    htmlContent = htmlContent.replace(
+      /href="\/Favicon_Coen\.webp"/g,
+      `href="${baseUrl}/Favicon_Coen.webp"`
+    );
     
     return new NextResponse(htmlContent, {
       status: 200,

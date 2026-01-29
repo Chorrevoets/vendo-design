@@ -6,6 +6,21 @@
   <title>Coen Horrevoets - CV</title>
   <link rel="icon" href="/Favicon_Coen.webp" type="image/webp">
   <link rel="apple-touch-icon" href="/Favicon_Coen.webp">
+  <link rel="shortcut icon" href="/Favicon_Coen.webp" type="image/webp">
+  <script>
+    // Ensure favicon loads correctly by setting it dynamically
+    (function() {
+      const favicon = document.querySelector('link[rel="icon"]');
+      if (favicon && !favicon.href.startsWith('http')) {
+        const baseUrl = window.location.origin;
+        favicon.href = baseUrl + '/Favicon_Coen.webp';
+        const appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (appleIcon) appleIcon.href = baseUrl + '/Favicon_Coen.webp';
+        const shortcutIcon = document.querySelector('link[rel="shortcut icon"]');
+        if (shortcutIcon) shortcutIcon.href = baseUrl + '/Favicon_Coen.webp';
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
