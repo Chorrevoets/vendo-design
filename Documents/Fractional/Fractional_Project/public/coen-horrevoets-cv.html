@@ -510,12 +510,16 @@
       position: relative;
     }
     
+    .experience-timeline-wrapper {
+      position: relative;
+    }
+    
     .timeline-line {
       position: absolute;
       left: 0.2cm;
       top: 0;
       width: 1px; /* Reduced to 1px */
-      height: 2000px; /* Tall enough to span multiple pages */
+      height: 100%; /* Will be constrained by wrapper */
       background: #ff0303;
       z-index: 1;
       pointer-events: none;
@@ -526,44 +530,28 @@
         padding-left: 0.8cm; /* Reduced space for timeline and dots */
       }
       
-      /* Timeline line - will be stopped by volunteering section */
+      .experience-timeline-wrapper {
+        position: relative;
+        padding-left: 0;
+      }
+      
+      /* Timeline line - only spans the wrapper content (stops before volunteering) */
       .timeline-line {
         display: block;
         left: 0.2cm; /* Positioned in the reduced margin */
-        height: 100%; /* Full height, but will be covered by volunteering */
+        height: 100%; /* Spans only the wrapper content */
         width: 1px; /* 1px thickness */
       }
       
-      /* Stop timeline at volunteering section */
-      .volunteering-section-start {
-        position: relative;
+      /* Volunteering section - no timeline, normal left margin */
+      .volunteering-divider {
+        margin-left: -0.8cm; /* Move left to align with 1cm page margin */
+        padding-left: 0;
       }
       
-      /* Cover the timeline line at the start of volunteering section */
-      .volunteering-section-start::before {
-        content: '';
-        position: absolute;
-        left: -0.8cm;
-        top: -0.8rem;
-        width: 3px;
-        height: 1.5rem;
-        background: white; /* White to cover/stop the timeline */
-        z-index: 3;
-      }
-      
-      .experience-section .experience-item {
-        margin-bottom: 1.4rem;
-        position: relative;
-      }
-      
-      /* Volunteering items - no timeline, no left margin/padding, align with page edge (0cm) */
       .volunteering-item {
-        padding-left: 0 !important;
-        margin-left: -1.8cm !important; /* Move left to align with 0cm page margin (1cm page margin + 0.8cm section padding) */
-      }
-      
-      .volunteering-section-start {
-        margin-left: -1.8cm !important; /* Also move the divider to align with 0cm */
+        margin-left: -0.8cm; /* Move left to align with 1cm page margin */
+        padding-left: 0;
       }
       
       .volunteering-item .experience-title::before {
@@ -571,15 +559,12 @@
       }
       
       .volunteering-item .experience-title {
-        padding-left: 0 !important; /* No padding for volunteering */
+        padding-left: 0 !important; /* No padding for volunteering items */
       }
       
-      .volunteering-item .experience-header {
-        padding-left: 0 !important;
-      }
-      
-      .volunteering-item .experience-description {
-        padding-left: 0 !important;
+      .experience-section .experience-item {
+        margin-bottom: 1.4rem;
+        position: relative;
       }
       
       /* Red dot before each role title (except volunteering) */
@@ -1027,7 +1012,9 @@
     </section>
 
     <section class="experience-section page-break">
-      <div class="timeline-line"></div>
+      <div class="experience-timeline-wrapper">
+        <div class="timeline-line"></div>
+      </div>
       <h2><span>Experience</span></h2>
 
       <div class="experience-item no-break">
@@ -1239,8 +1226,9 @@
           <p>Telfort is the budget brand of the largest Dutch telecom provider KPN.</p>
         </div>
       </div>
-
-      <div class="experience-divider volunteering-section-start"><span>Volunteering</span></div>
+      </div> <!-- Close experience-timeline-wrapper -->
+      
+      <div class="experience-divider volunteering-divider"><span>Volunteering</span></div>
 
       <div class="experience-item no-break volunteering-item">
         <div class="experience-header">
