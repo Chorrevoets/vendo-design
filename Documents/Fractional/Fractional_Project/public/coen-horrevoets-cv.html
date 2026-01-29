@@ -506,13 +506,30 @@
     }
 
     /* Timeline styles for pages 2-4 */
+    .experience-section {
+      position: relative;
+    }
+    
+    .timeline-line {
+      position: absolute;
+      left: 0.5cm;
+      top: 0;
+      width: 3px;
+      height: 2000px; /* Tall enough to span multiple pages */
+      background: #ff0303;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
     @media print {
       .experience-section {
-        position: relative;
-        padding-left: 0;
-        border-left: 2px solid #ff0303; /* Red vertical line */
-        padding-left: 0.8cm; /* Space between line and content */
-        margin-left: -0.8cm; /* Offset to position line in margin */
+        padding-left: 1.5cm; /* Space for timeline and dots */
+      }
+      
+      .timeline-line {
+        display: block;
+        left: 0.5cm;
+        height: 3000px; /* Even taller for print */
       }
       
       .experience-section .experience-item {
@@ -523,32 +540,28 @@
       /* Red dot before each role title */
       .experience-section .experience-header {
         position: relative;
-        padding-left: 0;
       }
       
       .experience-section .experience-title {
         position: relative;
-        padding-left: 0;
+        padding-left: 0.5rem; /* Space for dot */
       }
       
       .experience-section .experience-title::before {
-        content: '●';
+        content: '';
+        display: inline-block;
         position: absolute;
-        left: -1cm; /* Position on the timeline line */
-        top: 0.1em;
-        color: #ff0303; /* Red dot */
-        font-size: 12px;
-        line-height: 1;
+        left: -1.25cm; /* Position on the timeline line */
+        top: 0.3em;
+        width: 12px;
+        height: 12px;
+        background: #ff0303;
+        border-radius: 50%;
         z-index: 2;
-        font-weight: bold;
-        background: white; /* White background to cover the line */
-        padding: 0 2px;
+        border: 2px solid white;
+        box-sizing: border-box;
       }
-      
-      /* Hide timeline line element if it exists */
-      .timeline-line {
-        display: none;
-      }
+    }
       
       .experience-section .achievements {
         margin-top: 0.4rem;
