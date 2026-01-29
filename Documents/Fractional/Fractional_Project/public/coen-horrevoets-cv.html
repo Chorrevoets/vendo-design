@@ -106,14 +106,14 @@
       /* Pages 2-4 have increased left margin for timeline */
       @page :left {
         margin-top: 1.5cm;
-        margin-left: 2.5cm; /* Increased left margin for timeline */
+        margin-left: 2cm; /* Reduced left margin for timeline */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
       
       @page :right {
         margin-top: 1.5cm;
-        margin-left: 2.5cm; /* Increased left margin for timeline */
+        margin-left: 2cm; /* Reduced left margin for timeline */
         margin-right: 1.5cm;
         margin-bottom: 1.5cm;
       }
@@ -512,9 +512,9 @@
     
     .timeline-line {
       position: absolute;
-      left: 0.5cm;
+      left: 0.3cm;
       top: 0;
-      width: 3px;
+      width: 1px; /* Reduced to 1px */
       height: 2000px; /* Tall enough to span multiple pages */
       background: #ff0303;
       z-index: 1;
@@ -523,13 +523,14 @@
     
     @media print {
       .experience-section {
-        padding-left: 1.5cm; /* Space for timeline and dots */
+        padding-left: 1.2cm; /* Reduced space for timeline and dots */
       }
       
       .timeline-line {
         display: block;
-        left: 0.5cm;
+        left: 0.3cm; /* Centered in the margin */
         height: 3000px; /* Even taller for print */
+        width: 1px; /* 1px thickness */
       }
       
       .experience-section .experience-item {
@@ -551,15 +552,16 @@
         content: '';
         display: inline-block;
         position: absolute;
-        left: -1.25cm; /* Position on the timeline line */
+        left: -1.2cm; /* Position to center dot on line (0.3cm line position - 0.5cm dot radius) */
         top: 0.3em;
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         background: #ff0303;
         border-radius: 50%;
         z-index: 2;
         border: 2px solid white;
         box-sizing: border-box;
+        margin-left: 0.3cm; /* Align center of dot with center of line */
       }
     }
       
