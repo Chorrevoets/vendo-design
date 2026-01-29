@@ -769,7 +769,11 @@
       }
 
       .achievements li::before {
-        color: var(--accent);
+        content: "•";
+        color: #ff0303; /* Explicit red color for print */
+        font-weight: bold;
+        position: absolute;
+        left: 0;
       }
 
       .timeline-grid {
