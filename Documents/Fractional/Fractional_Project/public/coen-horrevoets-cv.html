@@ -518,8 +518,8 @@
       position: absolute;
       left: 0.2cm;
       top: 0;
+      bottom: 0; /* Span from top to bottom of wrapper */
       width: 1px; /* Reduced to 1px */
-      height: 100%; /* Will be constrained by wrapper */
       background: #ff0303;
       z-index: 1;
       pointer-events: none;
@@ -535,12 +535,14 @@
         padding-left: 0;
       }
       
-      /* Timeline line - only spans the wrapper content (stops before volunteering) */
+      /* Timeline line - spans from top to bottom of wrapper (stops before volunteering) */
       .timeline-line {
-        display: block;
+        display: block !important;
         left: 0.2cm; /* Positioned in the reduced margin */
-        height: 100%; /* Spans only the wrapper content */
+        top: 0;
+        bottom: 0; /* Spans from top to bottom of wrapper */
         width: 1px; /* 1px thickness */
+        height: auto; /* Let bottom: 0 handle the height */
       }
       
       /* Volunteering section - no timeline, normal left margin */
@@ -1012,10 +1014,10 @@
     </section>
 
     <section class="experience-section page-break">
+      <h2><span>Experience</span></h2>
+      
       <div class="experience-timeline-wrapper">
         <div class="timeline-line"></div>
-      </div>
-      <h2><span>Experience</span></h2>
 
       <div class="experience-item no-break">
         <div class="experience-header">
