@@ -6,6 +6,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/case-studies/designing-for-trust',
+        destination: '/case-studies/the-hard-30-from-signals-to-decisions',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {

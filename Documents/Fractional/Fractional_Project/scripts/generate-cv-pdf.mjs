@@ -285,6 +285,162 @@ async function generatePDF() {
 
     // Create/update latest.pdf as a copy for easy access
     copyFileSync(pdfPath, latestPath);
+
+    // Generate HCF version from its own HTML source
+    console.log('\n📄 Generating HCF version...');
+    const hcfHtmlPath = join(process.cwd(), 'public', 'coen-horrevoets-cv-hcf.html');
+    let hcfHtmlContent = readFileSync(hcfHtmlPath, 'utf-8');
+    hcfHtmlContent = hcfHtmlContent.replace('src="/logo.png"', `src="${logoDataUri}"`);
+    for (const icon of svgIcons) {
+      const iconPath = join(process.cwd(), 'public', icon);
+      let svgContent = readFileSync(iconPath, 'utf-8');
+      svgContent = svgContent.replace(/#000000/g, '#ff0303');
+      svgContent = svgContent.replace(/#000(?![0-9a-fA-F])/g, '#ff0303');
+      svgContent = svgContent.replace(/stroke="black"/gi, 'stroke="#ff0303"');
+      svgContent = svgContent.replace(/fill="black"/gi, 'fill="#ff0303"');
+      const svgBase64 = Buffer.from(svgContent).toString('base64');
+      const svgDataUri = `data:image/svg+xml;base64,${svgBase64}`;
+      hcfHtmlContent = hcfHtmlContent.replace(new RegExp(`src="/${icon}"`, 'g'), `src="${svgDataUri}"`);
+    }
+    hcfHtmlContent = hcfHtmlContent.replace(/href="[^"]*Favicon_Coen\.webp"/g, `href="${faviconDataUri}"`);
+    await page.setContent(hcfHtmlContent, { waitUntil: 'load', timeout: 60000 });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    });
+    const hcfPath = join(cvDir, 'Coen-Horrevoets-hcf.pdf');
+    await page.pdf({
+      path: hcfPath,
+      format: 'A4',
+      margin: { top: '0', right: '1.5cm', bottom: '1.5cm', left: '1.5cm' },
+      printBackground: true,
+      preferCSSPageSize: false,
+      displayHeaderFooter: false,
+    });
+    try {
+      const hcfPdfBytes = readFileSync(hcfPath);
+      const hcfPdfDoc = await PDFDocument.load(hcfPdfBytes);
+      const hcfLogoPath = join(process.cwd(), 'public', 'logo.png');
+      if (existsSync(hcfLogoPath)) {
+        const logoBytes = readFileSync(hcfLogoPath);
+        const thumbImg = await hcfPdfDoc.embedPng(logoBytes);
+        hcfPdfDoc.setTitle('Coen Horrevoets - CV');
+        hcfPdfDoc.setAuthor('Coen Horrevoets');
+        hcfPdfDoc.setSubject('Curriculum Vitae');
+        hcfPdfDoc.setCreator('Product Clarity');
+        try {
+          const rootRef = hcfPdfDoc.context.trailerInfo.Root;
+          const catalog = hcfPdfDoc.context.lookup(rootRef);
+          if (catalog && thumbImg) catalog.set(hcfPdfDoc.context.obj('Thumb'), thumbImg.ref);
+        } catch (e) { /* ignore */ }
+        writeFileSync(hcfPath, await hcfPdfDoc.save());
+      }
+    } catch (e) { console.warn('⚠️  HCF thumbnail could not be added:', e.message); }
+    console.log(`✅ HCF version generated at: ${hcfPath}`);
+
+    // Generate Karrot role-optimised version
+    console.log('\n📄 Generating Karrot version...');
+    const karrotHtmlPath = join(process.cwd(), 'public', 'coen-horrevoets-cv-karrot.html');
+    let karrotHtmlContent = readFileSync(karrotHtmlPath, 'utf-8');
+    karrotHtmlContent = karrotHtmlContent.replace('src="/logo.png"', `src="${logoDataUri}"`);
+    for (const icon of svgIcons) {
+      const iconPath = join(process.cwd(), 'public', icon);
+      let svgContent = readFileSync(iconPath, 'utf-8');
+      svgContent = svgContent.replace(/#000000/g, '#ff0303');
+      svgContent = svgContent.replace(/#000(?![0-9a-fA-F])/g, '#ff0303');
+      svgContent = svgContent.replace(/stroke="black"/gi, 'stroke="#ff0303"');
+      svgContent = svgContent.replace(/fill="black"/gi, 'fill="#ff0303"');
+      const svgBase64 = Buffer.from(svgContent).toString('base64');
+      const svgDataUri = `data:image/svg+xml;base64,${svgBase64}`;
+      karrotHtmlContent = karrotHtmlContent.replace(new RegExp(`src="/${icon}"`, 'g'), `src="${svgDataUri}"`);
+    }
+    karrotHtmlContent = karrotHtmlContent.replace(/href="[^"]*Favicon_Coen\.webp"/g, `href="${faviconDataUri}"`);
+    await page.setContent(karrotHtmlContent, { waitUntil: 'load', timeout: 60000 });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    });
+    const karrotPath = join(cvDir, 'Coen-Horrevoets-Karrot.pdf');
+    await page.pdf({
+      path: karrotPath,
+      format: 'A4',
+      margin: { top: '0', right: '1.5cm', bottom: '1.5cm', left: '1.5cm' },
+      printBackground: true,
+      preferCSSPageSize: false,
+      displayHeaderFooter: false,
+    });
+    try {
+      const karrotPdfBytes = readFileSync(karrotPath);
+      const karrotPdfDoc = await PDFDocument.load(karrotPdfBytes);
+      const karrotLogoPath = join(process.cwd(), 'public', 'logo.png');
+      if (existsSync(karrotLogoPath)) {
+        const logoBytes = readFileSync(karrotLogoPath);
+        const thumbImg = await karrotPdfDoc.embedPng(logoBytes);
+        karrotPdfDoc.setTitle('Coen Horrevoets - CV (Karrot)');
+        karrotPdfDoc.setAuthor('Coen Horrevoets');
+        karrotPdfDoc.setSubject('Curriculum Vitae - Karrot Role Optimised');
+        karrotPdfDoc.setCreator('Product Clarity');
+        try {
+          const rootRef = karrotPdfDoc.context.trailerInfo.Root;
+          const catalog = karrotPdfDoc.context.lookup(rootRef);
+          if (catalog && thumbImg) catalog.set(karrotPdfDoc.context.obj('Thumb'), thumbImg.ref);
+        } catch (e) { /* ignore */ }
+        writeFileSync(karrotPath, await karrotPdfDoc.save());
+      }
+    } catch (e) { console.warn('⚠️  Karrot thumbnail could not be added:', e.message); }
+    console.log(`✅ Karrot version generated at: ${karrotPath}`);
+
+    // Generate PharmX role-optimised version
+    console.log('\n📄 Generating PharmX version...');
+    const pharmxHtmlPath = join(process.cwd(), 'public', 'coen-horrevoets-cv-pharmx.html');
+    let pharmxHtmlContent = readFileSync(pharmxHtmlPath, 'utf-8');
+    pharmxHtmlContent = pharmxHtmlContent.replace('src="/logo.png"', `src="${logoDataUri}"`);
+    for (const icon of svgIcons) {
+      const iconPath = join(process.cwd(), 'public', icon);
+      let svgContent = readFileSync(iconPath, 'utf-8');
+      svgContent = svgContent.replace(/#000000/g, '#ff0303');
+      svgContent = svgContent.replace(/#000(?![0-9a-fA-F])/g, '#ff0303');
+      svgContent = svgContent.replace(/stroke="black"/gi, 'stroke="#ff0303"');
+      svgContent = svgContent.replace(/fill="black"/gi, 'fill="#ff0303"');
+      const svgBase64 = Buffer.from(svgContent).toString('base64');
+      const svgDataUri = `data:image/svg+xml;base64,${svgBase64}`;
+      pharmxHtmlContent = pharmxHtmlContent.replace(new RegExp(`src="/${icon}"`, 'g'), `src="${svgDataUri}"`);
+    }
+    pharmxHtmlContent = pharmxHtmlContent.replace(/href="[^"]*Favicon_Coen\.webp"/g, `href="${faviconDataUri}"`);
+    await page.setContent(pharmxHtmlContent, { waitUntil: 'load', timeout: 60000 });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    });
+    const pharmxPath = join(cvDir, 'Coen-Horrevoets-PharmX.pdf');
+    await page.pdf({
+      path: pharmxPath,
+      format: 'A4',
+      margin: { top: '0', right: '1.5cm', bottom: '1.5cm', left: '1.5cm' },
+      printBackground: true,
+      preferCSSPageSize: false,
+      displayHeaderFooter: false,
+    });
+    try {
+      const pharmxPdfBytes = readFileSync(pharmxPath);
+      const pharmxPdfDoc = await PDFDocument.load(pharmxPdfBytes);
+      const pharmxLogoPath = join(process.cwd(), 'public', 'logo.png');
+      if (existsSync(pharmxLogoPath)) {
+        const logoBytes = readFileSync(pharmxLogoPath);
+        const thumbImg = await pharmxPdfDoc.embedPng(logoBytes);
+        pharmxPdfDoc.setTitle('Coen Horrevoets - CV (PharmX)');
+        pharmxPdfDoc.setAuthor('Coen Horrevoets');
+        pharmxPdfDoc.setSubject('Curriculum Vitae - PharmX Role Optimised');
+        pharmxPdfDoc.setCreator('Product Clarity');
+        try {
+          const rootRef = pharmxPdfDoc.context.trailerInfo.Root;
+          const catalog = pharmxPdfDoc.context.lookup(rootRef);
+          if (catalog && thumbImg) catalog.set(pharmxPdfDoc.context.obj('Thumb'), thumbImg.ref);
+        } catch (e) { /* ignore */ }
+        writeFileSync(pharmxPath, await pharmxPdfDoc.save());
+      }
+    } catch (e) { console.warn('⚠️  PharmX thumbnail could not be added:', e.message); }
+    console.log(`✅ PharmX version generated at: ${pharmxPath}`);
     
     // Write JSON file with latest CV info for API route
     const cvInfoPath = join(cvDir, 'latest-cv-info.json');

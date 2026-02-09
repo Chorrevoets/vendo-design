@@ -1,0 +1,13 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Horrevoets;Coen;;;
+FN:Coen Horrevoets
+ORG:Product Clarity
+TITLE:Fractional Product Leader
+PHOTO;VALUE=uri:https://www.productclarity.work/Coen.png
+EMAIL;TYPE=INTERNET:coen@productclarity.work
+EMAIL;TYPE=INTERNET:c.horrevoets@gmail.com
+TEL;TYPE=CELL:+61450609904
+URL:https://www.productclarity.work
+URL;TYPE=whatsapp:https://wa.me/61450609904
+END:VCARD

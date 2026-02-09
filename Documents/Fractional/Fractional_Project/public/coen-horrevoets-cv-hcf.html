@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coen Horrevoets - CV</title>
+  <link rel="icon" href="/Favicon_Coen.webp" type="image/webp">
+  <link rel="apple-touch-icon" href="/Favicon_Coen.webp">
+  <link rel="shortcut icon" href="/Favicon_Coen.webp" type="image/webp">
+  <script>
+    // Ensure favicon loads correctly by setting it dynamically
+    (function() {
+      const favicon = document.querySelector('link[rel="icon"]');
+      if (favicon && !favicon.href.startsWith('http')) {
+        const baseUrl = window.location.origin;
+        favicon.href = baseUrl + '/Favicon_Coen.webp';
+        const appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (appleIcon) appleIcon.href = baseUrl + '/Favicon_Coen.webp';
+        const shortcutIcon = document.querySelector('link[rel="shortcut icon"]');
+        if (shortcutIcon) shortcutIcon.href = baseUrl + '/Favicon_Coen.webp';
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #fafafa;
+      --foreground: #2e2e2e;
+      --muted-foreground: #737373;
+      --accent: #ff0303;
+      --border: #e5e5e5;
+      --secondary: #f4f4f5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      background: white;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: var(--foreground);
+      background: white;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+
+    main {
+      background: white;
+    }
+
+    /* Logo positioning - flush to top edge, aligned with body margin */
+    .cv-logo {
+      position: absolute;
+      top: 0;
+      left: 2rem;
+      height: 60px;
+      width: auto;
+      z-index: 1000;
+      display: block;
+      border-radius: 0 0 10px 10px;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 0 1.5cm 1.5cm 1.5cm; /* Top margin 0 for logo */
+      }
+
+      .cv-logo {
+        position: absolute;
+        top: 0; /* At top of page content area (since top margin is 0) */
+        left: 0; /* Align with body content start (page margin already provides 1.5cm from PDF edge) */
+        height: 60px;
+        width: auto;
+        border-radius: 0 0 10px 10px;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0 1.5cm 1.5cm 1.5cm; /* Top margin 0 for logo, others 1.5cm */
+      }
+      
+      @page :first {
+        margin-top: 0;
+      }
+      
+      /* First page keeps original margins */
+      @page :first {
+        margin: 0 1.5cm 1.5cm 1.5cm;
+      }
+      
+      /* Pages 2-4 have increased left margin for timeline */
+      @page :left {
+        margin-top: 1.5cm;
+        margin-left: 1cm; /* Reduced left margin for timeline */
+        margin-right: 1.5cm;
+        margin-bottom: 1.5cm;
+      }
+      
+      @page :right {
+        margin-top: 1.5cm;
+        margin-left: 1cm; /* Reduced left margin for timeline */
+        margin-right: 1.5cm;
+        margin-bottom: 1.5cm;
+      }
+
+      body {
+        font-size: 9pt;
+        position: relative;
+        padding-top: 0.6cm; /* Add padding to compensate for logo space */
+        overflow: visible; /* Allow content outside bounds to be visible */
+        line-height: 1.3;
+      }
+      
+      html {
+        overflow: visible; /* Allow content outside bounds to be visible */
+        background: white;
+      }
+      
+      body {
+        background: white;
+      }
+      
+      main, section {
+        background: white;
+      }
+
+      .page-break {
+        page-break-before: always;
+        margin-top: 0.3cm;
+        padding-top: 0;
+      }
+      
+      .page-break h2 {
+        margin-top: 0;
+      }
+
+
+      .no-break {
+        page-break-inside: avoid;
+      }
+
+      a {
+        color: var(--foreground);
+        text-decoration: none;
+      }
+    }
+
+    /* Screen styles */
+    @media screen {
+      html {
+        background: white;
+      }
+      
+      body {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+      }
+    }
+
+    /* Typography */
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 42pt;
+      font-weight: 400;
+      color: var(--foreground);
+      margin-bottom: 0.1rem;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      font-style: normal;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    @media print {
+      h1 {
+        font-size: 37pt;
+      }
+    }
+
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-top: 0.75rem;
+      margin-bottom: 0.7rem;
+      text-align: center;
+      position: relative;
+      display: block;
+    }
+
+    .education-section h2 {
+      margin-top: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Grey divider line behind the heading - spans full width */
+    h2::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 1px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    /* White background on the text span to "cut through" the line */
+    h2 span {
+      position: relative;
+      background: white;
+      padding: 0 1rem;
+      z-index: 1;
+      display: inline-block;
+    }
+
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 12pt;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    h4 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-top: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      margin-bottom: 0.15rem;
+      text-align: left;
+      hyphens: none;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-height: 1.3;
+      font-weight: normal;
+    }
+    
+    .section-content p {
+      text-align: left;
+      font-weight: normal;
+      font-size: 12pt;
+      margin-bottom: 0.5rem;
+    }
+    
+    @media print {
+      .section-content p {
+        font-size: 10pt;
+        margin-bottom: 0.4rem;
+      }
+    }
+
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 0.35rem;
+    }
+
+    li {
+      margin-bottom: 0.15rem;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 0.3rem;
+      padding-bottom: 0.2rem;
+      text-align: center;
+    }
+
+    .header-name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 0;
+    }
+
+    .header-name h1 {
+      text-align: center;
+      margin-bottom: 0.15rem;
+    }
+
+    .header-title {
+      font-size: 16pt;
+      font-weight: 300;
+      color: #ff0303;
+      text-align: center;
+      margin-top: 0.15rem;
+      margin-bottom: 0.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .header-title-separator {
+      display: inline-block;
+      width: 1px;
+      height: 1em;
+      background: var(--muted-foreground);
+      margin: 0 0.3rem;
+      vertical-align: middle;
+    }
+    
+    @media print {
+      .header-title {
+        font-size: 14pt;
+      }
+    }
+
+    .header-contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      font-size: 8pt;
+      color: var(--muted-foreground);
+      margin-top: 0.3rem;
+      justify-content: center;
+    }
+
+    .header-contact span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-contact a {
+      color: var(--muted-foreground);
+      text-decoration: none;
+    }
+
+    .header-contact a:hover {
+      text-decoration: underline;
+    }
+
+    .header-contact img {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .header-contact img path,
+    .header-contact img {
+      fill: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Make SVG icons red */
+    .header-contact img[src$=".svg"] {
+      filter: brightness(0) saturate(100%) invert(13%) sepia(94%) saturate(7151%) hue-rotate(353deg) brightness(101%) contrast(101%);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Increased spacing for page 1 sections */
+    @media print {
+      section.no-break {
+        margin-bottom: 0.5rem;
+      }
+      
+      section.no-break h2 {
+        margin-top: 0.9rem;
+      }
+      
+      /* Extra padding above "About me" section */
+      main > section:first-child h2 {
+        margin-top: 1.2rem;
+      }
+      
+      .education-section h2 {
+        margin-top: 1rem;
+      }
+    }
+
+    .section-content {
+      margin-left: 0;
+    }
+
+    /* Experience entries */
+    .experience-item {
+      margin-bottom: 0.9rem;
+      page-break-inside: avoid;
+    }
+    
+    @media print {
+      .experience-item.page-break {
+        margin-top: 1.2cm;
+      }
+      
+      .experience-item {
+        page-break-before: auto;
+      }
+      
+      .experience-item:first-child {
+        margin-top: 0;
+      }
+    }
+
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.25rem;
+    }
+
+    .experience-title {
+      font-weight: 400;
+      color: var(--accent);
+      font-size: 13pt;
+    }
+
+    .experience-company {
+      font-weight: 500;
+      color: var(--foreground);
+      font-size: 13pt;
+    }
+
+    .experience-company::before {
+      content: "";
+      display: inline-block;
+      width: 1px;
+      height: 1em;
+      background: var(--muted-foreground);
+      margin: 0 0.4rem;
+      vertical-align: middle;
+    }
+    
+    @media print {
+      .experience-title,
+      .experience-company {
+        font-size: 11pt;
+      }
+    }
+
+    .experience-period {
+      font-size: 9pt;
+      color: var(--muted-foreground);
+      white-space: nowrap;
+    }
+
+    .experience-description {
+      margin-top: 0.25rem;
+      font-size: 10pt;
+      hyphens: none;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .experience-description p:first-child {
+      color: var(--muted-foreground);
+      font-style: italic;
+      font-weight: normal;
+    }
+
+    .experience-description p:nth-child(2) {
+      color: var(--foreground);
+      font-weight: 600;
+      font-style: normal;
+      margin-top: 0.3rem;
+    }
+
+    .achievements {
+      margin-top: 0.25rem;
+    }
+
+    .achievements ul {
+      margin-left: 1.25rem;
+      list-style: none;
+    }
+
+    .achievements li {
+      margin-bottom: 0.25rem;
+      font-size: 10pt;
+      font-weight: normal;
+      color: var(--foreground);
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    /* Timeline styles for pages 2-4 */
+    .experience-section {
+      position: relative;
+    }
+    
+    .experience-timeline-wrapper {
+      position: relative;
+    }
+    
+    .timeline-line {
+      position: absolute;
+      left: -0.585cm;
+      top: 0;
+      bottom: 0; /* Span from top to bottom of wrapper */
+      width: 1px; /* Reduced to 1px */
+      background: #ff0303;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    @media print {
+      .experience-section {
+        padding-left: 0.8cm; /* Reduced space for timeline and dots */
+      }
+      
+      .experience-timeline-wrapper {
+        position: relative;
+        padding-left: 0;
+      }
+      
+      /* Timeline line - spans from top to bottom of wrapper (stops before volunteering) */
+      /* Positioned to cut through center of dots */
+      .timeline-line {
+        display: block !important;
+        left: -0.585cm;
+        top: 0;
+        bottom: 0; /* Spans from top to bottom of wrapper */
+        width: 1px; /* 1px thickness */
+        height: auto; /* Let bottom: 0 handle the height */
+      }
+      
+      /* Volunteering section - no timeline, normal left margin */
+      .volunteering-divider {
+        margin-left: -0.8cm; /* Move left to align with 1cm page margin */
+        padding-left: 0;
+        margin-top: 2.5rem !important; /* Extra vertical padding above Volunteering section */
+      }
+      
+      .volunteering-item {
+        margin-left: -0.8cm; /* Move left to align with 1cm page margin */
+        padding-left: 0;
+      }
+      
+      .volunteering-item .experience-title::before {
+        display: none !important; /* No dots for volunteering items */
+      }
+      
+      .volunteering-item .experience-title {
+        padding-left: 0 !important; /* No padding for volunteering items */
+      }
+      
+      .experience-section .experience-item {
+        margin-bottom: 1.5rem; /* Increased from 1.4rem for more spacing */
+        position: relative;
+      }
+      
+      /* Red dot before each role title (except volunteering) */
+      .experience-section .experience-header {
+        position: relative;
+      }
+      
+      .experience-section .experience-title {
+        position: relative;
+        padding-left: 0; /* No padding - align with description and achievements */
+      }
+      
+      .experience-section .experience-title::before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        /* Timeline is at -0.585cm from wrapper left edge */
+        /* Section has 0.8cm padding, so timeline is at 0.8cm - 0.585cm = 0.215cm from section left */
+        /* Title starts at 0.8cm (section padding), so dot center should be at -0.585cm from title */
+        left: -0.585cm; /* Position dot center to align with timeline center */
+        top: 0.3em;
+        width: 8px;
+        height: 8px;
+        background: #ff0303;
+        border-radius: 50%;
+        z-index: 2;
+        /* Remove white border to eliminate gaps - line will show through dot */
+        box-sizing: border-box;
+        /* Center the dot on the line using transform */
+        transform: translateX(-50%);
+      }
+    }
+      
+      .experience-section .achievements {
+        margin-top: 0.45rem; /* Increased from 0.4rem for more spacing */
+      }
+      
+      .experience-section .achievements li {
+        margin-bottom: 0.35rem;
+      }
+      
+      .experience-section .experience-description {
+        margin-top: 0.4rem; /* Increased from 0.35rem for more spacing */
+      }
+      
+      .experience-section .experience-header {
+        margin-bottom: 0.4rem; /* Increased from 0.35rem for more spacing */
+      }
+      
+      .experience-divider {
+        margin-top: 1rem;
+        margin-bottom: 0.9rem;
+      }
+    }
+
+    .achievements li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+
+    /* Two-column layouts */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .two-column > div {
+      page-break-inside: avoid;
+      text-align: center;
+    }
+
+    .two-column p {
+      margin-bottom: 0.2rem;
+      font-weight: normal;
+      font-size: 11.5pt;
+    }
+    
+    @media print {
+      .two-column p {
+        font-size: 9.5pt;
+      }
+      .two-column h3 {
+        font-size: 9.5pt !important;
+      }
+    }
+
+    @media print {
+      .two-column {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Strengths chips (matches Capabilities section on website) */
+    .chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.25rem;
+      justify-content: center;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      padding: 0.5rem 1rem;
+      color: var(--foreground);
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      margin: 0;
+      font-weight: normal;
+    }
+    
+    /* Reset heading styles inside chips for semantic HTML */
+    .chip h3,
+    .chip h4 {
+      margin: 0;
+      font-size: inherit;
+      font-weight: inherit;
+      display: inline;
+    }
+
+    /* Timeline/Career snapshot – three rows, chip style */
+    .timeline-axis {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-bottom: 0.35rem;
+      padding: 0 0.25rem;
+    }
+
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: minmax(max-content, 8%) minmax(max-content, 6%) minmax(max-content, 48%) minmax(max-content, 4.75%) minmax(max-content, 4%) minmax(max-content, 4%) minmax(max-content, 15.5%) minmax(max-content, 3%); /* Reversed: oldest on left, newest on right */
+      grid-template-rows: auto auto auto;
+      gap: 0.3rem 0.5rem;
+      margin-bottom: 0.6rem;
+      align-items: start;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      direction: ltr;
+    }
+
+    .timeline-chip {
+      font-size: 0.9375rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--foreground);
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      text-align: center;
+      min-width: max-content;
+      white-space: nowrap;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .timeline-chip--company {
+      font-weight: 600;
+      border-left: 3px solid var(--accent);
+    }
+
+    .timeline-chip--muted {
+      color: var(--muted-foreground);
+      background: transparent;
+      border-style: dashed;
+    }
+
+    .timeline-chip--role {
+      padding: 0.5rem 0.25rem;
+    }
+
+    .timeline-chip--compact {
+      padding: 0.5rem 0.3rem;
+    }
+
+    @media print {
+      .experience-description p:first-child {
+        color: var(--muted-foreground);
+        font-style: italic;
+        font-weight: normal;
+      }
+
+      .experience-description p:nth-child(2) {
+        color: var(--foreground);
+        font-weight: 600;
+        font-style: normal;
+        margin-top: 0.3rem;
+      }
+
+      .achievements li::before {
+        content: "•";
+        color: #ff0303; /* Explicit red color for print */
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+      }
+
+      .timeline-grid {
+        grid-template-columns: minmax(max-content, 8%) minmax(max-content, 6%) minmax(max-content, 48%) minmax(max-content, 4.75%) minmax(max-content, 4%) minmax(max-content, 4%) minmax(max-content, 15.5%) minmax(max-content, 3%) !important; /* Reversed: oldest on left, newest on right */
+        gap: 0.4rem 0.4rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .timeline-chip {
+        font-size: 9pt;
+        padding: 0.35rem 0.5rem;
+        min-width: max-content;
+        white-space: nowrap;
+      }
+      .timeline-chip--role {
+        padding: 0.35rem 0.2rem;
+      }
+      .timeline-chip--compact {
+        padding: 0.35rem 0.25rem;
+      }
+    }
+
+    /* Utilities */
+    .text-muted {
+      color: var(--muted-foreground);
+    }
+
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .font-light {
+      font-weight: 300;
+    }
+
+    .accent-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    /* Experience section dividers */
+    .experience-divider {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-top: 0.75rem;
+      margin-bottom: 0.7rem;
+      text-align: center;
+      position: relative;
+      display: block;
+    }
+
+    .experience-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 1px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .experience-divider span {
+      position: relative;
+      background: white;
+      padding: 0 1rem;
+      z-index: 1;
+      display: inline-block;
+    }
+  </style>
+  <script>
+    // Force external links to open in new window/tab
+    // This works in browser-based PDF viewers and some desktop PDF viewers
+    (function() {
+      const links = document.querySelectorAll('a[href^="http"]');
+      links.forEach(function(link) {
+        // Ensure target="_blank" is set
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+        
+        // Add onclick handler as fallback for PDF viewers
+        link.onclick = function(e) {
+          window.open(this.href, '_blank', 'noopener,noreferrer');
+          return false;
+        };
+      });
+    })();
+  </script>
+</head>
+<body>
+  <img src="/logo.png" alt="Logo" class="cv-logo" />
+  <header>
+    <div class="header-name">
+      <h1>Coen Horrevoets</h1>
+      <span class="header-title">
+        <span>Fractional Product & Innovation Leader</span>
+        <span class="header-title-separator"></span>
+        <span>Applied AI Product Builder</span>
+      </span>
+    </div>
+    <div class="header-contact">
+      <span>
+        <img src="/pr.svg" alt="" />
+        Dutch, with Australian PR
+      </span>
+      <span>
+        <img src="/mail.svg" alt="" />
+        <a href="mailto:c.horrevoets@gmail.com">c.horrevoets@gmail.com</a>
+      </span>
+      <span>
+        <img src="/location.svg" alt="" />
+        Manly, NSW
+      </span>
+      <span>
+        <img src="/phone.svg" alt="" />
+        <a href="tel:+61450609904">+61 450 609 904</a>
+      </span>
+      <span>
+        <img src="/www.svg" alt="" />
+        <a href="https://www.productclarity.work/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank'); return false;">productclarity.work</a>
+      </span>
+    </div>
+  </header>
+
+  <main>
+    <section class="no-break">
+      <h2><span>About me</span></h2>
+      <div class="section-content">
+        <p>Senior product leader with 20+ years across startups, scale-ups, and global digital platforms, with deep experience in innovation, experimentation, and AI-enabled product delivery.</p>
+        <p>Known for injecting momentum into ambiguous problem spaces by operating across multiple altitudes from strategy and commercial framing through to hands-on product delivery. Strong track record standing up experimentation capability, fast discovery-to-delivery pathways, and modern product tooling.</p>
+        <p>Currently working in a fractional capacity alongside founders and engineers to bring Vendo AI to market, an agentic marketing analytics co-pilot powered by LLMs.</p>
+      </div>
+    </section>
+
+    <section class="no-break">
+      <h2><span>Core Expertise</span></h2>
+      <div class="chips-wrap">
+        <h3 class="chip">Product Strategy & Vision</h3>
+        <h3 class="chip">Cross-Functional Leadership</h3>
+        <h3 class="chip">Team Building & Talent Development</h3>
+        <h3 class="chip">Experimentation & Rapid Validation</h3>
+        <h3 class="chip">Lean Product Development</h3>
+        <h3 class="chip">Behavioural Design</h3>
+        <h3 class="chip">Applied AI, LLM Workflows, Agentic Systems</h3>
+        <h3 class="chip">Metrics, Insights & Decisioning</h3>
+        <h3 class="chip">Payments & Fintech</h3>
+      </div>
+    </section>
+
+    <section class="no-break">
+      <h2><span>Leadership style</span></h2>
+      <div class="section-content">
+        <div class="chips-wrap">
+          <h3 class="chip">Clarity of Purpose</h3>
+          <h3 class="chip">Bounded Autonomy</h3>
+          <h3 class="chip">Together, or Not at All</h3>
+        </div>
+        <div class="chips-wrap" style="margin-top: 0.3rem;">
+          <h3 class="chip">Honest</h3>
+          <h3 class="chip">Open</h3>
+          <h3 class="chip">Direct</h3>
+        </div>
+      </div>
+    </section>
+
+    <section class="no-break">
+      <h2><span>Career snapshot</span></h2>
+      <div class="timeline-axis">
+        <span>2007</span>
+        <span>today</span>
+      </div>
+      <div class="timeline-grid">
+        <!-- Row 1: Roles -->
+        <span class="timeline-chip timeline-chip--role" style="grid-column: 1; grid-row: 1;">Consultant</span>
+        <span class="timeline-chip timeline-chip--role" style="grid-column: 2; grid-row: 1; justify-self: start; width: fit-content;">Snr. PM</span>
+        <span class="timeline-chip timeline-chip--span-2 timeline-chip--role" style="grid-column: 3 / 5; grid-row: 1;">Head of Product & Design</span>
+        <span class="timeline-chip timeline-chip--span-2 timeline-chip--role" style="grid-column: 5 / 7; grid-row: 1;">Director of Product</span>
+        <span class="timeline-chip timeline-chip--role" style="grid-column: 7; grid-row: 1;">CPO</span>
+        <span class="timeline-chip timeline-chip--role" style="grid-column: 8; grid-row: 1;">Fractional</span>
+        <!-- Row 2: Companies -->
+        <span class="timeline-chip timeline-chip--company" style="grid-column: 1; grid-row: 2;">Y&R</span>
+        <span class="timeline-chip timeline-chip--company timeline-chip--span-2" style="grid-column: 2 / 4; grid-row: 2;"><span style="font-weight: normal;">10 yrs</span> eBay</span>
+        <span class="timeline-chip timeline-chip--company" style="grid-column: 4; grid-row: 2;">Yolt</span>
+        <span class="timeline-chip timeline-chip--company timeline-chip--compact" style="grid-column: 5; grid-row: 2;">Catawiki</span>
+        <span class="timeline-chip timeline-chip--company timeline-chip--compact" style="grid-column: 6; grid-row: 2;">Airtasker</span>
+        <span class="timeline-chip timeline-chip--company" style="grid-column: 7; grid-row: 2;">Gumtree</span>
+        <span class="timeline-chip timeline-chip--company" style="grid-column: 8; grid-row: 2;">Vendo</span>
+        <!-- Row 3: Locations -->
+        <span class="timeline-chip" style="grid-column: 1; grid-row: 3;">NL</span>
+        <span class="timeline-chip timeline-chip--span-2" style="grid-column: 2 / 4; grid-row: 3;">Global, AU, NL</span>
+        <span class="timeline-chip" style="grid-column: 4; grid-row: 3;">UK</span>
+        <span class="timeline-chip" style="grid-column: 5; grid-row: 3;">Europe</span>
+        <span class="timeline-chip timeline-chip--span-2" style="grid-column: 6 / 8; grid-row: 3;">Australia</span>
+        <span class="timeline-chip timeline-chip--muted" style="grid-column: 8; grid-row: 3;">—</span>
+      </div>
+    </section>
+
+    <section class="no-break education-section">
+      <h2><span>Education</span></h2>
+      <div class="experience-item">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Master, Strategic Product Design</span>
+            <span class="experience-company">Delft University of Technology</span>
+          </div>
+          <span class="experience-period">2004 - 2006</span>
+        </div>
+      </div>
+      <div class="experience-item">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Bachelor, Industrial Design</span>
+            <span class="experience-company">The Hague University of Sciences</span>
+          </div>
+          <span class="experience-period">1999 - 2003</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="no-break">
+      <h2><span>Courses</span></h2>
+      <div class="two-column">
+        <div>
+          <div style="margin-bottom: 0.2rem;"><span>Google Skill Boost </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Generative A.I. leader</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>SUE </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Certified Behavioural Designer</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>eBay </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Leader as a coach</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>THRV </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Jobs To Be Done expert</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>Toothless Parrot </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Executive Media training</h3></div>
+        </div>
+        <div>
+          <div style="margin-bottom: 0.2rem;"><span>Marketing Week </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">MBA in Management</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>eBay </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Analytic University</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>eBay </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Emerging Leaders Program</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>SVPG </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">How To Create Products Customers Love</h3></div>
+          <div style="margin-bottom: 0.2rem;"><span>Scrum Alliance </span><h3 style="display: inline; margin: 0; font-size: 11.5pt; font-weight: 600;">Agile Certification</h3></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="experience-section page-break">
+      <h2><span>Experience</span></h2>
+      <p style="font-size: 10pt; color: white; margin-bottom: 0.5rem; font-weight: 300;">Career Summary: 2007–Present | Senior Product Leadership across Marketplaces, Payments, Fintech & AI</p>
+      
+      <div class="experience-timeline-wrapper">
+        <div class="timeline-line"></div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Fractional Product & Innovation Partner</span>
+            <span class="experience-company">Vendo Data</span>
+          </div>
+          <span class="experience-period">July 2025 - now</span>
+        </div>
+        <div class="experience-description">
+          <p>Vendo AI will enable business owners and growth teams to answer complex marketing questions in plain English through a modular, multi-agent LLM architecture.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Embedded as fractional product partner, coaching founders on strategy and GTM while translating vision into actionable roadmap.</li>
+            <li>Designed agentic LLM workflows and experimentation tooling to accelerate discovery and delivery.</li>
+            <li>Hands-on PO and design with engineers, using V0 and Cursor to prototype flows and produce delivery-ready requirements.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Founder & Builder</span>
+            <span class="experience-company">Captain Stillness <span class="font-light">(applied AI learning sandbox)</span></span>
+          </div>
+          <span class="experience-period">Jan 2025 - now</span>
+        </div>
+        <div class="experience-description">
+          <p>Captain Stillness is an AI-driven mental health coach integrating voice-first journaling, personality insights, and emotional wave tracking, delivering a playful yet grounded user experience.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Built to POC/MVP as a deliberate learn-by-doing applied AI sandbox.</li>
+            <li>Voice-first conversational flows using Vapi and Suno, with LLM-driven insight generation.</li>
+            <li>Engineered backend with Supabase, Python, and TypeScript to deliver personalised wellbeing insights.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Chief Product Officer</span>
+            <span class="experience-company">Gumtree Group</span>
+          </div>
+          <span class="experience-period">Feb 2023 - Nov 2024</span>
+        </div>
+        <div class="experience-description">
+          <p>CarsGuide, AutoTrader & Gumtree Australia – 8M monthly unique visitors and over 2 million live listings.</p>
+          <p>Owned cross-functional strategy and execution across Product, Design, Marketing, and CS. Established a strong product culture and foundations, streamlining WoW and operational excellence.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Fast-tracked product-led growth across app and web (8M+ MAUs), owning Product, Design, Marketing, and CS (35+ FTE), improving all major growth metrics (AARRR) by 5–10%.</li>
+            <li>Rebuilt Product and Design capability from 2 PMs and 0 designers, stabilising delivery first, then re-establishing WoW, cadence, and product foundations.</li>
+            <li>Delivered AI-powered messaging and moderation; led org-wide rollout and CS enablement, increasing platform safety.</li>
+            <li>Launched on-platform payments infrastructure, driving $120M+ GMV and increasing trust, conversion, and risk controls.</li>
+            <li>Overhauled billing systems for $80M B2B revenue, boosting transparency, scalability, and operational efficiency.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Director of Product</span>
+            <span class="experience-company">Airtasker</span>
+          </div>
+          <span class="experience-period">April 2022 - Feb 2023</span>
+        </div>
+        <div class="experience-description">
+          <p>Airtasker creates jobs and earning opportunities for people all over Australia and internationally, with over 2.5 million tasks posted annually and over 149,000 active Taskers!</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Led product and data strategy, leveraging ML to drive platform growth, boost retention, and enhance Tasker reliability through rapid validation and agile experimentation.</li>
+            <li>Led and mentored a team of 7 product managers, scaling capabilities and aligning team goals with business outcomes.</li>
+            <li>Partnered with data and ML teams to enhance AI-based task-matching algorithms, increasing marketplace revenue by 20%.</li>
+            <li>Launched subscription product for recurring tasks, leveraging payments capabilities and driving 5% retention growth.</li>
+            <li>Spearheaded platform rebrand and UX redesign, ensuring seamless user experience across mobile and web.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Director of Product</span>
+            <span class="experience-company">Catawiki</span>
+          </div>
+          <span class="experience-period">Feb 2021 - April 2022</span>
+        </div>
+        <div class="experience-description">
+          <p>Catawiki is a scale-up, with 10 million monthly unique users it is the most-visited curated marketplace for special objects in Europe. Every week, the platform puts on offer 65,000 items from around the globe, in more than 80 categories.</p>
+          <p>Transformed fulfilment into a scalable growth engine, leveraging AI-driven payments orchestration and tax automation to optimise cross-border transactions, enabling global expansion and retention.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Founded the 'Fulfillment' product group, covering Payments, Fintech, Logistics, and Customer Service.</li>
+            <li>Defined global payments orchestration blueprint, managing partnerships with Stripe, Payoneer, and PayPal, meeting Security, Compliance & Risk Management requirements (PCI, GDPR, Privacy).</li>
+            <li>Led tax compliance initiatives in regulated fintech environment, ensuring cross-border trade compliance and frictionless transactions.</li>
+            <li>Launched integrated shipping solution, driving customer effort score (CES), CSAT, and marketplace reliability.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Head of Product & UX</span>
+            <span class="experience-company">Yolt (ING backed neobank)</span>
+          </div>
+          <span class="experience-period">Jan 2020 - Jan 2021</span>
+        </div>
+        <div class="experience-description">
+          <p>Yolt is an award winning smart money app built on open banking technology, launched in the UK in 2017 and rapidly expanded to France and Italy, with over 1.5M monthly active users at its peak.</p>
+          <p>Led the product and brand strategy for a major pivot in a regulated fintech environment, launching the Yolt eWallet, Debit Card, and a financial partnership platform.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Within 12 months, developed and executed product vision using data-driven approach to achieve product–market fit in highly regulated open banking fintech environment.</li>
+            <li>Introduced North Star Metric and value drivers, embedded experimentation and lean product development practices.</li>
+            <li>Launched Yolt Debit Card, eWallet, Saving Jars, and financial partnership platform, expanding product portfolio.</li>
+            <li>Improved retention by 25% by applying behavioural design and Tiny Habits principles to product mechanics and experimentation-led execution.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-divider"><span>10 years eBay</span></div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Head of Global Product Strategy</span>
+            <span class="experience-company">eBay Classifieds Group</span>
+          </div>
+          <span class="experience-period">Jul 2018 - Dec 2019</span>
+        </div>
+        <div class="experience-description">
+          <p>eBay Classifieds runs a dozen marketplaces across all continents, with brands as; Gumtree, Kijiji, Marktplaats and Kleinanzeigen - usually ranking in the top 5 digital destinations within their markets.</p>
+          <p>Defined and executed global product and technology strategies, scaling digital commerce platforms across multiple international markets, incl. building AI/ML and data science capabilities for personalization and customer experience optimization.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Part of global growth leadership, reporting to Global VP of Growth, overseeing product direction across 12+ B2C marketplace platforms (100M+ MAUs).</li>
+            <li>Led alignment with local Product Directors, mentored discovery leads, and implemented unified experimentation playbook and North Star Metric.</li>
+            <li>Drove activation, trust, and retention improvements through scaled AI/ML for search, relevance, and UX optimization across marketplace platforms.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Head of Product & Design</span>
+            <span class="experience-company">eBay - Gumtree Australia</span>
+          </div>
+          <span class="experience-period">Apr 2013 - Jun 2018</span>
+        </div>
+        <div class="experience-description">
+          <p>Gumtree reaches 1 out of the 3 Australians every month, a monthly unique audience of 7M, with over 2.5M live listings, servicing over 2M daily active sellers and over 2K businesses.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>In 5 years quadrupled traffic to 8M MAU and annual revenue to $100M through product-led growth strategy.</li>
+            <li>Grew product team from 2 members to 8 PMs and designers in 18 months, scaling product organization.</li>
+            <li>Implemented OKRs, dual-track agile, experimentation, and customer-centric scrum teams, establishing product culture.</li>
+            <li>Led mobile transformation—launched first native apps and responsive frontend, quadrupling traffic and revenue over five years.</li>
+            <li>Introduced mobile native features including chat, messaging bots, notifications, and omni-channel CRM, enhancing marketplace engagement.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Snr Product Manager</span>
+            <span class="experience-company">eBay - Marktplaats</span>
+          </div>
+          <span class="experience-period">May 2010 - Apr 2013</span>
+        </div>
+        <div class="experience-description">
+          <p>Marktplaats is the largest trading platform in the Netherlands, with 8 million unique visitors a month, reaching 60% of the online population, publishing over 450 thousand new listings every day.</p>
+        </div>
+        <div class="achievements">
+          <ul>
+            <li>Led design, validation, and beta roll-out of full platform migration to new marketplace platform, replacing full stack including redesigned UI.</li>
+            <li>Held commercial responsibility for consumer upsell products (insertion fees, bump-ups, top-ads), driving marketplace revenue.</li>
+            <li>Drove discovery on major commercial concepts including SMB seller proposition, Store fronts, and integrated shipping and payments infrastructure.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-divider"><span>Early Career</span></div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Brand & Product Strategy Consultant</span>
+            <span class="experience-company">Young & Rubicam</span>
+          </div>
+          <span class="experience-period">Dec 2007 - Mar 2010</span>
+        </div>
+        <div class="experience-description">
+          <p>Young & Rubicam is one of the most iconic global marketing communications companies in the world.</p>
+        </div>
+      </div>
+
+      <div class="experience-item no-break">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Product Manager</span>
+            <span class="experience-company">Telfort</span>
+          </div>
+          <span class="experience-period">Nov 2006 - Nov 2007</span>
+        </div>
+        <div class="experience-description">
+          <p>Telfort is the budget brand of the largest Dutch telecom provider KPN.</p>
+        </div>
+      </div>
+      </div> <!-- Close experience-timeline-wrapper -->
+      
+      <div class="experience-divider volunteering-divider"><span>Volunteering</span></div>
+
+      <div class="experience-item no-break volunteering-item">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Patrol Member & Age Manager</span>
+            <span class="experience-company">Surf Life Saving Australia</span>
+          </div>
+          <span class="experience-period">Aug 2024 - Present</span>
+        </div>
+        <div class="experience-description">
+          <p>Surf Life Saving Australia is a national volunteer organisation dedicated to beach safety, lifesaving, and youth development.</p>
+        </div>
+      </div>
+
+      <div class="experience-item no-break volunteering-item">
+        <div class="experience-header">
+          <div>
+            <span class="experience-title">Product Coach & Mentor</span>
+            <span class="experience-company">ADPlist.org</span>
+          </div>
+          <span class="experience-period">Apr 2023 - Present</span>
+        </div>
+        <div class="experience-description">
+          <p>ADPList is a global mentorship platform connecting experienced leaders with the next generation of professionals through free, accessible career coaching.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
+ 
